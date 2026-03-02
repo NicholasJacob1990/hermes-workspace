@@ -22,7 +22,7 @@ import {
   ChatContainerRoot,
   ChatContainerScrollAnchor,
 } from '@/components/prompt-kit/chat-container'
-import { LoadingIndicator } from '@/components/loading-indicator'
+import { AssistantAvatar } from '@/components/avatars'
 import { cn } from '@/lib/utils'
 
 /** Duration (ms) the thinking indicator stays visible after waitingForResponse
@@ -30,12 +30,36 @@ import { cn } from '@/lib/utils'
  *  indicator disappears — prevents a flash of blank space (Bug 2 fix). */
 const THINKING_GRACE_PERIOD_MS = 400
 
-// Simple thinking label — no cycling, no animation complexity
-function ThinkingStatusText({ elapsedSeconds }: { elapsedSeconds: number }) {
+/**
+ * Premium shimmer thinking bubble — matches the assistant message position
+ * with three bouncing dots, a gradient shimmer sweep, and a delayed
+ * "Thinking..." label that only appears after 2 s.
+ */
+function ThinkingBubble() {
   return (
-    <span className="text-xs text-primary-500 font-medium tabular-nums">
-      Thinking… {elapsedSeconds}s
-    </span>
+    <div className="flex items-end gap-2">
+      {/* Avatar with pulsing glow ring */}
+      <div className="thinking-avatar-glow shrink-0 rounded-lg">
+        <AssistantAvatar size={28} />
+      </div>
+
+      {/* Chat bubble */}
+      <div className="relative overflow-hidden rounded-2xl rounded-bl-sm border border-primary-200 dark:border-primary-200/20 bg-primary-100 dark:bg-primary-100 px-4 py-3 thinking-shimmer-bubble">
+        {/* Shimmer overlay */}
+        <div className="thinking-shimmer-sweep pointer-events-none absolute inset-0" aria-hidden="true" />
+
+        {/* Three bouncing dots */}
+        <div className="flex items-center gap-1.5">
+          <span className="thinking-dot thinking-dot-1" />
+          <span className="thinking-dot thinking-dot-2" />
+          <span className="thinking-dot thinking-dot-3" />
+          {/* Delayed "Thinking..." label */}
+          <span className="thinking-label ml-1.5 text-xs font-medium text-primary-500 dark:text-primary-500">
+            Thinking…
+          </span>
+        </div>
+      </div>
+    </div>
   )
 }
 
@@ -181,7 +205,6 @@ function ChatMessageListComponent({
   const [isNearBottom, setIsNearBottom] = useState(true)
   const [unreadCount, setUnreadCount] = useState(0)
   const [expandAllToolSections, setExpandAllToolSections] = useState(false)
-  const [thinkingElapsedSeconds, setThinkingElapsedSeconds] = useState(0)
 
   // Bug 2 fix: grace period — keep thinking indicator alive briefly after
   // waitingForResponse clears so the response message has time to render.
@@ -596,24 +619,7 @@ function ChatMessageListComponent({
     return true
   })()
 
-  const showThinkingTimer =
-    showTypingIndicator &&
-    liveToolActivity.length === 0 &&
-    activeToolCalls.length === 0 &&
-    !(isStreaming && streamingText && streamingText.length > 0)
 
-  useEffect(() => {
-    if (!showThinkingTimer) {
-      setThinkingElapsedSeconds(0)
-      return
-    }
-    setThinkingElapsedSeconds(0)
-    const startedAt = Date.now()
-    const timer = window.setInterval(() => {
-      setThinkingElapsedSeconds(Math.floor((Date.now() - startedAt) / 1000))
-    }, 250)
-    return () => window.clearInterval(timer)
-  }, [showThinkingTimer])
 
   // Pin the last user+assistant group without adding bottom padding.
   const groupStartIndex = typeof lastUserIndex === 'number' ? lastUserIndex : -1
@@ -1178,13 +1184,7 @@ function ChatMessageListComponent({
                   </div>
                 ))
               ) : (
-                <div className="flex items-center gap-3">
-                  <LoadingIndicator
-                      ariaLabel="Assistant is working"
-                      className="!ml-0"
-                    />
-                  <ThinkingStatusText elapsedSeconds={thinkingElapsedSeconds} />
-                </div>
+                <ThinkingBubble />
               )}
             </div>
           ) : null}

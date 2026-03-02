@@ -616,6 +616,113 @@ code {
   transform-origin: center;
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   Shimmer Thinking Bubble — premium animated thinking indicator
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Avatar pulsing glow ring */
+@keyframes thinking-avatar-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-accent-500) 0%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-accent-500) 35%, transparent);
+  }
+}
+
+.thinking-avatar-glow {
+  animation: thinking-avatar-glow 2s ease-in-out infinite;
+}
+
+/* Shimmer sweep across bubble */
+@keyframes thinking-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+.thinking-shimmer-bubble {
+  /* bubble bg — slightly elevated from surface */
+  background-color: var(--color-primary-100);
+}
+
+.dark .thinking-shimmer-bubble {
+  background-color: var(--color-primary-100);
+}
+
+.thinking-shimmer-sweep {
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    color-mix(in srgb, white 22%, transparent) 50%,
+    color-mix(in srgb, var(--color-accent-400) 8%, transparent) 55%,
+    transparent 65%
+  );
+  width: 60%;
+  animation: thinking-shimmer 1.6s ease-in-out infinite;
+}
+
+/* Three bouncing dots */
+@keyframes thinking-dot-bounce {
+  0%, 60%, 100% {
+    transform: scale(0.65) translateY(0);
+    opacity: 0.45;
+  }
+  30% {
+    transform: scale(1.0) translateY(-4px);
+    opacity: 1;
+  }
+}
+
+.thinking-dot {
+  display: inline-block;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 9999px;
+  background-color: var(--color-accent-500);
+  animation: thinking-dot-bounce 1.2s ease-in-out infinite;
+}
+
+.thinking-dot-1 {
+  animation-delay: 0s;
+}
+
+.thinking-dot-2 {
+  animation-delay: 0.15s;
+}
+
+.thinking-dot-3 {
+  animation-delay: 0.3s;
+}
+
+/* "Thinking…" label fades in after 2s */
+@keyframes thinking-label-fade-in {
+  0%, 85% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.thinking-label {
+  animation: thinking-label-fade-in 2.35s ease-in forwards;
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .thinking-avatar-glow,
+  .thinking-shimmer-sweep,
+  .thinking-dot,
+  .thinking-label {
+    animation: none;
+    opacity: 1;
+  }
+}
+
 .chat-streaming-loader {
   display: inline-flex;
   margin-left: 0.25rem;
