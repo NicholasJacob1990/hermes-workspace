@@ -82,7 +82,7 @@ const SECTIONS: Array<{ id: SectionId; label: string; icon: any }> = [
 ]
 
 const DARK_ENTERPRISE_THEMES = new Set<ThemeId>([
-  'hermes-official',
+  'vorbium-official',
   'hermes-classic',
   'hermes-slate',
   'hermes-mono',
@@ -269,7 +269,7 @@ function HermesContent() {
       }
     }
     fetch(
-      `/api/hermes-proxy/api/available-models?provider=${encodeURIComponent(providerId)}`,
+      `/api/vorbium-proxy/api/available-models?provider=${encodeURIComponent(providerId)}`,
     )
       .then((r) => r.json())
       .then((d: { models?: Array<{ id: string }> }) => {
@@ -290,7 +290,7 @@ function HermesContent() {
   }, [])
 
   useEffect(() => {
-    fetch('/api/hermes-config')
+    fetch('/api/vorbium-config')
       .then((r) => r.json())
       .then((d: any) => {
         setActiveProvider(d.activeProvider || '')
@@ -317,14 +317,14 @@ function HermesContent() {
     setSaving(true)
     setMsg(null)
     try {
-      const res = await fetch('/api/hermes-config', {
+      const res = await fetch('/api/vorbium-config', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updates),
       })
       const r = (await res.json()) as { message?: string }
       setMsg(r.message || 'Saved')
-      const ref = await fetch('/api/hermes-config')
+      const ref = await fetch('/api/vorbium-config')
       const d = await ref.json()
       setActiveProvider(d.activeProvider || '')
       setActiveModel(d.activeModel || '')
@@ -908,7 +908,7 @@ function AppearanceContent() {
 }
 
 const ENTERPRISE_THEME_FAMILIES: Array<ThemeId> = [
-  'hermes-official',
+  'vorbium-official',
   'hermes-classic',
   'hermes-slate',
   'hermes-mono',
@@ -918,7 +918,7 @@ const ENTERPRISE_THEMES = THEMES.map((theme) => ({
   ...theme,
   desc: theme.description,
   preview:
-    theme.id === 'hermes-official'
+    theme.id === 'vorbium-official'
       ? {
           bg: '#0A0E1A',
           panel: '#11182A',
@@ -1026,7 +1026,7 @@ function ThemeSwatch({
 function EnterpriseThemePicker() {
   const { updateSettings } = useSettings()
   const [current, setCurrent] = useState(() => {
-    if (typeof window === 'undefined') return 'hermes-official'
+    if (typeof window === 'undefined') return 'vorbium-official'
     return getTheme()
   })
   const currentMode = isDarkTheme(current) ? 'dark' : 'light'
@@ -1285,7 +1285,7 @@ function _AdvancedContent() {
     } else {
       setUrlError(null)
     }
-    updateSettings({ hermesUrl: value })
+    updateSettings({ vorbiumUrl: value })
   }
 
   async function testConnection() {
@@ -1313,7 +1313,7 @@ function _AdvancedContent() {
             <Input
               type="url"
               placeholder="https://api.hermesworkspace.app"
-              value={settings.hermesUrl}
+              value={settings.vorbiumUrl}
               onChange={(e) => validateAndUpdateUrl(e.target.value)}
               className="h-8 w-full rounded-lg border-primary-200 text-sm"
               aria-label="Hermes URL"
@@ -1414,7 +1414,7 @@ function AgentBehaviorContent() {
   const [msg, setMsg] = useState<string | null>(null)
 
   useEffect(() => {
-    fetch('/api/hermes-config')
+    fetch('/api/vorbium-config')
       .then((r) => r.json())
       .then((d: any) => {
         setConfig((d.config?.agent as Record<string, unknown>) || {})
@@ -1425,7 +1425,7 @@ function AgentBehaviorContent() {
   const save = async (key: string, value: unknown) => {
     setMsg(null)
     try {
-      await fetch('/api/hermes-config', {
+      await fetch('/api/vorbium-config', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ config: { agent: { [key]: value } } }),
@@ -1504,7 +1504,7 @@ function SmartRoutingContent() {
   const [msg, setMsg] = useState<string | null>(null)
 
   useEffect(() => {
-    fetch('/api/hermes-config')
+    fetch('/api/vorbium-config')
       .then((r) => r.json())
       .then((d: any) => {
         setConfig(
@@ -1523,7 +1523,7 @@ function SmartRoutingContent() {
   const save = async (key: string, value: unknown) => {
     setMsg(null)
     try {
-      await fetch('/api/hermes-config', {
+      await fetch('/api/vorbium-config', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -1616,7 +1616,7 @@ function VoiceContent() {
   const [msg, setMsg] = useState<string | null>(null)
 
   useEffect(() => {
-    fetch('/api/hermes-config')
+    fetch('/api/vorbium-config')
       .then((r) => r.json())
       .then((d: any) => {
         setTts((d.config?.tts as Record<string, unknown>) || {})
@@ -1628,7 +1628,7 @@ function VoiceContent() {
   const saveTts = async (key: string, value: unknown) => {
     setMsg(null)
     try {
-      await fetch('/api/hermes-config', {
+      await fetch('/api/vorbium-config', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ config: { tts: { [key]: value } } }),
@@ -1644,7 +1644,7 @@ function VoiceContent() {
   const saveStt = async (key: string, value: unknown) => {
     setMsg(null)
     try {
-      await fetch('/api/hermes-config', {
+      await fetch('/api/vorbium-config', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ config: { stt: { [key]: value } } }),
@@ -1750,7 +1750,7 @@ function DisplayContent() {
   const [msg, setMsg] = useState<string | null>(null)
 
   useEffect(() => {
-    fetch('/api/hermes-config')
+    fetch('/api/vorbium-config')
       .then((r) => r.json())
       .then((d: any) => {
         setConfig((d.config?.display as Record<string, unknown>) || {})
@@ -1761,7 +1761,7 @@ function DisplayContent() {
   const save = async (key: string, value: unknown) => {
     setMsg(null)
     try {
-      await fetch('/api/hermes-config', {
+      await fetch('/api/vorbium-config', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ config: { display: { [key]: value } } }),
@@ -1917,7 +1917,7 @@ export function SettingsDialog({
                 Settings
               </DialogTitle>
               <DialogDescription className="sr-only">
-                Configure Hermes Workspace
+                Configure Vorbium Engine
               </DialogDescription>
             </div>
             <DialogClose

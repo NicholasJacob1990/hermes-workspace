@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react'
-import { fetchHermesAuthStatus } from '@/lib/hermes-auth'
+import { fetchHermesAuthStatus } from '@/lib/vorbium-auth'
 
 const POLL_INTERVAL = 30_000
 
-type HermesHealthBannerProps = {
+type VorbiumHealthBannerProps = {
   enabled?: boolean
 }
 
-export function HermesHealthBanner({
+export function VorbiumHealthBanner({
   enabled = false,
-}: HermesHealthBannerProps) {
+}: VorbiumHealthBannerProps) {
   const [status, setStatus] = useState<'ok' | 'error' | 'checking'>('checking')
   const [lastError, setLastError] = useState<string | null>(null)
 
@@ -56,7 +56,7 @@ export function HermesHealthBanner({
       }}
     >
       <span className="inline-block h-2 w-2 rounded-full bg-white/60 animate-pulse" />
-      <span>Hermes Agent unreachable{lastError ? ` — ${lastError}` : ''}</span>
+      <span>Motor Vorbium offline{lastError ? ` — ${lastError}` : ''}</span>
       <button
         type="button"
         onClick={() => {

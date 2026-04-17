@@ -1,7 +1,7 @@
 import { json } from '@tanstack/react-start'
 import { createFileRoute } from '@tanstack/react-router'
 import { isAuthenticated } from '../../server/auth-middleware'
-import { startHermesAgent } from '../../server/hermes-agent'
+import { startHermesAgent } from '../../server/vorbium-agent'
 
 export const Route = createFileRoute('/api/start-hermes')({
   server: {

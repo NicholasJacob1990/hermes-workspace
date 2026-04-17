@@ -1,10 +1,33 @@
 import { URL, fileURLToPath } from 'node:url'
 import { execSync, spawn } from 'node:child_process'
 import type { ChildProcess } from 'node:child_process'
-import { copyFileSync, existsSync, mkdirSync } from 'node:fs'
+import { copyFileSync, existsSync, mkdirSync, readFileSync } from 'node:fs'
 import net from 'node:net'
 import { resolve, dirname } from 'node:path'
 import os from 'node:os'
+
+// Load .env into process.env so server-side code (gateway-capabilities.ts,
+// hermes-proxy route) can read HERMES_API_TOKEN, HERMES_API_URL, etc.
+// Vite's loadEnv() só popula import.meta.env; process.env fica vazio.
+try {
+  const envFile = resolve('.env')
+  if (existsSync(envFile)) {
+    for (const line of readFileSync(envFile, 'utf-8').split('\n')) {
+      const trimmed = line.trim()
+      if (!trimmed || trimmed.startsWith('#')) continue
+      const eq = trimmed.indexOf('=')
+      if (eq < 0) continue
+      const key = trimmed.slice(0, eq).trim()
+      let val = trimmed.slice(eq + 1).trim()
+      if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+        val = val.slice(1, -1)
+      }
+      if (!(key in process.env)) process.env[key] = val
+    }
+  }
+} catch {
+  // ignore — env loading is best-effort
+}
 
 // devtools removed
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
@@ -24,11 +47,11 @@ import viteTsConfigPaths from 'vite-tsconfig-paths'
  *  3. ../../hermes-agent — one level up (monorepo / nested workspace)
  *  Returns null if none found.
  */
-function resolveHermesAgentDir(env: Record<string, string>): string | null {
+function resolveVorbiumEngineDir(env: Record<string, string>): string | null {
   const candidates: string[] = []
 
-  if (env.HERMES_AGENT_PATH?.trim()) {
-    candidates.push(env.HERMES_AGENT_PATH.trim())
+  if (env.VORBIUM_ENGINE_PATH ?? env.HERMES_AGENT_PATH?.trim()) {
+    candidates.push(env.VORBIUM_ENGINE_PATH ?? env.HERMES_AGENT_PATH.trim())
   }
 
   // Resolve relative to the workspace root (parent of hermes-workspace/)
@@ -47,7 +70,7 @@ function resolveHermesAgentDir(env: Record<string, string>): string | null {
 /** Resolve the Python executable to use for Hermes backend startup.
  *  Prefers .venv/bin/python inside agentDir, falls back to system python3.
  */
-function resolveHermesPython(agentDir: string): string {
+function resolveVorbiumPython(agentDir: string): string {
   const venvPython = resolve(agentDir, '.venv', 'bin', 'python')
   if (existsSync(venvPython)) return venvPython
   // uv creates 'venv' not '.venv' sometimes
@@ -57,7 +80,7 @@ function resolveHermesPython(agentDir: string): string {
 }
 
 /** Check if hermes-agent health endpoint is responding */
-async function isHermesAgentHealthy(port = 8642): Promise<boolean> {
+async function isVorbiumEngineHealthy(port = 8642): Promise<boolean> {
   try {
     const r = await fetch(`http://127.0.0.1:${port}/health`, {
       signal: AbortSignal.timeout(2000),
@@ -70,52 +93,52 @@ async function isHermesAgentHealthy(port = 8642): Promise<boolean> {
 
 const config = defineConfig(({ mode, command }) => {
   const env = loadEnv(mode, process.cwd(), '')
-  const hermesApiUrl = env.HERMES_API_URL?.trim() || 'http://127.0.0.1:8642'
+  const hermesApiUrl = (env.VORBIUM_API_URL ?? env.HERMES_API_URL)?.trim() || 'http://127.0.0.1:8642'
 
   // Hermes Agent auto-start state
-  let hermesAgentChild: ChildProcess | null = null
-  let hermesAgentStarted = false
+  let vorbiumEngineChild: ChildProcess | null = null
+  let vorbiumEngineStarted = false
 
-  const startHermesAgent = async () => {
-    if (hermesAgentStarted) return
+  const startVorbiumEngine = async () => {
+    if (vorbiumEngineStarted) return
     // Skip auto-start when HERMES_API_URL is explicitly set to a non-local endpoint
     const explicitUrl =
-      env.HERMES_API_URL || process.env.HERMES_API_URL || hermesApiUrl || ''
+      (env.VORBIUM_API_URL ?? env.HERMES_API_URL ?? process.env.VORBIUM_API_URL ?? process.env.HERMES_API_URL ?? hermesApiUrl ?? '')
     if (
       explicitUrl &&
       explicitUrl !== 'http://127.0.0.1:8642' &&
       explicitUrl !== 'http://localhost:8642'
     ) {
       console.log(
-        `[hermes-agent] Skipping auto-start — using external API: ${explicitUrl}`,
+        `[vorbium-engine] Skipping auto-start — using external API: ${explicitUrl}`,
       )
-      hermesAgentStarted = true
+      vorbiumEngineStarted = true
       return
     }
-    if (await isHermesAgentHealthy()) {
-      console.log('[hermes-agent] Already running — reusing existing process')
-      hermesAgentStarted = true
+    if (await isVorbiumEngineHealthy()) {
+      console.log('[vorbium-engine] Already running — reusing existing process')
+      vorbiumEngineStarted = true
       return
     }
 
-    const agentDir = resolveHermesAgentDir(env)
+    const agentDir = resolveVorbiumEngineDir(env)
     if (!agentDir) {
       console.warn(
-        '[hermes-agent] Could not find hermes-agent directory.\n' +
+        '[vorbium-engine] Could not find hermes-agent directory.\n' +
           '  Set HERMES_AGENT_PATH in .env or clone hermes-agent as a sibling:\n' +
           '    git clone https://github.com/outsourc-e/hermes-agent.git ../hermes-agent',
       )
       return
     }
 
-    const python = resolveHermesPython(agentDir)
+    const python = resolveVorbiumPython(agentDir)
     const useGatewayRun = existsSync(resolve(agentDir, 'gateway', 'run.py'))
     const commandArgs = useGatewayRun
       ? ['-m', 'gateway.run']
       : ['-m', 'uvicorn', 'webapi.app:app', '--host', '0.0.0.0', '--port', '8642']
 
     console.log(
-      `[hermes-agent] Starting from ${agentDir} using ${python} (${useGatewayRun ? 'gateway.run' : 'uvicorn'})`,
+      `[vorbium-engine] Starting from ${agentDir} using ${python} (${useGatewayRun ? 'gateway.run' : 'uvicorn'})`,
     )
 
     const child = spawn(
@@ -132,36 +155,36 @@ const config = defineConfig(({ mode, command }) => {
       },
     )
 
-    hermesAgentChild = child
-    hermesAgentStarted = true
+    vorbiumEngineChild = child
+    vorbiumEngineStarted = true
 
     child.stdout?.on('data', (d: Buffer) => {
       const line = d.toString().trim()
-      if (line) console.log(`[hermes-agent] ${line}`)
+      if (line) console.log(`[vorbium-engine] ${line}`)
     })
     child.stderr?.on('data', (d: Buffer) => {
       const line = d.toString().trim()
-      if (line) console.log(`[hermes-agent] ${line}`)
+      if (line) console.log(`[vorbium-engine] ${line}`)
     })
 
     child.on('exit', (code) => {
-      hermesAgentChild = null
-      hermesAgentStarted = false
+      vorbiumEngineChild = null
+      vorbiumEngineStarted = false
       if (code !== 0 && code !== null) {
-        console.warn(`[hermes-agent] Exited with code ${code}`)
+        console.warn(`[vorbium-engine] Exited with code ${code}`)
       }
     })
 
     // Wait for healthy
     for (let i = 0; i < 15; i++) {
       await new Promise((r) => setTimeout(r, 1000))
-      if (await isHermesAgentHealthy()) {
-        console.log('[hermes-agent] ✓ Ready on http://127.0.0.1:8642')
+      if (await isVorbiumEngineHealthy()) {
+        console.log('[vorbium-engine] ✓ Ready on http://127.0.0.1:8642')
         return
       }
     }
     console.warn(
-      '[hermes-agent] Started but health check timed out — may still be loading',
+      '[vorbium-engine] Started but health check timed out — may still be loading',
     )
   }
 
@@ -578,16 +601,16 @@ const config = defineConfig(({ mode, command }) => {
 
           // Auto-start hermes-agent when dev server launches
           if (command === 'serve') {
-            void startHermesAgent()
+            void startVorbiumEngine()
           }
 
           // Shutdown hermes-agent when dev server stops
           server.httpServer?.on('close', () => {
-            if (hermesAgentChild) {
-              console.log('[hermes-agent] Stopping...')
-              hermesAgentChild.kill('SIGTERM')
-              hermesAgentChild = null
-              hermesAgentStarted = false
+            if (vorbiumEngineChild) {
+              console.log('[vorbium-engine] Stopping...')
+              vorbiumEngineChild.kill('SIGTERM')
+              vorbiumEngineChild = null
+              vorbiumEngineStarted = false
             }
           })
 
@@ -649,7 +672,7 @@ const config = defineConfig(({ mode, command }) => {
           )
           result = result.replace(
             /process\.env\.HERMES_API_TOKEN/g,
-            JSON.stringify(env.HERMES_API_TOKEN || ''),
+            JSON.stringify((env.VORBIUM_API_TOKEN ?? env.HERMES_API_TOKEN) || ''),
           )
           result = result.replace(
             /process\.env\.NODE_ENV/g,

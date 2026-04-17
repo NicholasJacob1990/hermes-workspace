@@ -91,7 +91,7 @@ const THEME_PREVIEWS: Record<
   ThemeId,
   { bg: string; panel: string; border: string; accent: string; text: string }
 > = {
-  'hermes-official': {
+  'vorbium-official': {
     bg: '#0A0E1A',
     panel: '#11182A',
     border: '#24304A',
@@ -392,19 +392,19 @@ function SettingsRoute() {
         <div className="flex-1 min-w-0 flex flex-col gap-4">
           {/* ── Hermes Agent ──────────────────────────────────── */}
           {activeSection === 'hermes' && (
-            <HermesConfigSection activeView="hermes" />
+            <VorbiumConfigSection activeView="hermes" />
           )}
           {activeSection === 'agent' && (
-            <HermesConfigSection activeView="agent" />
+            <VorbiumConfigSection activeView="agent" />
           )}
           {activeSection === 'routing' && (
-            <HermesConfigSection activeView="routing" />
+            <VorbiumConfigSection activeView="routing" />
           )}
           {activeSection === 'voice' && (
-            <HermesConfigSection activeView="voice" />
+            <VorbiumConfigSection activeView="voice" />
           )}
           {activeSection === 'display' && (
-            <HermesConfigSection activeView="display" />
+            <VorbiumConfigSection activeView="display" />
           )}
 
           {/* ── Appearance ──────────────────────────────────────── */}
@@ -846,7 +846,7 @@ function ChatDisplaySection() {
           />
         </SettingsRow>
       </SettingsSection>
-      {/* Mobile Navigation removed — not relevant for Hermes Workspace */}
+      {/* Mobile Navigation removed — not relevant for Vorbium Engine */}
     </>
   )
 }
@@ -946,15 +946,15 @@ type HermesProvider = {
   maskedKeys: Record<string, string>
 }
 
-type HermesConfigData = {
+type VorbiumConfigData = {
   config: Record<string, unknown>
   providers: Array<HermesProvider>
   activeProvider: string
   activeModel: string
-  hermesHome: string
+  vorbiumHome: string
 }
 
-const HERMES_API = process.env.HERMES_API_URL || 'http://127.0.0.1:8642'
+const HERMES_API = (process.env.VORBIUM_API_URL ?? process.env.HERMES_API_URL) || 'http://127.0.0.1:8642'
 
 type AvailableModelsResponse = {
   provider: string
@@ -962,12 +962,12 @@ type AvailableModelsResponse = {
   providers: Array<{ id: string; label: string; authenticated: boolean }>
 }
 
-function HermesConfigSection({
+function VorbiumConfigSection({
   activeView = 'hermes',
 }: {
   activeView?: 'hermes' | 'agent' | 'routing' | 'voice' | 'display'
 }) {
-  const [data, setData] = useState<HermesConfigData | null>(null)
+  const [data, setData] = useState<VorbiumConfigData | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [saveMessage, setSaveMessage] = useState<string | null>(null)
@@ -985,15 +985,15 @@ function HermesConfigSection({
   >([])
   const [loadingModels, setLoadingModels] = useState(false)
 
-  const syncInputsFromData = useCallback((configData: HermesConfigData) => {
+  const syncInputsFromData = useCallback((configData: VorbiumConfigData) => {
     setModelInput(configData.activeModel || '')
     setProviderInput(configData.activeProvider || '')
     setBaseUrlInput((configData.config?.base_url as string) || '')
   }, [])
 
   const fetchConfig = useCallback(async () => {
-    const res = await fetch('/api/hermes-config')
-    const configData = (await res.json()) as HermesConfigData
+    const res = await fetch('/api/vorbium-config')
+    const configData = (await res.json()) as VorbiumConfigData
     setData(configData)
     syncInputsFromData(configData)
     return configData
@@ -1007,7 +1007,7 @@ function HermesConfigSection({
     setLoadingModels(true)
     try {
       const res = await fetch(
-        `/api/hermes-proxy/api/available-models?provider=${encodeURIComponent(provider)}`,
+        `/api/vorbium-proxy/api/available-models?provider=${encodeURIComponent(provider)}`,
       )
       if (res.ok) {
         const result = (await res.json()) as AvailableModelsResponse
@@ -1038,7 +1038,7 @@ function HermesConfigSection({
     setSaving(true)
     setSaveMessage(null)
     try {
-      const res = await fetch('/api/hermes-config', {
+      const res = await fetch('/api/vorbium-config', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updates),
@@ -1085,7 +1085,7 @@ function HermesConfigSection({
   if (loading) {
     return (
       <SettingsSection
-        title="Hermes Agent"
+        title="Vorbium Engine"
         description="Loading configuration..."
         icon={Settings02Icon}
       >
@@ -1100,7 +1100,7 @@ function HermesConfigSection({
   if (!data) {
     return (
       <SettingsSection
-        title="Hermes Agent"
+        title="Vorbium Engine"
         description="Could not load Hermes configuration."
         icon={Settings02Icon}
       >
@@ -1433,7 +1433,7 @@ function HermesConfigSection({
               size="sm"
               variant="outline"
               onClick={() =>
-                void navigator.clipboard?.writeText(data.hermesHome)
+                void navigator.clipboard?.writeText(data.vorbiumHome)
               }
             >
               Copy config path
@@ -1455,7 +1455,7 @@ function HermesConfigSection({
             className="text-xs font-mono"
             style={{ color: 'var(--theme-muted)' }}
           >
-            {data.hermesHome}
+            {data.vorbiumHome}
           </span>
         </SettingsRow>
         <SettingsRow

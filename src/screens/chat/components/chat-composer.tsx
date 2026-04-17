@@ -117,7 +117,7 @@ type ModelSwitchNotice = {
   retryProvider?: string
 }
 
-// Models are fetched through the workspace API proxy (/api/models, /api/hermes-proxy)
+// Models are fetched through the workspace API proxy (/api/models, /api/vorbium-proxy)
 // to support Docker and reverse-proxy deployments where the browser cannot reach
 // the Hermes gateway directly.
 
@@ -162,7 +162,7 @@ async function fetchModels(): Promise<{
 }> {
   // Prefer Hermes' current provider models; fetch other providers lazily if needed.
   try {
-    const richRes = await fetch('/api/hermes-proxy/api/available-models')
+    const richRes = await fetch('/api/vorbium-proxy/api/available-models')
     if (richRes.ok) {
       const richData = (await richRes.json()) as HermesAvailableModelsResponse
       const allProviders = richData.providers || []
@@ -200,7 +200,7 @@ async function fetchModels(): Promise<{
       // If gateway returns no models, try /v1/models as fallback
       if (models.length === 0) {
         try {
-          const fallbackRes = await fetch('/api/hermes-proxy/v1/models')
+          const fallbackRes = await fetch('/api/vorbium-proxy/v1/models')
           if (fallbackRes.ok) {
             const fallbackData = (await fallbackRes.json()) as {
               data?: Array<Record<string, unknown>>
@@ -226,7 +226,7 @@ async function fetchModels(): Promise<{
       if (currentProvider && models.length === 0) {
         // Fetch current model from config
         try {
-          const cfgRes = await fetch('/api/hermes-proxy/api/config')
+          const cfgRes = await fetch('/api/vorbium-proxy/api/config')
           if (cfgRes.ok) {
             const cfg = (await cfgRes.json()) as Record<string, unknown>
             const cfgModel = readModelText(cfg.model)
@@ -250,7 +250,7 @@ async function fetchModels(): Promise<{
         const otherResults = await Promise.allSettled(
           otherVisible.map(async (provider) => {
             const res = await fetch(
-              `/api/hermes-proxy/api/available-models?provider=${encodeURIComponent(provider.id)}`,
+              `/api/vorbium-proxy/api/available-models?provider=${encodeURIComponent(provider.id)}`,
             )
             if (!res.ok) return []
             const data = (await res.json()) as HermesAvailableModelsResponse
@@ -341,7 +341,7 @@ async function fetchModels(): Promise<{
       const provider =
         readModelText(record.provider) ||
         readModelText(record.owned_by) ||
-        (id.includes('/') ? id.split('/')[0] : 'hermes-agent')
+        (id.includes('/') ? id.split('/')[0] : 'vorbium-engine')
 
       return {
         ...record,
@@ -381,7 +381,7 @@ async function fetchModelsForProvider(
   if (!normalizedProvider) return []
 
   const response = await fetch(
-    `/api/hermes-proxy/api/available-models?provider=${encodeURIComponent(normalizedProvider)}`,
+    `/api/vorbium-proxy/api/available-models?provider=${encodeURIComponent(normalizedProvider)}`,
   )
   if (!response.ok) {
     throw new Error(`Hermes models request failed (${response.status})`)
@@ -431,7 +431,7 @@ async function switchModel(
   const patch: Record<string, string> = { model: modelId }
   if (modelProvider) patch.provider = modelProvider
 
-  const response = await fetch('/api/hermes-proxy/api/config', {
+  const response = await fetch('/api/vorbium-proxy/api/config', {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(patch),
@@ -444,7 +444,7 @@ async function switchModel(
   return {
     ok: true,
     resolved: {
-      modelProvider: modelProvider || 'hermes-agent',
+      modelProvider: modelProvider || 'vorbium-engine',
       model: modelId,
     },
   }
@@ -1022,7 +1022,7 @@ function ChatComposerComponent({
 
   const currentModel = currentModelQuery.data ?? ''
 
-  // Auto-switch to hermes-agent model on mount (Hermes Workspace always uses Hermes)
+  // Auto-switch to hermes-agent model on mount (Vorbium Engine always uses Hermes)
   // Removed: auto-switch to hermes-agent. The workspace respects the
   // model/provider configured in ~/.hermes/config.yaml. Users switch
   // via the model selector or Settings page.

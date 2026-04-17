@@ -1,8 +1,8 @@
 <div align="center">
 
-<img src="./public/hermes-avatar.webp" alt="Hermes Workspace" width="80" style="border-radius: 16px" />
+<img src="./public/hermes-avatar.webp" alt="Vorbium Engine Workspace" width="80" style="border-radius: 16px" />
 
-# Hermes Workspace
+# Vorbium Engine Workspace
 
 **Your AI agent's command center — chat, files, memory, skills, and terminal in one place.**
 
@@ -13,7 +13,7 @@
 
 > Not a chat wrapper. A complete workspace — orchestrate agents, browse memory, manage skills, and control everything from one interface.
 
-![Hermes Workspace](./docs/screenshots/splash.png)
+![Vorbium Engine Workspace](./docs/screenshots/splash.png)
 
 </div>
 
@@ -21,7 +21,7 @@
 
 ## ✨ Features
 
-- 🤖 **Hermes Agent Integration** — Direct gateway connection with real-time SSE streaming
+- 🤖 **Vorbium Engine Integration** — Direct gateway connection with real-time SSE streaming
 - 🎨 **8-Theme System** — Official, Classic, Slate, Mono — each with light and dark variants
 - 🔒 **Security Hardened** — Auth middleware on all API routes, CSP headers, exec approval prompts
 - 📱 **Mobile-First PWA** — Full feature parity on any device via Tailscale
@@ -48,22 +48,22 @@
 
 ## 🚀 Quick Start
 
-Hermes Workspace works with any OpenAI-compatible backend. If your backend also exposes Hermes gateway APIs, enhanced features like sessions, memory, skills, and jobs unlock automatically.
+Vorbium Engine Workspace works with any OpenAI-compatible backend. If your backend also exposes Vorbium Engine gateway APIs, enhanced features like sessions, memory, skills, and jobs unlock automatically.
 
 ### Prerequisites
 
 - **Node.js 22+** — [nodejs.org](https://nodejs.org/)
 - **An OpenAI-compatible backend** — local, self-hosted, or remote
-- **Optional:** Python 3.11+ if you want to run a Hermes gateway locally
+- **Optional:** Python 3.11+ if you want to run a Vorbium Engine gateway locally
 
 ### Step 1: Start your backend
 
-Point Hermes Workspace at any backend that supports:
+Point Vorbium Engine Workspace at any backend that supports:
 
 - `POST /v1/chat/completions`
 - `GET /v1/models` recommended
 
-Example Hermes gateway setup:
+Example Vorbium Engine gateway setup:
 
 ```bash
 git clone https://github.com/outsourc-e/hermes-agent.git
@@ -77,7 +77,7 @@ hermes --gateway
 
 If you're using another OpenAI-compatible server, just note its base URL.
 
-### Step 2: Install & Run Hermes Workspace
+### Step 2: Install & Run Vorbium Engine Workspace
 
 ```bash
 # In a new terminal
@@ -89,7 +89,7 @@ printf '\nHERMES_API_URL=http://127.0.0.1:8642\n' >> .env
 pnpm dev                   # Starts on http://localhost:3000
 ```
 
-> **Verify:** Open `http://localhost:3000` and complete the onboarding flow. First connect the backend, then verify chat works. If your gateway exposes Hermes APIs, advanced features appear automatically.
+> **Verify:** Open `http://localhost:3000` and complete the onboarding flow. First connect the backend, then verify chat works. If your gateway exposes Vorbium Engine APIs, advanced features appear automatically.
 
 ### Environment Variables
 
@@ -108,11 +108,11 @@ ANTHROPIC_API_KEY=your-key-here
 
 ## 🧠 Local Models (Ollama, Atomic Chat, LM Studio, vLLM)
 
-Hermes Workspace supports two modes with local models:
+Vorbium Engine Workspace supports two modes with local models:
 
 ### Portable Mode (Easiest)
 
-Point the workspace directly at your local server — no Hermes gateway needed.
+Point the workspace directly at your local server — no Vorbium Engine gateway needed.
 
 ### Atomic Chat
 
@@ -121,7 +121,7 @@ Point the workspace directly at your local server — no Hermes gateway needed.
 HERMES_API_URL=http://127.0.0.1:1337/v1 pnpm dev
 ```
 
-Download [Atomic Chat](https://atomic.chat/), launch the desktop app, and make sure a model is loaded before starting Hermes Workspace.
+Download [Atomic Chat](https://atomic.chat/), launch the desktop app, and make sure a model is loaded before starting Vorbium Engine Workspace.
 
 ### Ollama
 
@@ -137,7 +137,7 @@ Chat works immediately. Sessions, memory, and skills show "Not Available" — th
 
 ### Enhanced Mode (Full Features)
 
-Route through the Hermes gateway for sessions, memory, skills, jobs, and tools.
+Route through the Vorbium Engine gateway for sessions, memory, skills, jobs, and tools.
 
 Here are two explicit `~/.hermes/config.yaml` examples for the local providers we support directly in the workspace:
 
@@ -190,7 +190,7 @@ All workspace features unlock automatically — sessions persist, memory saves a
 
 [![Open in GitHub Codespaces](https://img.shields.io/badge/GitHub%20Codespaces-Open-181717?logo=github)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=outsourc-e/hermes-workspace)
 
-The Docker setup runs both the **Hermes Agent gateway** and **Hermes Workspace** together.
+The Docker setup runs both the **Vorbium Engine gateway** and **Vorbium Engine Workspace** together.
 
 ### Prerequisites
 
@@ -235,36 +235,36 @@ Open `http://localhost:3000` and complete the onboarding.
 
 ## 📱 Install as App (Recommended)
 
-Hermes Workspace is a **Progressive Web App (PWA)** — install it for the full native app experience with no browser chrome, keyboard shortcuts, and offline support.
+Vorbium Engine Workspace is a **Progressive Web App (PWA)** — install it for the full native app experience with no browser chrome, keyboard shortcuts, and offline support.
 
 ### 🖥️ Desktop (macOS / Windows / Linux)
 
-1. Open Hermes Workspace in **Chrome** or **Edge** at `http://localhost:3000`
+1. Open Vorbium Engine Workspace in **Chrome** or **Edge** at `http://localhost:3000`
 2. Click the **install icon** (⊕) in the address bar
-3. Click **Install** — Hermes Workspace opens as a standalone desktop app
+3. Click **Install** — Vorbium Engine Workspace opens as a standalone desktop app
 4. Pin to Dock / Taskbar for quick access
 
 > **macOS users:** After installing, you can also add it to your Launchpad.
 
 ### 📱 iPhone / iPad (iOS Safari)
 
-1. Open Hermes Workspace in **Safari** on your iPhone
+1. Open Vorbium Engine Workspace in **Safari** on your iPhone
 2. Tap the **Share** button (□↑)
 3. Scroll down and tap **"Add to Home Screen"**
-4. Tap **Add** — the Hermes Workspace icon appears on your home screen
+4. Tap **Add** — the Vorbium Engine Workspace icon appears on your home screen
 5. Launch from home screen for the full native app experience
 
 ### 🤖 Android
 
-1. Open Hermes Workspace in **Chrome** on your Android device
+1. Open Vorbium Engine Workspace in **Chrome** on your Android device
 2. Tap the **three-dot menu** (⋮) → **"Add to Home screen"**
-3. Tap **Add** — Hermes Workspace is now a native-feeling app on your device
+3. Tap **Add** — Vorbium Engine Workspace is now a native-feeling app on your device
 
 ---
 
 ## 📡 Mobile Access via Tailscale
 
-Access Hermes Workspace from anywhere on your devices — no port forwarding, no VPN complexity.
+Access Vorbium Engine Workspace from anywhere on your devices — no port forwarding, no VPN complexity.
 
 ### Setup
 
@@ -281,7 +281,7 @@ Access Hermes Workspace from anywhere on your devices — no port forwarding, no
    # Example output: 100.x.x.x
    ```
 
-4. **Open Hermes Workspace on your phone:**
+4. **Open Vorbium Engine Workspace on your phone:**
 
    ```
    http://100.x.x.x:3000
@@ -304,7 +304,7 @@ The desktop app will offer:
 - Auto-launch on startup
 - Deep OS integration (macOS menu bar, Windows taskbar)
 
-**In the meantime:** Install Hermes Workspace as a PWA (see above) for a near-native desktop experience — it works great.
+**In the meantime:** Install Vorbium Engine Workspace as a PWA (see above) for a near-native desktop experience — it works great.
 
 ---
 
@@ -312,7 +312,7 @@ The desktop app will offer:
 
 > **Status: Coming Soon**
 
-A fully managed cloud version of Hermes Workspace is in development:
+A fully managed cloud version of Vorbium Engine Workspace is in development:
 
 - **One-click deploy** — No self-hosting required
 - **Multi-device sync** — Access your agents from any device
@@ -399,7 +399,7 @@ cd hermes-agent && pip install -e . && hermes --gateway
 
 ### "Connection refused" or workspace hangs on load
 
-Your Hermes gateway isn't running. Start it:
+Your Vorbium Engine gateway isn't running. Start it:
 
 ```bash
 cd hermes-agent
@@ -500,7 +500,7 @@ The Docker setup uses `hermes --gateway` automatically — no action needed if u
 
 ## 💛 Support the Project
 
-Hermes Workspace is free and open source. If it's saving you time and powering your workflow, consider supporting development:
+Vorbium Engine Workspace is free and open source. If it's saving you time and powering your workflow, consider supporting development:
 
 **ETH:** `0xB332D4C60f6FBd94913e3Fd40d77e3FE901FAe22`
 
@@ -527,5 +527,5 @@ MIT — see [LICENSE](LICENSE) for details.
 ---
 
 <div align="center">
-  <sub>Built with ⚡ by <a href="https://github.com/outsourc-e">@outsourc-e</a> and the Hermes Workspace community</sub>
+  <sub>Built with ⚡ by <a href="https://github.com/outsourc-e">@outsourc-e</a> and the Vorbium Engine Workspace community</sub>
 </div>

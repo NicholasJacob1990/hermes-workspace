@@ -1,13 +1,13 @@
 {
-  "name": "hermes-workspace",
+  "name": "vorbium-workspace",
   "version": "1.0.0",
-  "description": "Desktop workspace for Hermes Agent — chat, orchestration, and multi-agent coding pipelines",
+  "description": "Vorbium Workspace \u2014 web control surface do Vorbium Engine (chat, terminal, memory, skills, inspector)",
   "author": "Eric (https://github.com/outsourc-e)",
   "license": "MIT",
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "NODE_OPTIONS=\"--max-old-space-size=2048\" vite dev --port 3000",
+    "dev": "set -a; [ -f .env ] && . ./.env; set +a; NODE_OPTIONS=\"--max-old-space-size=2048\" vite dev --port 3002",
     "build": "vite build",
     "start": "NODE_OPTIONS=\"--max-old-space-size=2048\" node .output/server/index.mjs",
     "start:dev": "NODE_OPTIONS=\"--max-old-space-size=2048\" vite dev --port 3000",

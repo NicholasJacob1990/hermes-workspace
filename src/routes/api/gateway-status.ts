@@ -18,7 +18,7 @@ export const Route = createFileRoute('/api/gateway-status')({
         const capabilities = await ensureGatewayProbed()
         return json({
           capabilities,
-          hermesUrl: HERMES_API,
+          vorbiumUrl: HERMES_API,
         })
       },
     },

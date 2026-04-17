@@ -6,8 +6,8 @@ export type SettingsThemeMode = 'system' | 'light' | 'dark'
 export type AccentColor = 'orange' | 'purple' | 'blue' | 'green'
 
 export type StudioSettings = {
-  hermesUrl: string
-  hermesToken: string
+  vorbiumUrl: string
+  vorbiumToken: string
   theme: SettingsThemeMode
   accentColor: AccentColor
   editorFontSize: number
@@ -30,8 +30,8 @@ type SettingsState = {
 }
 
 export const defaultStudioSettings: StudioSettings = {
-  hermesUrl: '',
-  hermesToken: '',
+  vorbiumUrl: '',
+  vorbiumToken: '',
   theme: 'system',
   accentColor: 'blue',
   editorFontSize: 13,

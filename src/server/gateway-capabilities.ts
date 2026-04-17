@@ -8,10 +8,64 @@
  *   - Enhanced: Hermes-native extras (sessions, skills, memory, config, jobs)
  */
 
-export let HERMES_API = process.env.HERMES_API_URL || 'http://127.0.0.1:8642'
+import { existsSync, readFileSync } from 'node:fs'
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+// Fallback: read .env directly if process.env wasn't populated by Vite.
+// TanStack Start SSR pode rodar em worker isolado — ESM context, require()
+// não funciona, então usamos imports top-level.
+function readDotenvVar(key: string): string {
+  if (process.env[key]) return process.env[key] as string
+  const candidates: string[] = [resolve(process.cwd(), '.env')]
+  try {
+    const here = fileURLToPath(import.meta.url)
+    let dir = dirname(here)
+    for (let i = 0; i < 6; i++) {
+      candidates.push(resolve(dir, '.env'))
+      dir = dirname(dir)
+    }
+  } catch {
+    // import.meta.url pode falhar em alguns contextos
+  }
+  // Fallback absoluto (dev)
+  candidates.push(
+    '/Users/nicholasjacob/Documents/Aplicativos/Iudex/apps/hermes-workspace/.env',
+  )
+  for (const envPath of candidates) {
+    try {
+      if (!existsSync(envPath)) continue
+      for (const line of readFileSync(envPath, 'utf-8').split('\n')) {
+        const trimmed = line.trim()
+        if (!trimmed || trimmed.startsWith('#')) continue
+        const eq = trimmed.indexOf('=')
+        if (eq < 0) continue
+        const k = trimmed.slice(0, eq).trim()
+        if (k !== key) continue
+        let v = trimmed.slice(eq + 1).trim()
+        if ((v.startsWith('"') && v.endsWith('"')) || (v.startsWith("'") && v.endsWith("'"))) {
+          v = v.slice(1, -1)
+        }
+        if (v) {
+          process.env[key] = v
+          // eslint-disable-next-line no-console
+          console.log(`[gateway-capabilities] loaded ${key} (${v.length} chars) from ${envPath}`)
+          return v
+        }
+      }
+    } catch {
+      // try next candidate
+    }
+  }
+  // eslint-disable-next-line no-console
+  console.warn(`[gateway-capabilities] ${key} not found in process.env or any .env`)
+  return ''
+}
+
+export let HERMES_API = readDotenvVar('HERMES_API_URL') || 'http://127.0.0.1:8642'
 
 export const HERMES_UPGRADE_INSTRUCTIONS =
-  'For full features, use the enhanced fork: git clone https://github.com/outsourc-e/hermes-agent && cd hermes-agent && pip install -e . && hermes gateway run'
+  'For full features, use the enhanced fork: git clone https://github.com/outsourc-e/vorbium-agent && cd hermes-agent && pip install -e . && hermes gateway run'
 
 export const SESSIONS_API_UNAVAILABLE_MESSAGE = `Your Hermes gateway does not support the sessions API. ${HERMES_UPGRADE_INSTRUCTIONS}`
 
@@ -69,7 +123,7 @@ let lastProbeAt = 0
 let lastLoggedSummary = ''
 
 /** Optional bearer token for authenticated endpoints. */
-export const BEARER_TOKEN = process.env.HERMES_API_TOKEN || ''
+export const BEARER_TOKEN = readDotenvVar('HERMES_API_TOKEN')
 
 function authHeaders(): Record<string, string> {
   return BEARER_TOKEN ? { Authorization: `Bearer ${BEARER_TOKEN}` } : {}
@@ -178,7 +232,7 @@ export async function probeGateway(options?: {
 
   probePromise = (async () => {
     // Auto-detect port if no explicit env var set
-    if (!process.env.HERMES_API_URL) {
+    if (!process.env.VORBIUM_API_URL ?? process.env.HERMES_API_URL) {
       const healthOn8642 = await probe('/health')
       if (!healthOn8642) {
         const fallback = 'http://127.0.0.1:8643'

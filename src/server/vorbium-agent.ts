@@ -24,7 +24,7 @@ export type StartHermesAgentResult =
  * Silently returns {} if the file doesn't exist or can't be parsed.
  */
 function readHermesEnv(): Record<string, string> {
-  const envPath = join(homedir(), '.hermes', '.env')
+  const envPath = join(homedir(), '.vorbium', '.env')
   try {
     const raw = readFileSync(envPath, 'utf-8')
     const result: Record<string, string> = {}
@@ -61,8 +61,8 @@ export function resolveHermesAgentDir(
 
   const workspaceRoot = dirname(resolve('.'))
   candidates.push(
-    resolve(workspaceRoot, 'hermes-agent'),
-    resolve(workspaceRoot, '..', 'hermes-agent'),
+    resolve(workspaceRoot, 'vorbium-engine'),
+    resolve(workspaceRoot, '..', 'vorbium-engine'),
   )
 
   for (const candidate of candidates) {

@@ -67,14 +67,14 @@ function ThemeToggleMini() {
   void _theme
   // Detect dark/light from actual data-theme attribute
   const currentDataTheme = typeof document !== 'undefined'
-    ? document.documentElement.getAttribute('data-theme') || 'hermes-official'
-    : 'hermes-official'
+    ? document.documentElement.getAttribute('data-theme') || 'vorbium-official'
+    : 'vorbium-official'
   const isDark = !currentDataTheme.endsWith('-light')
 
   // Map between dark and light counterparts
   const LIGHT_DARK_PAIRS: Record<string, string> = {
-    'hermes-official': 'hermes-official-light',
-    'hermes-official-light': 'hermes-official',
+    'vorbium-official': 'hermes-official-light',
+    'hermes-official-light': 'vorbium-official',
     'hermes-classic': 'hermes-classic-light',
     'hermes-classic-light': 'hermes-classic',
     'hermes-slate': 'hermes-slate-light',
@@ -87,7 +87,7 @@ function ThemeToggleMini() {
     <button
       type="button"
       onClick={() => {
-        const nextDataTheme = LIGHT_DARK_PAIRS[currentDataTheme] || (isDark ? 'hermes-official-light' : 'hermes-official')
+        const nextDataTheme = LIGHT_DARK_PAIRS[currentDataTheme] || (isDark ? 'hermes-official-light' : 'vorbium-official')
         // Import and call setTheme to persist and apply
         import('@/lib/theme').then(({ setTheme }) => {
           setTheme(nextDataTheme as any)
@@ -865,8 +865,8 @@ function ChatSidebarComponent({
                   'w-full pl-1.5 justify-start gap-2',
                 )}
               >
-                <img src="/hermes-avatar.webp" alt="Hermes" className="size-6 rounded-lg" />
-                <span className="text-sm font-semibold tracking-tight" style={{ color: 'var(--theme-text)' }}>Hermes Workspace</span>
+                <img src="/hermes-avatar.webp" alt="Vorbium" className="size-6 rounded-lg" />
+                <span className="text-sm font-semibold tracking-tight" style={{ color: 'var(--theme-text)' }}>Vorbium Engine</span>
               </Link>
             </motion.div>
           ) : null}

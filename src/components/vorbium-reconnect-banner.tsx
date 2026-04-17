@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 const POLL_INTERVAL_MS = 10_000
 const FLASH_DURATION_MS = 1_800
 
-type HermesReconnectBannerProps = {
+type VorbiumReconnectBannerProps = {
   enabled?: boolean
 }
 
@@ -22,7 +22,7 @@ async function probeHermesHealth(): Promise<boolean> {
   }
   // Fallback to direct health proxy
   try {
-    const response = await fetch('/api/hermes-proxy/health', {
+    const response = await fetch('/api/vorbium-proxy/health', {
       cache: 'no-store',
     })
     return response.ok
@@ -31,9 +31,9 @@ async function probeHermesHealth(): Promise<boolean> {
   }
 }
 
-export function HermesReconnectBanner({
+export function VorbiumReconnectBanner({
   enabled = true,
-}: HermesReconnectBannerProps) {
+}: VorbiumReconnectBannerProps) {
   const [bannerState, setBannerState] = useState<BannerState>('hidden')
   const [isChecking, setIsChecking] = useState(false)
   const [isStarting, setIsStarting] = useState(false)

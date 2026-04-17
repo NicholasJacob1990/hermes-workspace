@@ -1,9 +1,9 @@
 /**
- * Lightweight i18n — UI string translations for Project Workspace.
- * Add new languages by adding a locale map below.
+ * Lightweight i18n — UI string translations.
+ * Default: English (para manter visual idêntico ao Vorbium Engine upstream).
  */
 
-export type LocaleId = 'en' | 'es' | 'fr' | 'de' | 'zh' | 'ja' | 'ko' | 'pt' | 'ru' | 'ar'
+export type LocaleId = 'pt' | 'en' | 'es' | 'fr' | 'de' | 'zh' | 'ja' | 'ko' | 'ru' | 'ar'
 
 export type TranslationKey = keyof typeof EN
 
@@ -166,11 +166,50 @@ const ZH: typeof EN = {
   'common.noData': '暂无数据',
 }
 
+const PT: typeof EN = {
+  'nav.dashboard': 'Painel',
+  'nav.chat': 'Chat',
+  'nav.files': 'Arquivos',
+  'nav.terminal': 'Terminal',
+  'nav.jobs': 'Cron',
+  'nav.tasks': 'Tarefas',
+  'nav.memory': 'Memória',
+  'nav.skills': 'Skills',
+  'nav.profiles': 'Perfis',
+  'nav.settings': 'Ajustes',
+  'skills.installed': 'Instaladas',
+  'skills.marketplace': 'Marketplace',
+  'skills.search': 'Buscar por nome, tags ou descrição',
+  'skills.noResults': 'Nenhuma skill encontrada',
+  'profiles.profiles': 'Perfis',
+  'profiles.monitoring': 'Monitoramento',
+  'tasks.title': 'Tarefas',
+  'tasks.newTask': 'Nova Tarefa',
+  'tasks.backlog': 'Backlog',
+  'tasks.todo': 'A Fazer',
+  'tasks.inProgress': 'Em Andamento',
+  'tasks.review': 'Revisão',
+  'tasks.done': 'Concluído',
+  'jobs.title': 'Agendamentos',
+  'jobs.newJob': 'Novo Agendamento',
+  'settings.title': 'Ajustes',
+  'settings.language': 'Idioma',
+  'settings.languageDesc': 'Escolha o idioma da interface do workspace.',
+  'common.save': 'Salvar',
+  'common.cancel': 'Cancelar',
+  'common.delete': 'Excluir',
+  'common.search': 'Buscar',
+  'common.loading': 'Carregando...',
+  'common.error': 'Erro',
+  'common.noData': 'Sem dados',
+}
+
 const LOCALES: Record<LocaleId, typeof EN> = {
-  en: EN, es: ES, fr: FR, de: EN, zh: ZH, ja: EN, ko: EN, pt: EN, ru: EN, ar: EN,
+  pt: PT, en: EN, es: ES, fr: FR, de: EN, zh: ZH, ja: EN, ko: EN, ru: EN, ar: EN,
 }
 
 export const LOCALE_LABELS: Record<LocaleId, string> = {
+  pt: 'Português',
   en: 'English',
   es: 'Español',
   fr: 'Français',
@@ -178,12 +217,11 @@ export const LOCALE_LABELS: Record<LocaleId, string> = {
   zh: '中文',
   ja: '日本語',
   ko: '한국어',
-  pt: 'Português',
   ru: 'Русский',
   ar: 'العربية',
 }
 
-const STORAGE_KEY = 'hermes-workspace-locale'
+const STORAGE_KEY = 'vorbium-engine-locale'
 
 export function getLocale(): LocaleId {
   if (typeof window === 'undefined') return 'en'

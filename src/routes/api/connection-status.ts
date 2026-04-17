@@ -14,7 +14,7 @@ import {
 } from '../../server/gateway-capabilities'
 import { isAuthenticated } from '../../server/auth-middleware'
 
-const CONFIG_PATH = path.join(os.homedir(), '.hermes', 'config.yaml')
+const CONFIG_PATH = path.join(os.homedir(), '.vorbium', 'config.yaml')
 
 function readActiveModel(): string {
   try {
@@ -42,7 +42,7 @@ type ConnectionStatus = {
   activeModel: string
   chatMode: 'enhanced-hermes' | 'portable' | 'disconnected'
   capabilities: Record<string, boolean>
-  hermesUrl: string
+  vorbiumUrl: string
 }
 
 export const Route = createFileRoute('/api/connection-status')({
@@ -116,7 +116,7 @@ export const Route = createFileRoute('/api/connection-status')({
             config: caps.config,
             jobs: caps.jobs,
           },
-          hermesUrl: HERMES_API,
+          vorbiumUrl: HERMES_API,
         }
 
         return Response.json(body)

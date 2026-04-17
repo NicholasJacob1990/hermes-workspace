@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { Cancel01Icon } from '@hugeicons/core-free-icons'
-import type { HermesJob } from '@/lib/jobs-api'
+import type { VorbiumJob } from '@/lib/jobs-api'
 
 const SCHEDULE_PRESETS = [
   { label: 'Every 15m', value: 'every 15m' },
@@ -18,7 +18,7 @@ const SCHEDULE_PRESETS = [
 const DELIVERY_OPTIONS = ['local', 'telegram', 'discord'] as const
 
 type EditJobDialogProps = {
-  job: HermesJob | null
+  job: VorbiumJob | null
   open: boolean
   isSubmitting?: boolean
   onOpenChange: (open: boolean) => void
@@ -32,7 +32,7 @@ type EditJobDialogProps = {
   }) => void | Promise<void>
 }
 
-function readScheduleValue(job: HermesJob): string {
+function readScheduleValue(job: VorbiumJob): string {
   if (typeof job.schedule_display === 'string' && job.schedule_display.trim()) {
     return job.schedule_display.trim()
   }
@@ -55,7 +55,7 @@ function readScheduleValue(job: HermesJob): string {
   return ''
 }
 
-function getInitialState(job: HermesJob | null) {
+function getInitialState(job: VorbiumJob | null) {
   const repeatTimes = job?.repeat?.times
   const repeatCompleted = job?.repeat?.completed ?? 0
   const remainingRepeats =

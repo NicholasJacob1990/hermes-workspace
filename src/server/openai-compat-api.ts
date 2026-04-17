@@ -1,7 +1,7 @@
-import { HERMES_API } from './gateway-capabilities'
+import { HERMES_API, BEARER_TOKEN as SHARED_BEARER_TOKEN } from './gateway-capabilities'
 
 /** Optional bearer token for authenticated OpenAI-compatible endpoints (e.g. Codex OAuth). */
-const BEARER_TOKEN = process.env.HERMES_API_TOKEN || ''
+const BEARER_TOKEN = SHARED_BEARER_TOKEN
 
 /** Cached first available model from /v1/models — used as fallback when no model is specified. */
 let _cachedDefaultModel: string | null = null
@@ -166,7 +166,7 @@ export async function openaiChat(
   // Only send session header when authenticated — gateways without
   // API_SERVER_KEY reject this header with an auth error.
   if (options.sessionId && BEARER_TOKEN) {
-    headers['X-Hermes-Session-Id'] = options.sessionId
+    headers['X-Vorbium-Session-Id'] = options.sessionId
   }
 
   const endpoint = options.baseUrl

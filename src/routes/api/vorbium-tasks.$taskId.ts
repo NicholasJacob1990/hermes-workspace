@@ -10,7 +10,7 @@ function jsonResponse(data: unknown, status = 200) {
   })
 }
 
-export const Route = createFileRoute('/api/hermes-tasks/$taskId')({
+export const Route = createFileRoute('/api/vorbium-tasks/$taskId')({
   server: {
     handlers: {
       GET: async ({ request, params }) => {

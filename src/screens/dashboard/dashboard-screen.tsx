@@ -11,7 +11,7 @@ import {
   YAxis,
 } from 'recharts'
 import type { ReactNode } from 'react'
-import type { HermesSession } from '@/server/hermes-api'
+import type { VorbiumSession } from '@/server/vorbium-api'
 import { chatQueryKeys } from '@/screens/chat/chat-queries'
 import { getUnavailableReason } from '@/lib/feature-gates'
 import { useFeatureAvailable } from '@/hooks/use-feature-available'
@@ -200,7 +200,7 @@ function MetricTile({
 
 // ── Activity Chart ───────────────────────────────────────────────
 
-function ActivityChart({ sessions }: { sessions: Array<HermesSession> }) {
+function ActivityChart({ sessions }: { sessions: Array<VorbiumSession> }) {
   const chartData = useMemo(() => {
     const dayMap = new Map<string, { sessions: number; messages: number }>()
     const now = Date.now() / 1000
@@ -338,7 +338,7 @@ function ModelCard() {
   const configQuery = useQuery({
     queryKey: ['hermes-config'],
     queryFn: async () => {
-      const res = await fetch('/api/hermes-config')
+      const res = await fetch('/api/vorbium-config')
       if (!res.ok) return null
       return res.json() as Promise<Record<string, unknown>>
     },
@@ -556,7 +556,7 @@ function SessionRow({
   maxTokens,
   onClick,
 }: {
-  session: HermesSession
+  session: VorbiumSession
   maxTokens: number
   onClick: () => void
 }) {
@@ -629,14 +629,14 @@ export function DashboardScreen() {
         tool_call_count: (s.tool_call_count as number | undefined) ?? 0,
         input_tokens: (s.tokenCount as number | undefined) ?? 0,
         output_tokens: 0,
-      })) as Array<HermesSession>
+      })) as Array<VorbiumSession>
     },
     staleTime: 10_000,
     refetchInterval: 30_000,
     enabled: sessionsAvailable,
   })
 
-  const sessions = (sessionsQuery.data ?? []) as HermesSession[]
+  const sessions = (sessionsQuery.data ?? []) as VorbiumSession[]
 
   const stats = useMemo(() => {
     let totalMessages = 0,
@@ -700,8 +700,8 @@ export function DashboardScreen() {
           aria-label="Toggle theme"
           onClick={() => {
             const LIGHT_DARK_PAIRS: Record<string, string> = {
-              'hermes-official': 'hermes-official-light',
-              'hermes-official-light': 'hermes-official',
+              'vorbium-official': 'hermes-official-light',
+              'hermes-official-light': 'vorbium-official',
               'hermes-classic': 'hermes-classic-light',
               'hermes-classic-light': 'hermes-classic',
               'hermes-slate': 'hermes-slate-light',
@@ -709,8 +709,8 @@ export function DashboardScreen() {
               'hermes-mono': 'hermes-mono-light',
               'hermes-mono-light': 'hermes-mono',
             }
-            const cur = document.documentElement.getAttribute('data-theme') || 'hermes-official'
-            const nextDataTheme = LIGHT_DARK_PAIRS[cur] || (isDark ? 'hermes-official-light' : 'hermes-official')
+            const cur = document.documentElement.getAttribute('data-theme') || 'vorbium-official'
+            const nextDataTheme = LIGHT_DARK_PAIRS[cur] || (isDark ? 'hermes-official-light' : 'vorbium-official')
             import('@/lib/theme').then(({ setTheme }) => { setTheme(nextDataTheme as any) })
             const nextMode = nextDataTheme.endsWith('-light') ? 'light' : 'dark'
             applyTheme(nextMode)
@@ -728,11 +728,11 @@ export function DashboardScreen() {
       <div className="flex flex-col items-center gap-3 py-3">
         <img
           src="/hermes-avatar.webp"
-          alt="Hermes"
+          alt="Vorbium"
           className="size-12 md:size-14 rounded-xl shadow-md shadow-indigo-500/10 border border-[var(--theme-border)]"
         />
         <h1 className="text-sm font-semibold text-ink tracking-wide">
-          Hermes Workspace
+          Vorbium Engine
         </h1>
         <div className="mt-1 grid w-full max-w-2xl grid-cols-2 gap-2 sm:grid-cols-4">
           <QuickAction

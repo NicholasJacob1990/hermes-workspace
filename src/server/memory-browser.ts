@@ -24,7 +24,7 @@ function isBrowserMemoryPath(relativePath: string): boolean {
 }
 
 function normalizeWorkspaceRoot(): string {
-  return path.join(os.homedir(), '.hermes')
+  return path.join(os.homedir(), '.vorbium')
 }
 
 export function getMemoryWorkspaceRoot(): string {

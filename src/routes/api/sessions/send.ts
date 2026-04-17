@@ -8,7 +8,7 @@ import {
   ensureGatewayProbed,
   getGatewayCapabilities,
   sendChat,
-} from '../../../server/hermes-api'
+} from '../../../server/vorbium-api'
 import { resolveSessionKey } from '../../../server/session-utils'
 
 export const Route = createFileRoute('/api/sessions/send')({

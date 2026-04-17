@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <rect width="64" height="64" rx="12" fill="#0F172A"/>
+  <!-- V compacto, sem caption -->
+  <path d="M 12 14 L 32 48 L 52 14 L 46 14 L 32 38 L 18 14 Z" fill="#E2E8F0"/>
+  <path d="M 32 38 L 38 26 L 44 26 L 38 38 Z" fill="#22D3EE"/>
+</svg>

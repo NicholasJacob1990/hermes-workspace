@@ -9,7 +9,7 @@ type PingResponse = {
   ok: boolean
   error?: string
   status?: number
-  hermesUrl: string
+  vorbiumUrl: string
 }
 
 export const Route = createFileRoute('/api/ping')({
@@ -22,7 +22,7 @@ export const Route = createFileRoute('/api/ping')({
               ok: false,
               error: 'Authentication required',
               status: 401,
-              hermesUrl: HERMES_API,
+              vorbiumUrl: HERMES_API,
             } satisfies PingResponse,
             { status: 401 },
           )
@@ -35,7 +35,7 @@ export const Route = createFileRoute('/api/ping')({
               ok: false,
               error: 'Hermes unavailable',
               status: 503,
-              hermesUrl: HERMES_API,
+              vorbiumUrl: HERMES_API,
             } satisfies PingResponse,
             { status: 503 },
           )
@@ -45,7 +45,7 @@ export const Route = createFileRoute('/api/ping')({
           {
             ok: true,
             status: 200,
-            hermesUrl: HERMES_API,
+            vorbiumUrl: HERMES_API,
           } satisfies PingResponse,
           { status: 200 },
         )

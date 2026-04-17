@@ -2,7 +2,7 @@
  * Hermes FastAPI Client
  *
  * HTTP client for the Hermes FastAPI backend (default: http://127.0.0.1:8642).
- * Replaces legacy WebSocket connection for the Hermes Workspace fork.
+ * Replaces legacy WebSocket connection for the Vorbium Workspace fork.
  */
 
 import {
@@ -21,7 +21,7 @@ console.log(`[hermes-api] Configured API: ${HERMES_API}`)
 
 // ── Types ─────────────────────────────────────────────────────────
 
-export type HermesSession = {
+export type VorbiumSession = {
   id: string
   source?: string
   user_id?: string | null
@@ -38,7 +38,7 @@ export type HermesSession = {
   last_active?: number | null
 }
 
-export type HermesMessage = {
+export type VorbiumMessage = {
   id: number
   session_id: string
   role: string
@@ -51,7 +51,7 @@ export type HermesMessage = {
   finish_reason?: string | null
 }
 
-export type HermesConfig = {
+export type VorbiumConfig = {
   model?: string
   provider?: string
   [key: string]: unknown
@@ -116,15 +116,17 @@ export async function checkHealth(): Promise<{ status: string }> {
 export async function listSessions(
   limit = 50,
   offset = 0,
-): Promise<Array<HermesSession>> {
-  const resp = await hermesGet<{ items: Array<HermesSession>; total: number }>(
-    `/api/sessions?limit=${limit}&offset=${offset}`,
-  )
-  return resp.items
+): Promise<Array<VorbiumSession>> {
+  // Backend hermes v0.10.x retorna {sessions: [...]}, versões antigas usam {items, total}.
+  const resp = await hermesGet<{
+    items?: Array<VorbiumSession>
+    sessions?: Array<VorbiumSession>
+  }>(`/api/sessions?limit=${limit}&offset=${offset}`)
+  return resp.items ?? resp.sessions ?? []
 }
 
-export async function getSession(sessionId: string): Promise<HermesSession> {
-  const resp = await hermesGet<{ session: HermesSession }>(
+export async function getSession(sessionId: string): Promise<VorbiumSession> {
+  const resp = await hermesGet<{ session: VorbiumSession }>(
     `/api/sessions/${sessionId}`,
   )
   return resp.session
@@ -134,8 +136,8 @@ export async function createSession(opts?: {
   id?: string
   title?: string
   model?: string
-}): Promise<HermesSession> {
-  const resp = await hermesPost<{ session: HermesSession }>(
+}): Promise<VorbiumSession> {
+  const resp = await hermesPost<{ session: VorbiumSession }>(
     '/api/sessions',
     opts || {},
   )
@@ -145,8 +147,8 @@ export async function createSession(opts?: {
 export async function updateSession(
   sessionId: string,
   updates: { title?: string },
-): Promise<HermesSession> {
-  const resp = await hermesPatch<{ session: HermesSession }>(
+): Promise<VorbiumSession> {
+  const resp = await hermesPatch<{ session: VorbiumSession }>(
     `/api/sessions/${sessionId}`,
     updates,
   )
@@ -159,8 +161,8 @@ export async function deleteSession(sessionId: string): Promise<void> {
 
 export async function getMessages(
   sessionId: string,
-): Promise<Array<HermesMessage>> {
-  const resp = await hermesGet<{ items: Array<HermesMessage>; total: number }>(
+): Promise<Array<VorbiumMessage>> {
+  const resp = await hermesGet<{ items: Array<VorbiumMessage>; total: number }>(
     `/api/sessions/${sessionId}/messages`,
   )
   return resp.items
@@ -177,15 +179,15 @@ export async function searchSessions(
 
 export async function forkSession(
   sessionId: string,
-): Promise<{ session: HermesSession; forked_from: string }> {
+): Promise<{ session: VorbiumSession; forked_from: string }> {
   return hermesPost(`/api/sessions/${sessionId}/fork`)
 }
 
 // ── Conversion helpers (Hermes → Chat format) ─────────────────
 
-/** Convert a HermesMessage to the ChatMessage format the frontend expects */
+/** Convert a VorbiumMessage to the ChatMessage format the frontend expects */
 export function toChatMessage(
-  msg: HermesMessage,
+  msg: VorbiumMessage,
   options?: { historyIndex?: number },
 ): Record<string, unknown> {
   // Accept either parsed arrays from FastAPI or legacy JSON strings.
@@ -264,9 +266,9 @@ export function toChatMessage(
   }
 }
 
-/** Convert a HermesSession to the session summary format the frontend expects */
+/** Convert a VorbiumSession to the session summary format the frontend expects */
 export function toSessionSummary(
-  session: HermesSession,
+  session: VorbiumSession,
 ): Record<string, unknown> {
   return {
     key: session.id,
@@ -404,8 +406,8 @@ export async function getSkillCategories(): Promise<unknown> {
 
 // ── Config ───────────────────────────────────────────────────────
 
-export async function getConfig(): Promise<HermesConfig> {
-  return hermesGet<HermesConfig>('/api/config')
+export async function getConfig(): Promise<VorbiumConfig> {
+  return hermesGet<VorbiumConfig>('/api/config')
 }
 
 export async function patchConfig(

@@ -46,7 +46,7 @@ type GatewayStatusResponse = {
     config?: boolean
     jobs?: boolean
   }
-  hermesUrl?: string
+  vorbiumUrl?: string
 }
 
 const PROVIDERS = [
@@ -120,7 +120,7 @@ function getEnhancedFeatureNames(
     .map((feature) => feature.label)
 }
 
-export function HermesOnboarding() {
+export function VorbiumOnboarding() {
   const [show, setShow] = useState(false)
   const [step, setStep] = useState<Step>('welcome')
   const [backendStatus, setBackendStatus] = useState<
@@ -167,7 +167,7 @@ export function HermesOnboarding() {
 
   const loadCurrentConfig = useCallback(async () => {
     try {
-      const res = await fetch('/api/hermes-config')
+      const res = await fetch('/api/vorbium-config')
       if (!res.ok) return
       const data = (await res.json()) as {
         activeModel?: string
@@ -272,7 +272,7 @@ export function HermesOnboarding() {
         }
       }
 
-      const res = await fetch('/api/hermes-config', {
+      const res = await fetch('/api/vorbium-config', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
@@ -306,7 +306,7 @@ export function HermesOnboarding() {
     if (!canEditConfig || !selectedProvider) return true
 
     try {
-      const res = await fetch('/api/hermes-config', {
+      const res = await fetch('/api/vorbium-config', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -506,13 +506,13 @@ export function HermesOnboarding() {
             <div className="space-y-4 text-center">
               <img
                 src="/hermes-avatar.webp"
-                alt="Hermes"
+                alt="Vorbium"
                 className="mx-auto size-20 rounded-2xl"
                 style={{
                   filter: 'drop-shadow(0 8px 24px rgba(99,102,241,0.3))',
                 }}
               />
-              <h2 className="text-xl font-bold">Welcome to Hermes Workspace</h2>
+              <h2 className="text-xl font-bold">Welcome to Vorbium Engine</h2>
               <p className="text-sm" style={mutedStyle}>
                 Works with any OpenAI-compatible backend. Hermes gateway APIs
                 unlock sessions, memory, skills, and other extras automatically.
@@ -537,7 +537,7 @@ export function HermesOnboarding() {
               <div className="text-4xl">🔌</div>
               <h2 className="text-lg font-bold">Connect Your Backend</h2>
               <p className="text-sm" style={mutedStyle}>
-                Start by verifying that Hermes Workspace can reach your
+                Start by verifying that Vorbium Engine can reach your
                 OpenAI-compatible backend.
               </p>
 
@@ -563,7 +563,7 @@ export function HermesOnboarding() {
                   >
                     <p style={mutedStyle}>Backend URL</p>
                     <p className="mt-1 font-mono">
-                      {backendInfo?.hermesUrl || 'Configured automatically'}
+                      {backendInfo?.vorbiumUrl || 'Configured automatically'}
                     </p>
                   </div>
                 </div>
@@ -634,7 +634,7 @@ export function HermesOnboarding() {
               <p className="text-center text-xs" style={mutedStyle}>
                 {canEditConfig
                   ? 'Save provider settings here, then choose a model before testing chat.'
-                  : 'This backend manages provider settings outside Hermes Workspace. Confirm the model you expect to use, then test chat.'}
+                  : 'This backend manages provider settings outside Vorbium Engine. Confirm the model you expect to use, then test chat.'}
               </p>
 
               <div className="rounded-xl p-3 text-xs" style={cardStyle}>
@@ -957,7 +957,7 @@ export function HermesOnboarding() {
               >
                 <p style={mutedStyle}>Backend</p>
                 <p className="mt-1 font-mono">
-                  {backendInfo?.hermesUrl || 'Configured automatically'}
+                  {backendInfo?.vorbiumUrl || 'Configured automatically'}
                 </p>
                 {selectedModel || configuredModel ? (
                   <p className="mt-2" style={mutedStyle}>
@@ -1029,7 +1029,7 @@ export function HermesOnboarding() {
                     ) : (
                       <p className="mt-2 text-xs text-yellow-400">
                         Confirm the backend is running and still reachable from
-                        Hermes Workspace.
+                        Vorbium Engine.
                       </p>
                     )}
                   </div>

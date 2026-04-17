@@ -38,16 +38,15 @@ export function revokeSessionToken(token: string): void {
  * Check if password protection is enabled.
  */
 export function isPasswordProtectionEnabled(): boolean {
-  return Boolean(
-    process.env.HERMES_PASSWORD && process.env.HERMES_PASSWORD.length > 0,
-  )
+  const pwd = process.env.VORBIUM_PASSWORD ?? process.env.HERMES_PASSWORD
+  return Boolean(pwd && pwd.length > 0)
 }
 
 /**
  * Verify password using timing-safe comparison.
  */
 export function verifyPassword(password: string): boolean {
-  const configured = process.env.HERMES_PASSWORD
+  const configured = process.env.VORBIUM_PASSWORD ?? process.env.HERMES_PASSWORD
   if (!configured || configured.length === 0) {
     return false
   }
@@ -78,8 +77,8 @@ export function getSessionTokenFromCookie(
 
   const cookies = cookieHeader.split(';').map((c) => c.trim())
   for (const cookie of cookies) {
-    if (cookie.startsWith('hermes-auth=')) {
-      return cookie.substring('hermes-auth='.length)
+    if (cookie.startsWith('vorbium-auth=')) {
+      return cookie.substring('vorbium-auth='.length)
     }
   }
   return null

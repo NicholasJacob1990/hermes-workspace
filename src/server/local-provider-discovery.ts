@@ -243,7 +243,7 @@ void ensureDiscovery()
 // Config auto-writer
 // -------------------------------------------------------------------
 
-const CONFIG_PATH = path.join(os.homedir(), '.hermes', 'config.yaml')
+const CONFIG_PATH = path.join(os.homedir(), '.vorbium', 'config.yaml')
 
 /**
  * Check if a provider is already in custom_providers config.

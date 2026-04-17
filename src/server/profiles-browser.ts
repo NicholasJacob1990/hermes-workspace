@@ -27,16 +27,16 @@ export type ProfileDetail = {
   skillsDir?: string
 }
 
-function getHermesRoot(): string {
-  return path.join(os.homedir(), '.hermes')
+function getVorbiumRoot(): string {
+  return path.join(os.homedir(), '.vorbium')
 }
 
 export function getProfilesRoot(): string {
-  return path.join(getHermesRoot(), 'profiles')
+  return path.join(getVorbiumRoot(), 'profiles')
 }
 
 function getActiveProfilePath(): string {
-  return path.join(getHermesRoot(), 'active_profile')
+  return path.join(getVorbiumRoot(), 'active_profile')
 }
 
 function validateProfileName(name: string): string {
@@ -173,7 +173,7 @@ export function listProfiles(): Array<ProfileSummary> {
   }
 
   if (activeProfile === 'default') {
-    const root = getHermesRoot()
+    const root = getVorbiumRoot()
     const config = readYamlConfig(path.join(root, 'config.yaml'))
     results.unshift({
       name: 'default',
@@ -208,7 +208,7 @@ export function readProfile(name: string): ProfileDetail {
   const normalized = name.trim() || 'default'
   const profilePath =
     normalized === 'default'
-      ? getHermesRoot()
+      ? getVorbiumRoot()
       : path.join(getProfilesRoot(), validateProfileName(normalized))
   if (!fs.existsSync(profilePath)) throw new Error('Profile not found')
   const configPath = path.join(profilePath, 'config.yaml')
@@ -239,7 +239,7 @@ export function setActiveProfile(name: string): void {
   const normalized = validateProfileName(trimmed)
   const profilePath = path.join(getProfilesRoot(), normalized)
   if (!fs.existsSync(profilePath)) throw new Error('Profile not found')
-  fs.mkdirSync(getHermesRoot(), { recursive: true })
+  fs.mkdirSync(getVorbiumRoot(), { recursive: true })
   fs.writeFileSync(getActiveProfilePath(), `${normalized}\n`, 'utf-8')
 }
 
@@ -300,7 +300,7 @@ export function deleteProfile(name: string): void {
     throw new Error('Cannot delete the active profile')
   const profilePath = path.join(getProfilesRoot(), normalized)
   if (!fs.existsSync(profilePath)) throw new Error('Profile not found')
-  const trashDir = path.join(getHermesRoot(), 'trash')
+  const trashDir = path.join(getVorbiumRoot(), 'trash')
   fs.mkdirSync(trashDir, { recursive: true })
   const trashName = `${normalized}-${Date.now()}`
   fs.renameSync(profilePath, path.join(trashDir, trashName))

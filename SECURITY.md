@@ -2,7 +2,7 @@
 
 ## Reporting a Vulnerability
 
-If you discover a security vulnerability in Hermes Workspace, please report it responsibly.
+If you discover a security vulnerability in Vorbium Engine Workspace, please report it responsibly.
 
 **Do NOT open a public GitHub issue for security vulnerabilities.**
 
@@ -12,8 +12,8 @@ We will acknowledge your report within 48 hours and aim to provide a fix within 
 
 ## Scope
 
-- Hermes Workspace web application code
-- API routes and Hermes communication
+- Vorbium Engine Workspace web application code
+- API routes and Vorbium Engine communication
 - Authentication and session management
 - Client-side data handling and rendering
 - Exec approval and human-in-the-loop controls
@@ -21,7 +21,7 @@ We will acknowledge your report within 48 hours and aim to provide a fix within 
 
 ## Out of Scope
 
-- Hermes Agent itself (report to the Hermes Agent project)
+- Vorbium Engine itself (report to the Vorbium Engine project)
 - Third-party dependencies (report to the respective maintainer)
 - Social engineering attacks
 
@@ -45,12 +45,12 @@ We will acknowledge your report within 48 hours and aim to provide a fix within 
 - Path traversal prevention on all file and memory routes (`ensureWorkspacePath()`)
 - `.md`-only restriction on memory write routes
 - No API keys or secrets ever exposed to client-side code
-- Hermes tokens are server-side only
+- Vorbium Engine tokens are server-side only
 - Diagnostic output scrubbed of sensitive data
 
 **Agent Safety**
 
-- Exec approval workflow — sensitive Hermes exec commands require explicit human approval via in-UI modal
+- Exec approval workflow — sensitive Vorbium Engine exec commands require explicit human approval via in-UI modal
 - Skills security scanning — every skill from the marketplace is scanned for suspicious patterns before install
 
 **Configuration**

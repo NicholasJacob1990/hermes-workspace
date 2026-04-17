@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <rect width="512" height="512" rx="96" fill="#0F172A"/>
+  <!-- V geométrico com corte diagonal cyan — monograma Vorbium -->
+  <g transform="translate(96 120)">
+    <!-- V outline -->
+    <path d="M 0 0 L 160 272 L 320 0 L 272 0 L 160 192 L 48 0 Z" fill="#E2E8F0" opacity="0.95"/>
+    <!-- Accent slice cyan -->
+    <path d="M 160 192 L 208 108 L 256 108 L 208 192 Z" fill="#22D3EE"/>
+    <!-- Subtle inner shadow -->
+    <path d="M 48 0 L 160 192 L 272 0 L 256 0 L 160 168 L 64 0 Z" fill="#0B1324" opacity="0.4"/>
+  </g>
+  <!-- Baseline caption (micro) -->
+  <text x="256" y="460" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="28" font-weight="600" fill="#64748B" letter-spacing="8">VORBIUM</text>
+</svg>

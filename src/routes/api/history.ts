@@ -7,7 +7,7 @@ import {
   getMessages,
   listSessions,
   toChatMessage,
-} from '../../server/hermes-api'
+} from '../../server/vorbium-api'
 import { resolveSessionKey } from '../../server/session-utils'
 import { isAuthenticated } from '@/server/auth-middleware'
 import { getLocalSession, getLocalMessages } from '../../server/local-session-store'

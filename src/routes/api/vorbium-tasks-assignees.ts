@@ -13,9 +13,9 @@ import path from 'node:path'
 import os from 'node:os'
 import YAML from 'yaml'
 
-const HERMES_HOME = process.env.HERMES_HOME ?? path.join(os.homedir(), '.hermes')
-const CONFIG_PATH = path.join(HERMES_HOME, 'config.yaml')
-const PROFILES_PATH = path.join(os.homedir(), '.hermes', 'profiles')
+const VORBIUM_HOME = process.env.VORBIUM_HOME ?? path.join(os.homedir(), '.vorbium')
+const CONFIG_PATH = path.join(VORBIUM_HOME, 'config.yaml')
+const PROFILES_PATH = path.join(os.homedir(), '.vorbium', 'profiles')
 
 function readConfig(): Record<string, unknown> {
   try {
@@ -43,7 +43,7 @@ function authHeaders(): Record<string, string> {
   return BEARER_TOKEN ? { Authorization: `Bearer ${BEARER_TOKEN}` } : {}
 }
 
-export const Route = createFileRoute('/api/hermes-tasks-assignees')({
+export const Route = createFileRoute('/api/vorbium-tasks-assignees')({
   server: {
     handlers: {
       GET: async ({ request }) => {

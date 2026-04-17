@@ -121,12 +121,12 @@ function extractWikilinks(content: string): Array<string> {
 
 function getLegacyKnowledgeRoot(): string {
   if (process.env.KNOWLEDGE_DIR) return path.resolve(process.env.KNOWLEDGE_DIR)
-  const hermesHome = path.join(os.homedir(), '.hermes')
-  const hermesKnowledge = path.join(hermesHome, 'knowledge')
-  if (fs.existsSync(hermesKnowledge)) return hermesKnowledge
+  const vorbiumHome = path.join(os.homedir(), '.vorbium')
+  const vorbiumKnowledge = path.join(vorbiumHome, 'knowledge')
+  if (fs.existsSync(vorbiumKnowledge)) return vorbiumKnowledge
   const homeKnowledge = path.join(os.homedir(), 'knowledge', 'wiki')
   if (fs.existsSync(homeKnowledge)) return homeKnowledge
-  return hermesKnowledge
+  return vorbiumKnowledge
 }
 
 // ─── GitHub Knowledge Provider ─────────────────────────────────────────────────
@@ -147,12 +147,12 @@ class GitHubKnowledgeProvider {
     const safeRepo = repo.replace('/', '_')
     const safePath = repoPath.replace(/^\//, '').replace(/\//g, '_')
     this.branch = branch
-    const base = path.join(os.homedir(), '.hermes', 'knowledge-cache', 'github', safeRepo, branch, safePath)
+    const base = path.join(os.homedir(), '.vorbium', 'knowledge-cache', 'github', safeRepo, branch, safePath)
     this.cacheDir = base
   }
 
   private get cacheRoot(): string {
-    return path.join(os.homedir(), '.hermes', 'knowledge-cache', 'github', this.repo.replace('/', '_'), this.branch)
+    return path.join(os.homedir(), '.vorbium', 'knowledge-cache', 'github', this.repo.replace('/', '_'), this.branch)
   }
 
   /** Fetch + decode the GitHub repo into the local cache directory. */
@@ -182,7 +182,7 @@ class GitHubKnowledgeProvider {
   private async fetchDir(dirPath: string): Promise<void> {
     const url = `https://api.github.com/repos/${this.repo}/contents/${dirPath}?ref=${this.branch}`
     const res = await fetch(url, {
-      headers: { Accept: 'application/vnd.github.v3+json', 'User-Agent': 'hermes-workspace' },
+      headers: { Accept: 'application/vnd.github.v3+json', 'User-Agent': 'vorbium-workspace' },
     })
     if (!res.ok) {
       const body = await res.text().catch(() => '')
@@ -212,7 +212,7 @@ class GitHubKnowledgeProvider {
   private async fetchFile(entry: { path: string; sha: string }): Promise<string> {
     const url = `https://api.github.com/repos/${this.repo}/contents/${entry.path}?ref=${this.branch}`
     const res = await fetch(url, {
-      headers: { Accept: 'application/vnd.github.v3+json', 'User-Agent': 'hermes-workspace' },
+      headers: { Accept: 'application/vnd.github.v3+json', 'User-Agent': 'vorbium-workspace' },
     })
     if (!res.ok) {
       throw new Error(`GitHub API ${res.status} for ${entry.path}`)

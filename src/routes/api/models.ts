@@ -7,7 +7,7 @@ import { isAuthenticated } from '../../server/auth-middleware'
 import {
   ensureGatewayProbed,
   getGatewayCapabilities,
-} from '../../server/hermes-api'
+} from '../../server/vorbium-api'
 import { BEARER_TOKEN, HERMES_API } from '../../server/gateway-capabilities'
 import {
   ensureDiscovery,
@@ -56,7 +56,7 @@ const AUTH_STORE_MODELS: Record<string, Array<ModelEntry>> = {
 function getAuthStoreModels(): Array<ModelEntry> {
   const extra: Array<ModelEntry> = []
   for (const storePath of [
-    path.join(os.homedir(), '.hermes', 'auth-profiles.json'),
+    path.join(os.homedir(), '.vorbium', 'auth-profiles.json'),
     path.join(
       os.homedir(),
       '.openclaw',
@@ -111,7 +111,7 @@ function normalizeHermesModel(entry: unknown): ModelEntry | null {
     return {
       id,
       name: id,
-      provider: id.includes('/') ? id.split('/')[0] : 'hermes-agent',
+      provider: id.includes('/') ? id.split('/')[0] : 'vorbium-engine',
     }
   }
   const record = asRecord(entry)
@@ -129,7 +129,7 @@ function normalizeHermesModel(entry: unknown): ModelEntry | null {
     provider:
       readString(record.provider) ||
       readString(record.owned_by) ||
-      (id.includes('/') ? id.split('/')[0] : 'hermes-agent'),
+      (id.includes('/') ? id.split('/')[0] : 'vorbium-engine'),
   }
 }
 

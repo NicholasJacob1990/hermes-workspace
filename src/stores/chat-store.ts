@@ -197,7 +197,7 @@ export function restoreStreamingState(
 }
 
 const WAITING_TTL_MS = 120_000
-const WAITING_STORAGE_PREFIX = 'hermes_waiting_'
+const WAITING_STORAGE_PREFIX = 'vorbium_waiting_'
 
 function persistWaitingState(
   sessionKey: string,
@@ -778,7 +778,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
 
           // Content-text dedup: identical assistant text within the same
           // session should never appear twice, even if message IDs differ
-          // (e.g. same reply routed from Telegram + Hermes Workspace).
+          // (e.g. same reply routed from Telegram + Vorbium Engine).
           if (
             normalizedMessage.role === 'assistant' &&
             newPlainText.length > 20 &&

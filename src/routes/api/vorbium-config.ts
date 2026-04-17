@@ -16,9 +16,9 @@ import { createCapabilityUnavailablePayload } from '@/lib/feature-gates'
 
 type AuthResult = Response | true
 
-const HERMES_HOME = path.join(os.homedir(), '.hermes')
-const CONFIG_PATH = path.join(HERMES_HOME, 'config.yaml')
-const ENV_PATH = path.join(HERMES_HOME, '.env')
+const VORBIUM_HOME = path.join(os.homedir(), '.vorbium')
+const CONFIG_PATH = path.join(VORBIUM_HOME, 'config.yaml')
+const ENV_PATH = path.join(VORBIUM_HOME, '.env')
 
 // Known Hermes providers
 const PROVIDERS = [
@@ -94,7 +94,7 @@ function readConfig(): Record<string, unknown> {
 }
 
 function writeConfig(config: Record<string, unknown>): void {
-  fs.mkdirSync(HERMES_HOME, { recursive: true })
+  fs.mkdirSync(VORBIUM_HOME, { recursive: true })
   fs.writeFileSync(CONFIG_PATH, YAML.stringify(config), 'utf-8')
 }
 
@@ -126,7 +126,7 @@ function readEnv(): Record<string, string> {
 }
 
 function writeEnv(env: Record<string, string>): void {
-  fs.mkdirSync(HERMES_HOME, { recursive: true })
+  fs.mkdirSync(VORBIUM_HOME, { recursive: true })
   const lines = Object.entries(env).map(([k, v]) => `${k}=${v}`)
   fs.writeFileSync(ENV_PATH, lines.join('\n') + '\n', 'utf-8')
 }
@@ -143,7 +143,7 @@ function checkAuthStore(providerId: string): {
 } {
   // Check Hermes auth store
   for (const storePath of [
-    path.join(os.homedir(), '.hermes', 'auth-profiles.json'),
+    path.join(os.homedir(), '.vorbium', 'auth-profiles.json'),
     path.join(
       os.homedir(),
       '.openclaw',
@@ -163,7 +163,7 @@ function checkAuthStore(providerId: string): {
         const p = value as Record<string, unknown>
         const token = String(p.token || p.key || p.access || '').trim()
         if (token) {
-          const source = storePath.includes('.hermes')
+          const source = storePath.includes('.vorbium')
             ? 'hermes-auth-store'
             : 'openclaw-auth-store'
           return { hasToken: true, source, maskedKey: maskKey(token) }
@@ -174,7 +174,7 @@ function checkAuthStore(providerId: string): {
   return { hasToken: false, source: '' }
 }
 
-export const Route = createFileRoute('/api/hermes-config')({
+export const Route = createFileRoute('/api/vorbium-config')({
   server: {
     handlers: {
       GET: async ({ request }) => {
@@ -188,7 +188,7 @@ export const Route = createFileRoute('/api/hermes-config')({
             providers: [],
             activeProvider: '',
             activeModel: '',
-            hermesHome: HERMES_HOME,
+            vorbiumHome: VORBIUM_HOME,
           })
         }
 
@@ -242,7 +242,7 @@ export const Route = createFileRoute('/api/hermes-config')({
           providers: providerStatus,
           activeProvider,
           activeModel,
-          hermesHome: HERMES_HOME,
+          vorbiumHome: VORBIUM_HOME,
         })
       },
 

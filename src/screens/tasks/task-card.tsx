@@ -1,9 +1,9 @@
 import { cn } from '@/lib/utils'
-import type { HermesTask } from '@/lib/tasks-api'
+import type { VorbiumTask } from '@/lib/tasks-api'
 import { PRIORITY_COLORS, isOverdue } from '@/lib/tasks-api'
 
 type Props = {
-  task: HermesTask
+  task: VorbiumTask
   assigneeLabels?: Record<string, string>
   onClick: () => void
   onDragStart: (e: React.DragEvent) => void

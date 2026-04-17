@@ -16,7 +16,7 @@ function authHeaders(): Record<string, string> {
   return BEARER_TOKEN ? { Authorization: `Bearer ${BEARER_TOKEN}` } : {}
 }
 
-export const Route = createFileRoute('/api/hermes-jobs')({
+export const Route = createFileRoute('/api/vorbium-jobs')({
   server: {
     handlers: {
       GET: async ({ request }) => {

@@ -16,7 +16,7 @@ import { Outlet, useNavigate, useRouterState } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { Suspense, lazy } from 'react'
 import type { SessionMeta } from '@/screens/chat/types'
-import type { AuthStatus } from '@/lib/hermes-auth'
+import type { AuthStatus } from '@/lib/vorbium-auth'
 import { cn } from '@/lib/utils'
 import { ConnectionStartupScreen } from '@/components/connection-startup-screen'
 import { ChatSidebar } from '@/screens/chat/components/chat-sidebar'
@@ -30,12 +30,12 @@ import { LoginScreen } from '@/components/auth/login-screen'
 import { MobileTabBar } from '@/components/mobile-tab-bar'
 import { MobileHamburgerMenu } from '@/components/mobile-hamburger-menu'
 import { MobilePageHeader } from '@/components/mobile-page-header'
-import { HermesOnboarding } from '@/components/onboarding/hermes-onboarding'
+import { VorbiumOnboarding } from '@/components/onboarding/vorbium-onboarding'
 import { MobileTerminalInput } from '@/components/terminal/mobile-terminal-input'
-import { HermesReconnectBanner } from '@/components/hermes-reconnect-banner'
+import { VorbiumReconnectBanner } from '@/components/vorbium-reconnect-banner'
 import { useMobileKeyboard } from '@/hooks/use-mobile-keyboard'
 import { ErrorBoundary } from '@/components/error-boundary'
-// System metrics footer removed — not used in Hermes Workspace
+// System metrics footer removed — not used in Vorbium Engine
 import { CommandPalette } from '@/components/command-palette'
 import { useSettings } from '@/hooks/use-settings'
 // ActivityTicker moved to dashboard-only (too noisy for global header)
@@ -261,7 +261,7 @@ export function WorkspaceShell() {
         className="relative overflow-hidden theme-bg theme-text"
         style={shellStyle}
       >
-        <HermesReconnectBanner enabled={authState.checked} />
+        <VorbiumReconnectBanner enabled={authState.checked} />
         {/* Electron: native-style title bar (absolute over the padding) */}
         {isElectron && (
           <div
@@ -279,9 +279,9 @@ export function WorkspaceShell() {
             <div className="flex-1 text-center">
               <span
                 className="text-[13px] font-medium select-none"
-                style={{ color: 'var(--theme-accent, #B98A44)' }}
+                style={{ color: 'var(--theme-accent, #22D3EE)' }}
               >
-                Hermes
+                Vorbium
               </span>
             </div>
             {/* Right spacer to balance */}
@@ -406,7 +406,7 @@ export function WorkspaceShell() {
       <MobileHamburgerMenu />
       {/* System metrics footer removed */}
       <CommandPalette pathname={pathname} sessions={sessions} />
-      <HermesOnboarding />
+      <VorbiumOnboarding />
     </>
   )
 }

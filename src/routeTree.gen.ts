@@ -26,6 +26,10 @@ import { Route as SettingsProvidersRouteImport } from './routes/settings/provide
 import { Route as SettingsMcpRouteImport } from './routes/settings/mcp'
 import { Route as ChatSessionKeyRouteImport } from './routes/chat/$sessionKey'
 import { Route as ApiWorkspaceRouteImport } from './routes/api/workspace'
+import { Route as ApiVorbiumTasksAssigneesRouteImport } from './routes/api/vorbium-tasks-assignees'
+import { Route as ApiVorbiumTasksRouteImport } from './routes/api/vorbium-tasks'
+import { Route as ApiVorbiumJobsRouteImport } from './routes/api/vorbium-jobs'
+import { Route as ApiVorbiumConfigRouteImport } from './routes/api/vorbium-config'
 import { Route as ApiTerminalStreamRouteImport } from './routes/api/terminal-stream'
 import { Route as ApiTerminalResizeRouteImport } from './routes/api/terminal-resize'
 import { Route as ApiTerminalInputRouteImport } from './routes/api/terminal-input'
@@ -43,10 +47,6 @@ import { Route as ApiModelsRouteImport } from './routes/api/models'
 import { Route as ApiMemoryRouteImport } from './routes/api/memory'
 import { Route as ApiLocalProvidersRouteImport } from './routes/api/local-providers'
 import { Route as ApiHistoryRouteImport } from './routes/api/history'
-import { Route as ApiHermesTasksAssigneesRouteImport } from './routes/api/hermes-tasks-assignees'
-import { Route as ApiHermesTasksRouteImport } from './routes/api/hermes-tasks'
-import { Route as ApiHermesJobsRouteImport } from './routes/api/hermes-jobs'
-import { Route as ApiHermesConfigRouteImport } from './routes/api/hermes-config'
 import { Route as ApiGatewayStatusRouteImport } from './routes/api/gateway-status'
 import { Route as ApiFilesRouteImport } from './routes/api/files'
 import { Route as ApiEventsRouteImport } from './routes/api/events'
@@ -56,6 +56,9 @@ import { Route as ApiConnectionStatusRouteImport } from './routes/api/connection
 import { Route as ApiChatEventsRouteImport } from './routes/api/chat-events'
 import { Route as ApiAuthCheckRouteImport } from './routes/api/auth-check'
 import { Route as ApiAuthRouteImport } from './routes/api/auth'
+import { Route as ApiVorbiumTasksTaskIdRouteImport } from './routes/api/vorbium-tasks.$taskId'
+import { Route as ApiVorbiumProxySplatRouteImport } from './routes/api/vorbium-proxy/$'
+import { Route as ApiVorbiumJobsJobIdRouteImport } from './routes/api/vorbium-jobs.$jobId'
 import { Route as ApiSkillsUninstallRouteImport } from './routes/api/skills/uninstall'
 import { Route as ApiSkillsToggleRouteImport } from './routes/api/skills/toggle'
 import { Route as ApiSkillsInstallRouteImport } from './routes/api/skills/install'
@@ -81,9 +84,6 @@ import { Route as ApiKnowledgeReadRouteImport } from './routes/api/knowledge/rea
 import { Route as ApiKnowledgeListRouteImport } from './routes/api/knowledge/list'
 import { Route as ApiKnowledgeGraphRouteImport } from './routes/api/knowledge/graph'
 import { Route as ApiKnowledgeConfigRouteImport } from './routes/api/knowledge/config'
-import { Route as ApiHermesTasksTaskIdRouteImport } from './routes/api/hermes-tasks.$taskId'
-import { Route as ApiHermesProxySplatRouteImport } from './routes/api/hermes-proxy/$'
-import { Route as ApiHermesJobsJobIdRouteImport } from './routes/api/hermes-jobs.$jobId'
 import { Route as ApiSessionsSessionKeyStatusRouteImport } from './routes/api/sessions/$sessionKey.status'
 import { Route as ApiSessionsSessionKeyActiveRunRouteImport } from './routes/api/sessions/$sessionKey.active-run'
 
@@ -172,6 +172,27 @@ const ApiWorkspaceRoute = ApiWorkspaceRouteImport.update({
   path: '/api/workspace',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiVorbiumTasksAssigneesRoute =
+  ApiVorbiumTasksAssigneesRouteImport.update({
+    id: '/api/vorbium-tasks-assignees',
+    path: '/api/vorbium-tasks-assignees',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiVorbiumTasksRoute = ApiVorbiumTasksRouteImport.update({
+  id: '/api/vorbium-tasks',
+  path: '/api/vorbium-tasks',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiVorbiumJobsRoute = ApiVorbiumJobsRouteImport.update({
+  id: '/api/vorbium-jobs',
+  path: '/api/vorbium-jobs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiVorbiumConfigRoute = ApiVorbiumConfigRouteImport.update({
+  id: '/api/vorbium-config',
+  path: '/api/vorbium-config',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiTerminalStreamRoute = ApiTerminalStreamRouteImport.update({
   id: '/api/terminal-stream',
   path: '/api/terminal-stream',
@@ -257,26 +278,6 @@ const ApiHistoryRoute = ApiHistoryRouteImport.update({
   path: '/api/history',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiHermesTasksAssigneesRoute = ApiHermesTasksAssigneesRouteImport.update({
-  id: '/api/hermes-tasks-assignees',
-  path: '/api/hermes-tasks-assignees',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiHermesTasksRoute = ApiHermesTasksRouteImport.update({
-  id: '/api/hermes-tasks',
-  path: '/api/hermes-tasks',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiHermesJobsRoute = ApiHermesJobsRouteImport.update({
-  id: '/api/hermes-jobs',
-  path: '/api/hermes-jobs',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiHermesConfigRoute = ApiHermesConfigRouteImport.update({
-  id: '/api/hermes-config',
-  path: '/api/hermes-config',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ApiGatewayStatusRoute = ApiGatewayStatusRouteImport.update({
   id: '/api/gateway-status',
   path: '/api/gateway-status',
@@ -321,6 +322,21 @@ const ApiAuthRoute = ApiAuthRouteImport.update({
   id: '/api/auth',
   path: '/api/auth',
   getParentRoute: () => rootRouteImport,
+} as any)
+const ApiVorbiumTasksTaskIdRoute = ApiVorbiumTasksTaskIdRouteImport.update({
+  id: '/$taskId',
+  path: '/$taskId',
+  getParentRoute: () => ApiVorbiumTasksRoute,
+} as any)
+const ApiVorbiumProxySplatRoute = ApiVorbiumProxySplatRouteImport.update({
+  id: '/api/vorbium-proxy/$',
+  path: '/api/vorbium-proxy/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiVorbiumJobsJobIdRoute = ApiVorbiumJobsJobIdRouteImport.update({
+  id: '/$jobId',
+  path: '/$jobId',
+  getParentRoute: () => ApiVorbiumJobsRoute,
 } as any)
 const ApiSkillsUninstallRoute = ApiSkillsUninstallRouteImport.update({
   id: '/uninstall',
@@ -447,21 +463,6 @@ const ApiKnowledgeConfigRoute = ApiKnowledgeConfigRouteImport.update({
   path: '/api/knowledge/config',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiHermesTasksTaskIdRoute = ApiHermesTasksTaskIdRouteImport.update({
-  id: '/$taskId',
-  path: '/$taskId',
-  getParentRoute: () => ApiHermesTasksRoute,
-} as any)
-const ApiHermesProxySplatRoute = ApiHermesProxySplatRouteImport.update({
-  id: '/api/hermes-proxy/$',
-  path: '/api/hermes-proxy/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiHermesJobsJobIdRoute = ApiHermesJobsJobIdRouteImport.update({
-  id: '/$jobId',
-  path: '/$jobId',
-  getParentRoute: () => ApiHermesJobsRoute,
-} as any)
 const ApiSessionsSessionKeyStatusRoute =
   ApiSessionsSessionKeyStatusRouteImport.update({
     id: '/$sessionKey/status',
@@ -496,10 +497,6 @@ export interface FileRoutesByFullPath {
   '/api/events': typeof ApiEventsRoute
   '/api/files': typeof ApiFilesRoute
   '/api/gateway-status': typeof ApiGatewayStatusRoute
-  '/api/hermes-config': typeof ApiHermesConfigRoute
-  '/api/hermes-jobs': typeof ApiHermesJobsRouteWithChildren
-  '/api/hermes-tasks': typeof ApiHermesTasksRouteWithChildren
-  '/api/hermes-tasks-assignees': typeof ApiHermesTasksAssigneesRoute
   '/api/history': typeof ApiHistoryRoute
   '/api/local-providers': typeof ApiLocalProvidersRoute
   '/api/memory': typeof ApiMemoryRouteWithChildren
@@ -517,15 +514,16 @@ export interface FileRoutesByFullPath {
   '/api/terminal-input': typeof ApiTerminalInputRoute
   '/api/terminal-resize': typeof ApiTerminalResizeRoute
   '/api/terminal-stream': typeof ApiTerminalStreamRoute
+  '/api/vorbium-config': typeof ApiVorbiumConfigRoute
+  '/api/vorbium-jobs': typeof ApiVorbiumJobsRouteWithChildren
+  '/api/vorbium-tasks': typeof ApiVorbiumTasksRouteWithChildren
+  '/api/vorbium-tasks-assignees': typeof ApiVorbiumTasksAssigneesRoute
   '/api/workspace': typeof ApiWorkspaceRoute
   '/chat/$sessionKey': typeof ChatSessionKeyRoute
   '/settings/mcp': typeof SettingsMcpRoute
   '/settings/providers': typeof SettingsProvidersRoute
   '/chat/': typeof ChatIndexRoute
   '/settings/': typeof SettingsIndexRoute
-  '/api/hermes-jobs/$jobId': typeof ApiHermesJobsJobIdRoute
-  '/api/hermes-proxy/$': typeof ApiHermesProxySplatRoute
-  '/api/hermes-tasks/$taskId': typeof ApiHermesTasksTaskIdRoute
   '/api/knowledge/config': typeof ApiKnowledgeConfigRoute
   '/api/knowledge/graph': typeof ApiKnowledgeGraphRoute
   '/api/knowledge/list': typeof ApiKnowledgeListRoute
@@ -551,6 +549,9 @@ export interface FileRoutesByFullPath {
   '/api/skills/install': typeof ApiSkillsInstallRoute
   '/api/skills/toggle': typeof ApiSkillsToggleRoute
   '/api/skills/uninstall': typeof ApiSkillsUninstallRoute
+  '/api/vorbium-jobs/$jobId': typeof ApiVorbiumJobsJobIdRoute
+  '/api/vorbium-proxy/$': typeof ApiVorbiumProxySplatRoute
+  '/api/vorbium-tasks/$taskId': typeof ApiVorbiumTasksTaskIdRoute
   '/api/sessions/$sessionKey/active-run': typeof ApiSessionsSessionKeyActiveRunRoute
   '/api/sessions/$sessionKey/status': typeof ApiSessionsSessionKeyStatusRoute
 }
@@ -574,10 +575,6 @@ export interface FileRoutesByTo {
   '/api/events': typeof ApiEventsRoute
   '/api/files': typeof ApiFilesRoute
   '/api/gateway-status': typeof ApiGatewayStatusRoute
-  '/api/hermes-config': typeof ApiHermesConfigRoute
-  '/api/hermes-jobs': typeof ApiHermesJobsRouteWithChildren
-  '/api/hermes-tasks': typeof ApiHermesTasksRouteWithChildren
-  '/api/hermes-tasks-assignees': typeof ApiHermesTasksAssigneesRoute
   '/api/history': typeof ApiHistoryRoute
   '/api/local-providers': typeof ApiLocalProvidersRoute
   '/api/memory': typeof ApiMemoryRouteWithChildren
@@ -595,15 +592,16 @@ export interface FileRoutesByTo {
   '/api/terminal-input': typeof ApiTerminalInputRoute
   '/api/terminal-resize': typeof ApiTerminalResizeRoute
   '/api/terminal-stream': typeof ApiTerminalStreamRoute
+  '/api/vorbium-config': typeof ApiVorbiumConfigRoute
+  '/api/vorbium-jobs': typeof ApiVorbiumJobsRouteWithChildren
+  '/api/vorbium-tasks': typeof ApiVorbiumTasksRouteWithChildren
+  '/api/vorbium-tasks-assignees': typeof ApiVorbiumTasksAssigneesRoute
   '/api/workspace': typeof ApiWorkspaceRoute
   '/chat/$sessionKey': typeof ChatSessionKeyRoute
   '/settings/mcp': typeof SettingsMcpRoute
   '/settings/providers': typeof SettingsProvidersRoute
   '/chat': typeof ChatIndexRoute
   '/settings': typeof SettingsIndexRoute
-  '/api/hermes-jobs/$jobId': typeof ApiHermesJobsJobIdRoute
-  '/api/hermes-proxy/$': typeof ApiHermesProxySplatRoute
-  '/api/hermes-tasks/$taskId': typeof ApiHermesTasksTaskIdRoute
   '/api/knowledge/config': typeof ApiKnowledgeConfigRoute
   '/api/knowledge/graph': typeof ApiKnowledgeGraphRoute
   '/api/knowledge/list': typeof ApiKnowledgeListRoute
@@ -629,6 +627,9 @@ export interface FileRoutesByTo {
   '/api/skills/install': typeof ApiSkillsInstallRoute
   '/api/skills/toggle': typeof ApiSkillsToggleRoute
   '/api/skills/uninstall': typeof ApiSkillsUninstallRoute
+  '/api/vorbium-jobs/$jobId': typeof ApiVorbiumJobsJobIdRoute
+  '/api/vorbium-proxy/$': typeof ApiVorbiumProxySplatRoute
+  '/api/vorbium-tasks/$taskId': typeof ApiVorbiumTasksTaskIdRoute
   '/api/sessions/$sessionKey/active-run': typeof ApiSessionsSessionKeyActiveRunRoute
   '/api/sessions/$sessionKey/status': typeof ApiSessionsSessionKeyStatusRoute
 }
@@ -654,10 +655,6 @@ export interface FileRoutesById {
   '/api/events': typeof ApiEventsRoute
   '/api/files': typeof ApiFilesRoute
   '/api/gateway-status': typeof ApiGatewayStatusRoute
-  '/api/hermes-config': typeof ApiHermesConfigRoute
-  '/api/hermes-jobs': typeof ApiHermesJobsRouteWithChildren
-  '/api/hermes-tasks': typeof ApiHermesTasksRouteWithChildren
-  '/api/hermes-tasks-assignees': typeof ApiHermesTasksAssigneesRoute
   '/api/history': typeof ApiHistoryRoute
   '/api/local-providers': typeof ApiLocalProvidersRoute
   '/api/memory': typeof ApiMemoryRouteWithChildren
@@ -675,15 +672,16 @@ export interface FileRoutesById {
   '/api/terminal-input': typeof ApiTerminalInputRoute
   '/api/terminal-resize': typeof ApiTerminalResizeRoute
   '/api/terminal-stream': typeof ApiTerminalStreamRoute
+  '/api/vorbium-config': typeof ApiVorbiumConfigRoute
+  '/api/vorbium-jobs': typeof ApiVorbiumJobsRouteWithChildren
+  '/api/vorbium-tasks': typeof ApiVorbiumTasksRouteWithChildren
+  '/api/vorbium-tasks-assignees': typeof ApiVorbiumTasksAssigneesRoute
   '/api/workspace': typeof ApiWorkspaceRoute
   '/chat/$sessionKey': typeof ChatSessionKeyRoute
   '/settings/mcp': typeof SettingsMcpRoute
   '/settings/providers': typeof SettingsProvidersRoute
   '/chat/': typeof ChatIndexRoute
   '/settings/': typeof SettingsIndexRoute
-  '/api/hermes-jobs/$jobId': typeof ApiHermesJobsJobIdRoute
-  '/api/hermes-proxy/$': typeof ApiHermesProxySplatRoute
-  '/api/hermes-tasks/$taskId': typeof ApiHermesTasksTaskIdRoute
   '/api/knowledge/config': typeof ApiKnowledgeConfigRoute
   '/api/knowledge/graph': typeof ApiKnowledgeGraphRoute
   '/api/knowledge/list': typeof ApiKnowledgeListRoute
@@ -709,6 +707,9 @@ export interface FileRoutesById {
   '/api/skills/install': typeof ApiSkillsInstallRoute
   '/api/skills/toggle': typeof ApiSkillsToggleRoute
   '/api/skills/uninstall': typeof ApiSkillsUninstallRoute
+  '/api/vorbium-jobs/$jobId': typeof ApiVorbiumJobsJobIdRoute
+  '/api/vorbium-proxy/$': typeof ApiVorbiumProxySplatRoute
+  '/api/vorbium-tasks/$taskId': typeof ApiVorbiumTasksTaskIdRoute
   '/api/sessions/$sessionKey/active-run': typeof ApiSessionsSessionKeyActiveRunRoute
   '/api/sessions/$sessionKey/status': typeof ApiSessionsSessionKeyStatusRoute
 }
@@ -735,10 +736,6 @@ export interface FileRouteTypes {
     | '/api/events'
     | '/api/files'
     | '/api/gateway-status'
-    | '/api/hermes-config'
-    | '/api/hermes-jobs'
-    | '/api/hermes-tasks'
-    | '/api/hermes-tasks-assignees'
     | '/api/history'
     | '/api/local-providers'
     | '/api/memory'
@@ -756,15 +753,16 @@ export interface FileRouteTypes {
     | '/api/terminal-input'
     | '/api/terminal-resize'
     | '/api/terminal-stream'
+    | '/api/vorbium-config'
+    | '/api/vorbium-jobs'
+    | '/api/vorbium-tasks'
+    | '/api/vorbium-tasks-assignees'
     | '/api/workspace'
     | '/chat/$sessionKey'
     | '/settings/mcp'
     | '/settings/providers'
     | '/chat/'
     | '/settings/'
-    | '/api/hermes-jobs/$jobId'
-    | '/api/hermes-proxy/$'
-    | '/api/hermes-tasks/$taskId'
     | '/api/knowledge/config'
     | '/api/knowledge/graph'
     | '/api/knowledge/list'
@@ -790,6 +788,9 @@ export interface FileRouteTypes {
     | '/api/skills/install'
     | '/api/skills/toggle'
     | '/api/skills/uninstall'
+    | '/api/vorbium-jobs/$jobId'
+    | '/api/vorbium-proxy/$'
+    | '/api/vorbium-tasks/$taskId'
     | '/api/sessions/$sessionKey/active-run'
     | '/api/sessions/$sessionKey/status'
   fileRoutesByTo: FileRoutesByTo
@@ -813,10 +814,6 @@ export interface FileRouteTypes {
     | '/api/events'
     | '/api/files'
     | '/api/gateway-status'
-    | '/api/hermes-config'
-    | '/api/hermes-jobs'
-    | '/api/hermes-tasks'
-    | '/api/hermes-tasks-assignees'
     | '/api/history'
     | '/api/local-providers'
     | '/api/memory'
@@ -834,15 +831,16 @@ export interface FileRouteTypes {
     | '/api/terminal-input'
     | '/api/terminal-resize'
     | '/api/terminal-stream'
+    | '/api/vorbium-config'
+    | '/api/vorbium-jobs'
+    | '/api/vorbium-tasks'
+    | '/api/vorbium-tasks-assignees'
     | '/api/workspace'
     | '/chat/$sessionKey'
     | '/settings/mcp'
     | '/settings/providers'
     | '/chat'
     | '/settings'
-    | '/api/hermes-jobs/$jobId'
-    | '/api/hermes-proxy/$'
-    | '/api/hermes-tasks/$taskId'
     | '/api/knowledge/config'
     | '/api/knowledge/graph'
     | '/api/knowledge/list'
@@ -868,6 +866,9 @@ export interface FileRouteTypes {
     | '/api/skills/install'
     | '/api/skills/toggle'
     | '/api/skills/uninstall'
+    | '/api/vorbium-jobs/$jobId'
+    | '/api/vorbium-proxy/$'
+    | '/api/vorbium-tasks/$taskId'
     | '/api/sessions/$sessionKey/active-run'
     | '/api/sessions/$sessionKey/status'
   id:
@@ -892,10 +893,6 @@ export interface FileRouteTypes {
     | '/api/events'
     | '/api/files'
     | '/api/gateway-status'
-    | '/api/hermes-config'
-    | '/api/hermes-jobs'
-    | '/api/hermes-tasks'
-    | '/api/hermes-tasks-assignees'
     | '/api/history'
     | '/api/local-providers'
     | '/api/memory'
@@ -913,15 +910,16 @@ export interface FileRouteTypes {
     | '/api/terminal-input'
     | '/api/terminal-resize'
     | '/api/terminal-stream'
+    | '/api/vorbium-config'
+    | '/api/vorbium-jobs'
+    | '/api/vorbium-tasks'
+    | '/api/vorbium-tasks-assignees'
     | '/api/workspace'
     | '/chat/$sessionKey'
     | '/settings/mcp'
     | '/settings/providers'
     | '/chat/'
     | '/settings/'
-    | '/api/hermes-jobs/$jobId'
-    | '/api/hermes-proxy/$'
-    | '/api/hermes-tasks/$taskId'
     | '/api/knowledge/config'
     | '/api/knowledge/graph'
     | '/api/knowledge/list'
@@ -947,6 +945,9 @@ export interface FileRouteTypes {
     | '/api/skills/install'
     | '/api/skills/toggle'
     | '/api/skills/uninstall'
+    | '/api/vorbium-jobs/$jobId'
+    | '/api/vorbium-proxy/$'
+    | '/api/vorbium-tasks/$taskId'
     | '/api/sessions/$sessionKey/active-run'
     | '/api/sessions/$sessionKey/status'
   fileRoutesById: FileRoutesById
@@ -972,10 +973,6 @@ export interface RootRouteChildren {
   ApiEventsRoute: typeof ApiEventsRoute
   ApiFilesRoute: typeof ApiFilesRoute
   ApiGatewayStatusRoute: typeof ApiGatewayStatusRoute
-  ApiHermesConfigRoute: typeof ApiHermesConfigRoute
-  ApiHermesJobsRoute: typeof ApiHermesJobsRouteWithChildren
-  ApiHermesTasksRoute: typeof ApiHermesTasksRouteWithChildren
-  ApiHermesTasksAssigneesRoute: typeof ApiHermesTasksAssigneesRoute
   ApiHistoryRoute: typeof ApiHistoryRoute
   ApiLocalProvidersRoute: typeof ApiLocalProvidersRoute
   ApiMemoryRoute: typeof ApiMemoryRouteWithChildren
@@ -993,10 +990,13 @@ export interface RootRouteChildren {
   ApiTerminalInputRoute: typeof ApiTerminalInputRoute
   ApiTerminalResizeRoute: typeof ApiTerminalResizeRoute
   ApiTerminalStreamRoute: typeof ApiTerminalStreamRoute
+  ApiVorbiumConfigRoute: typeof ApiVorbiumConfigRoute
+  ApiVorbiumJobsRoute: typeof ApiVorbiumJobsRouteWithChildren
+  ApiVorbiumTasksRoute: typeof ApiVorbiumTasksRouteWithChildren
+  ApiVorbiumTasksAssigneesRoute: typeof ApiVorbiumTasksAssigneesRoute
   ApiWorkspaceRoute: typeof ApiWorkspaceRoute
   ChatSessionKeyRoute: typeof ChatSessionKeyRoute
   ChatIndexRoute: typeof ChatIndexRoute
-  ApiHermesProxySplatRoute: typeof ApiHermesProxySplatRoute
   ApiKnowledgeConfigRoute: typeof ApiKnowledgeConfigRoute
   ApiKnowledgeGraphRoute: typeof ApiKnowledgeGraphRoute
   ApiKnowledgeListRoute: typeof ApiKnowledgeListRoute
@@ -1013,6 +1013,7 @@ export interface RootRouteChildren {
   ApiProfilesListRoute: typeof ApiProfilesListRoute
   ApiProfilesReadRoute: typeof ApiProfilesReadRoute
   ApiProfilesRenameRoute: typeof ApiProfilesRenameRoute
+  ApiVorbiumProxySplatRoute: typeof ApiVorbiumProxySplatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -1136,6 +1137,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiWorkspaceRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/vorbium-tasks-assignees': {
+      id: '/api/vorbium-tasks-assignees'
+      path: '/api/vorbium-tasks-assignees'
+      fullPath: '/api/vorbium-tasks-assignees'
+      preLoaderRoute: typeof ApiVorbiumTasksAssigneesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/vorbium-tasks': {
+      id: '/api/vorbium-tasks'
+      path: '/api/vorbium-tasks'
+      fullPath: '/api/vorbium-tasks'
+      preLoaderRoute: typeof ApiVorbiumTasksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/vorbium-jobs': {
+      id: '/api/vorbium-jobs'
+      path: '/api/vorbium-jobs'
+      fullPath: '/api/vorbium-jobs'
+      preLoaderRoute: typeof ApiVorbiumJobsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/vorbium-config': {
+      id: '/api/vorbium-config'
+      path: '/api/vorbium-config'
+      fullPath: '/api/vorbium-config'
+      preLoaderRoute: typeof ApiVorbiumConfigRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/terminal-stream': {
       id: '/api/terminal-stream'
       path: '/api/terminal-stream'
@@ -1255,34 +1284,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiHistoryRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/hermes-tasks-assignees': {
-      id: '/api/hermes-tasks-assignees'
-      path: '/api/hermes-tasks-assignees'
-      fullPath: '/api/hermes-tasks-assignees'
-      preLoaderRoute: typeof ApiHermesTasksAssigneesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/hermes-tasks': {
-      id: '/api/hermes-tasks'
-      path: '/api/hermes-tasks'
-      fullPath: '/api/hermes-tasks'
-      preLoaderRoute: typeof ApiHermesTasksRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/hermes-jobs': {
-      id: '/api/hermes-jobs'
-      path: '/api/hermes-jobs'
-      fullPath: '/api/hermes-jobs'
-      preLoaderRoute: typeof ApiHermesJobsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/hermes-config': {
-      id: '/api/hermes-config'
-      path: '/api/hermes-config'
-      fullPath: '/api/hermes-config'
-      preLoaderRoute: typeof ApiHermesConfigRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/api/gateway-status': {
       id: '/api/gateway-status'
       path: '/api/gateway-status'
@@ -1345,6 +1346,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/auth'
       preLoaderRoute: typeof ApiAuthRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/api/vorbium-tasks/$taskId': {
+      id: '/api/vorbium-tasks/$taskId'
+      path: '/$taskId'
+      fullPath: '/api/vorbium-tasks/$taskId'
+      preLoaderRoute: typeof ApiVorbiumTasksTaskIdRouteImport
+      parentRoute: typeof ApiVorbiumTasksRoute
+    }
+    '/api/vorbium-proxy/$': {
+      id: '/api/vorbium-proxy/$'
+      path: '/api/vorbium-proxy/$'
+      fullPath: '/api/vorbium-proxy/$'
+      preLoaderRoute: typeof ApiVorbiumProxySplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/vorbium-jobs/$jobId': {
+      id: '/api/vorbium-jobs/$jobId'
+      path: '/$jobId'
+      fullPath: '/api/vorbium-jobs/$jobId'
+      preLoaderRoute: typeof ApiVorbiumJobsJobIdRouteImport
+      parentRoute: typeof ApiVorbiumJobsRoute
     }
     '/api/skills/uninstall': {
       id: '/api/skills/uninstall'
@@ -1521,27 +1543,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiKnowledgeConfigRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/hermes-tasks/$taskId': {
-      id: '/api/hermes-tasks/$taskId'
-      path: '/$taskId'
-      fullPath: '/api/hermes-tasks/$taskId'
-      preLoaderRoute: typeof ApiHermesTasksTaskIdRouteImport
-      parentRoute: typeof ApiHermesTasksRoute
-    }
-    '/api/hermes-proxy/$': {
-      id: '/api/hermes-proxy/$'
-      path: '/api/hermes-proxy/$'
-      fullPath: '/api/hermes-proxy/$'
-      preLoaderRoute: typeof ApiHermesProxySplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/hermes-jobs/$jobId': {
-      id: '/api/hermes-jobs/$jobId'
-      path: '/$jobId'
-      fullPath: '/api/hermes-jobs/$jobId'
-      preLoaderRoute: typeof ApiHermesJobsJobIdRouteImport
-      parentRoute: typeof ApiHermesJobsRoute
-    }
     '/api/sessions/$sessionKey/status': {
       id: '/api/sessions/$sessionKey/status'
       path: '/$sessionKey/status'
@@ -1573,30 +1574,6 @@ const SettingsRouteChildren: SettingsRouteChildren = {
 
 const SettingsRouteWithChildren = SettingsRoute._addFileChildren(
   SettingsRouteChildren,
-)
-
-interface ApiHermesJobsRouteChildren {
-  ApiHermesJobsJobIdRoute: typeof ApiHermesJobsJobIdRoute
-}
-
-const ApiHermesJobsRouteChildren: ApiHermesJobsRouteChildren = {
-  ApiHermesJobsJobIdRoute: ApiHermesJobsJobIdRoute,
-}
-
-const ApiHermesJobsRouteWithChildren = ApiHermesJobsRoute._addFileChildren(
-  ApiHermesJobsRouteChildren,
-)
-
-interface ApiHermesTasksRouteChildren {
-  ApiHermesTasksTaskIdRoute: typeof ApiHermesTasksTaskIdRoute
-}
-
-const ApiHermesTasksRouteChildren: ApiHermesTasksRouteChildren = {
-  ApiHermesTasksTaskIdRoute: ApiHermesTasksTaskIdRoute,
-}
-
-const ApiHermesTasksRouteWithChildren = ApiHermesTasksRoute._addFileChildren(
-  ApiHermesTasksRouteChildren,
 )
 
 interface ApiMemoryRouteChildren {
@@ -1651,6 +1628,30 @@ const ApiSkillsRouteWithChildren = ApiSkillsRoute._addFileChildren(
   ApiSkillsRouteChildren,
 )
 
+interface ApiVorbiumJobsRouteChildren {
+  ApiVorbiumJobsJobIdRoute: typeof ApiVorbiumJobsJobIdRoute
+}
+
+const ApiVorbiumJobsRouteChildren: ApiVorbiumJobsRouteChildren = {
+  ApiVorbiumJobsJobIdRoute: ApiVorbiumJobsJobIdRoute,
+}
+
+const ApiVorbiumJobsRouteWithChildren = ApiVorbiumJobsRoute._addFileChildren(
+  ApiVorbiumJobsRouteChildren,
+)
+
+interface ApiVorbiumTasksRouteChildren {
+  ApiVorbiumTasksTaskIdRoute: typeof ApiVorbiumTasksTaskIdRoute
+}
+
+const ApiVorbiumTasksRouteChildren: ApiVorbiumTasksRouteChildren = {
+  ApiVorbiumTasksTaskIdRoute: ApiVorbiumTasksTaskIdRoute,
+}
+
+const ApiVorbiumTasksRouteWithChildren = ApiVorbiumTasksRoute._addFileChildren(
+  ApiVorbiumTasksRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SplatRoute: SplatRoute,
@@ -1672,10 +1673,6 @@ const rootRouteChildren: RootRouteChildren = {
   ApiEventsRoute: ApiEventsRoute,
   ApiFilesRoute: ApiFilesRoute,
   ApiGatewayStatusRoute: ApiGatewayStatusRoute,
-  ApiHermesConfigRoute: ApiHermesConfigRoute,
-  ApiHermesJobsRoute: ApiHermesJobsRouteWithChildren,
-  ApiHermesTasksRoute: ApiHermesTasksRouteWithChildren,
-  ApiHermesTasksAssigneesRoute: ApiHermesTasksAssigneesRoute,
   ApiHistoryRoute: ApiHistoryRoute,
   ApiLocalProvidersRoute: ApiLocalProvidersRoute,
   ApiMemoryRoute: ApiMemoryRouteWithChildren,
@@ -1693,10 +1690,13 @@ const rootRouteChildren: RootRouteChildren = {
   ApiTerminalInputRoute: ApiTerminalInputRoute,
   ApiTerminalResizeRoute: ApiTerminalResizeRoute,
   ApiTerminalStreamRoute: ApiTerminalStreamRoute,
+  ApiVorbiumConfigRoute: ApiVorbiumConfigRoute,
+  ApiVorbiumJobsRoute: ApiVorbiumJobsRouteWithChildren,
+  ApiVorbiumTasksRoute: ApiVorbiumTasksRouteWithChildren,
+  ApiVorbiumTasksAssigneesRoute: ApiVorbiumTasksAssigneesRoute,
   ApiWorkspaceRoute: ApiWorkspaceRoute,
   ChatSessionKeyRoute: ChatSessionKeyRoute,
   ChatIndexRoute: ChatIndexRoute,
-  ApiHermesProxySplatRoute: ApiHermesProxySplatRoute,
   ApiKnowledgeConfigRoute: ApiKnowledgeConfigRoute,
   ApiKnowledgeGraphRoute: ApiKnowledgeGraphRoute,
   ApiKnowledgeListRoute: ApiKnowledgeListRoute,
@@ -1713,6 +1713,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiProfilesListRoute: ApiProfilesListRoute,
   ApiProfilesReadRoute: ApiProfilesReadRoute,
   ApiProfilesRenameRoute: ApiProfilesRenameRoute,
+  ApiVorbiumProxySplatRoute: ApiVorbiumProxySplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

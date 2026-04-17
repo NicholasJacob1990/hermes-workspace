@@ -21,7 +21,7 @@ import {
   ensureGatewayProbed,
   getGatewayCapabilities,
   streamChat,
-} from '../../server/hermes-api'
+} from '../../server/vorbium-api'
 import type {OpenAICompatContentPart, OpenAICompatMessage} from '../../server/openai-compat-api';
 // Hermes agent runs can take 5+ minutes with complex tool chains
 const SEND_STREAM_RUN_TIMEOUT_MS = 600_000

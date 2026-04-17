@@ -599,7 +599,7 @@ export function ProviderWizard({
                         <p className="text-xs text-primary-700 text-pretty">
                           No terminal access?{' '}
                           <a
-                            href="https://github.com/NousResearch/hermes-agent"
+                            href="https://github.com/NousResearch/vorbium-agent"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-primary-800 underline decoration-primary-400 hover:text-primary-900"
@@ -663,7 +663,7 @@ export function ProviderWizard({
                         <p className="text-xs text-primary-700 text-pretty">
                           No terminal access?{' '}
                           <a
-                            href="https://github.com/NousResearch/hermes-agent"
+                            href="https://github.com/NousResearch/vorbium-agent"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-primary-800 underline decoration-primary-400 hover:text-primary-900"

@@ -18,7 +18,7 @@ import {
 } from '@hugeicons/core-free-icons'
 import { CreateJobDialog } from './create-job-dialog'
 import { EditJobDialog } from './edit-job-dialog'
-import type { HermesJob } from '@/lib/jobs-api'
+import type { VorbiumJob } from '@/lib/jobs-api'
 import { toast } from '@/components/ui/toast'
 import { cn } from '@/lib/utils'
 import {
@@ -65,7 +65,7 @@ function getOutputPreview(content: string): string {
   return `${normalized.slice(0, 200).trimEnd()}…`
 }
 
-function getLastRunStatus(job: HermesJob): {
+function getLastRunStatus(job: VorbiumJob): {
   label: string
   color: string
 } {
@@ -101,12 +101,12 @@ function JobCard({
   onDelete,
   onEdit,
 }: {
-  job: HermesJob
+  job: VorbiumJob
   onPause: (id: string) => void
   onResume: (id: string) => void
   onTrigger: (id: string) => void
   onDelete: (id: string) => void
-  onEdit: (job: HermesJob) => void
+  onEdit: (job: VorbiumJob) => void
 }) {
   const [expanded, setExpanded] = useState(false)
   const isPaused = job.state === 'paused' || !job.enabled
@@ -294,7 +294,7 @@ export function JobsScreen() {
   const queryClient = useQueryClient()
   const [search, setSearch] = useState('')
   const [showCreate, setShowCreate] = useState(false)
-  const [editingJob, setEditingJob] = useState<HermesJob | null>(null)
+  const [editingJob, setEditingJob] = useState<VorbiumJob | null>(null)
 
   const jobsQuery = useQuery({
     queryKey: QUERY_KEY,

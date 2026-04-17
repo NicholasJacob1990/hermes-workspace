@@ -15,7 +15,7 @@ function authHeaders(): Record<string, string> {
   return BEARER_TOKEN ? { Authorization: `Bearer ${BEARER_TOKEN}` } : {}
 }
 
-export const Route = createFileRoute('/api/hermes-jobs/$jobId')({
+export const Route = createFileRoute('/api/vorbium-jobs/$jobId')({
   server: {
     handlers: {
       GET: async ({ request, params }) => {
@@ -34,7 +34,7 @@ export const Route = createFileRoute('/api/hermes-jobs/$jobId')({
           )
         }
         const url = new URL(request.url)
-        // Support sub-actions: /api/hermes-jobs/:id/output, /pause, /resume, /run
+        // Support sub-actions: /api/vorbium-jobs/:id/output, /pause, /resume, /run
         const subPath = url.searchParams.get('action') || ''
         const target = subPath
           ? `${HERMES_API}/api/jobs/${params.jobId}/${subPath}${url.search}`

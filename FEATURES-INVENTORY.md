@@ -1,7 +1,7 @@
-# Hermes Workspace — Comprehensive Features Inventory
+# Vorbium Engine Workspace — Comprehensive Features Inventory
 
 > **Version:** 1.0.0 | **Stack:** React 19 + TanStack Start/Router + Vite 7 + Tailwind CSS 4 + Zustand + xterm.js + Monaco Editor  
-> **Description:** Desktop workspace for Hermes Agent — chat, orchestration, and multi-agent coding pipelines
+> **Description:** Desktop workspace for Vorbium Engine — chat, orchestration, and multi-agent coding pipelines
 
 ---
 
@@ -27,7 +27,7 @@
 - **Real-time SSE streaming** with tool call rendering
 - **Multi-session management** — create, rename, delete, fork sessions
 - **Dual chat backend modes:**
-  - **Enhanced Hermes** — full session API with persistent history via Hermes gateway
+  - **Enhanced Vorbium Engine** — full session API with persistent history via Vorbium Engine gateway
   - **Portable** — OpenAI-compatible `/v1/chat/completions` (works with Ollama, LM Studio, vLLM, etc.)
 - **Chat sidebar** — session list with search, pin, rename, delete dialogs
 - **Message rendering:**
@@ -97,7 +97,7 @@
 
 ### 1.6 Skills Browser Screen (`/skills`)
 
-- **Browse 2,000+ skills** from the Hermes skill registry
+- **Browse 2,000+ skills** from the Vorbium Engine skill registry
 - **Tabbed view:** Installed, Marketplace, Featured
 - **Skill categories:** All, Web & Frontend, Coding Agents, Git & GitHub, DevOps & Cloud, Browser & Automation, Image & Video, Search & Research, AI & LLMs, Productivity, Marketing & Sales, Communication, Data & Analytics, Finance & Crypto
 - **Search and filter** — by name, description, author, tags, triggers
@@ -129,7 +129,7 @@
 
 | Endpoint             | Method | Description                                                                      |
 | -------------------- | ------ | -------------------------------------------------------------------------------- |
-| `/api/send-stream`   | POST   | Main streaming chat endpoint — routes to enhanced Hermes or portable OpenAI mode |
+| `/api/send-stream`   | POST   | Main streaming chat endpoint — routes to enhanced Vorbium Engine or portable OpenAI mode |
 | `/api/send`          | POST   | Non-streaming chat send                                                          |
 | `/api/sessions/send` | POST   | Session-specific send                                                            |
 | `/api/chat-events`   | GET    | SSE chat event stream                                                            |
@@ -162,7 +162,7 @@
 
 | Endpoint             | Method | Description                      |
 | -------------------- | ------ | -------------------------------- |
-| `/api/memory`        | GET    | Get memory from Hermes gateway   |
+| `/api/memory`        | GET    | Get memory from Vorbium Engine gateway   |
 | `/api/memory/list`   | GET    | List local memory markdown files |
 | `/api/memory/read`   | GET    | Read specific memory file        |
 | `/api/memory/search` | GET    | Search across memory files       |
@@ -180,7 +180,7 @@
 | Endpoint             | Method | Description                                  |
 | -------------------- | ------ | -------------------------------------------- |
 | `/api/models`        | GET    | List available models (gateway + auth store) |
-| `/api/hermes-config` | GET    | Read Hermes config.yaml and .env             |
+| `/api/hermes-config` | GET    | Read Vorbium Engine config.yaml and .env             |
 | `/api/hermes-config` | PATCH  | Update config.yaml and .env                  |
 | `/api/context-usage` | GET    | Token/context usage for a session            |
 
@@ -210,8 +210,8 @@
 | `/api/ping`              | GET    | Server ping/health                            |
 | `/api/connection-status` | GET    | Gateway connection status with capabilities   |
 | `/api/gateway-status`    | GET    | Detailed gateway capabilities                 |
-| `/api/start-agent`       | POST   | Auto-start Hermes agent process               |
-| `/api/start-hermes`      | POST   | Start Hermes gateway                          |
+| `/api/start-agent`       | POST   | Auto-start Vorbium Engine agent process               |
+| `/api/start-hermes`      | POST   | Start Vorbium Engine gateway                          |
 | `/api/workspace`         | GET    | Workspace auto-detection                      |
 
 ### 2.10 OAuth
@@ -326,7 +326,7 @@
 
 | Setting                   | Type                            | Default  | Description                 |
 | ------------------------- | ------------------------------- | -------- | --------------------------- |
-| `hermesUrl`               | string                          | `''`     | Hermes API URL              |
+| `hermesUrl`               | string                          | `''`     | Vorbium Engine API URL              |
 | `hermesToken`             | string                          | `''`     | Bearer token                |
 | `theme`                   | `system\|light\|dark`           | `system` | Color mode                  |
 | `accentColor`             | `orange\|purple\|blue\|green`   | `blue`   | Accent color                |
@@ -346,9 +346,9 @@
 
 | Theme                 | Description                     | Mode  |
 | --------------------- | ------------------------------- | ----- |
-| Hermes Official       | Navy and indigo flagship        | Dark  |
-| Hermes Official Light | Soft indigo light palette       | Light |
-| Hermes Classic        | Bronze accents on dark charcoal | Dark  |
+| Vorbium Engine Official       | Navy and indigo flagship        | Dark  |
+| Vorbium Engine Official Light | Soft indigo light palette       | Light |
+| Vorbium Engine Classic        | Bronze accents on dark charcoal | Dark  |
 | Classic Light         | Warm parchment with bronze      | Light |
 | Slate                 | Cool blue developer theme       | Dark  |
 | Slate Light           | GitHub-light with blue accents  | Light |
@@ -384,7 +384,7 @@
 | `BEARER_TOKEN`         | Bearer token for backend auth                      |
 | `PORT`                 | Server port (default: 3002 dev, 3000 prod)         |
 
-### 4.6 Hermes Config Management
+### 4.6 Vorbium Engine Config Management
 
 - **Read/write `~/.hermes/config.yaml`** — YAML config via web UI
 - **Read/write `~/.hermes/.env`** — environment variables
@@ -401,7 +401,7 @@
   - **Core:** health, chatCompletions, models, streaming
   - **Enhanced:** sessions, skills, memory, config, jobs
 - **Three chat modes:**
-  - `enhanced-hermes` — full Hermes session API
+  - `enhanced-hermes` — full Vorbium Engine session API
   - `portable` — OpenAI-compatible /v1/chat/completions
   - `disconnected` — no usable backend
 - **Auto-detection** with port fallback (8642 → 8643)
@@ -443,7 +443,7 @@
 - Automatic default model detection from `/v1/models`
 - Multimodal support (image_url content parts)
 
-### 5.7 Hermes Agent Auto-Start
+### 5.7 Vorbium Engine Auto-Start
 
 - Auto-detects sibling `hermes-agent/` directory
 - Resolves Python virtualenv (`.venv`, `venv`, system `python3`)
@@ -472,7 +472,7 @@
 | Ollama     | Local (no auth)    | Local models                        |
 | Custom     | API Key            | Any OpenAI-compatible server        |
 
-### 6.2 Known Gateway Providers (Hermes Config)
+### 6.2 Known Gateway Providers (Vorbium Engine Config)
 
 - Nous Portal (OAuth device code flow)
 - OpenAI Codex (OAuth)
@@ -687,7 +687,7 @@ pnpm stop:stable   # Stop via scripts/stop-stable.sh
 
 ### 10.5 Auto-Start Features
 
-- Hermes agent auto-start from sibling directory
+- Vorbium Engine agent auto-start from sibling directory
 - Workspace daemon auto-start with crash recovery
 - Port fallback detection (8642 → 8643)
 

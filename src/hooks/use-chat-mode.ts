@@ -4,7 +4,7 @@ export type ChatMode = 'enhanced-hermes' | 'portable' | 'disconnected'
 
 interface GatewayStatus {
   capabilities: Record<string, boolean>
-  hermesUrl: string
+  vorbiumUrl: string
 }
 
 function deriveChatMode(capabilities: Record<string, boolean>): ChatMode {

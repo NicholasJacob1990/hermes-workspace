@@ -22,7 +22,7 @@ const execFileAsync = promisify(execFile)
 const WORKSPACE_ROOT = (
   process.env.HERMES_WORKSPACE_DIR ||
   process.env.HERMES_WORKSPACE_DIR ||
-  path.join(os.homedir(), '.hermes')
+  path.join(os.homedir(), '.vorbium')
 ).trim()
 
 type FileEntry = {

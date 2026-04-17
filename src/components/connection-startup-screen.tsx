@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
-import type { AuthStatus } from '@/lib/hermes-auth'
+import type { AuthStatus } from '@/lib/vorbium-auth'
 import { writeTextToClipboard } from '@/lib/clipboard'
-import { fetchHermesAuthStatus } from '@/lib/hermes-auth'
+import { fetchHermesAuthStatus } from '@/lib/vorbium-auth'
 
 const POLL_INTERVAL_MS = 2_000
 const FAILURE_REVEAL_MS = 5_000
@@ -31,7 +31,7 @@ function getSetupSteps(
     },
     {
       title: 'Optional: run a Hermes gateway locally',
-      command: 'git clone https://github.com/outsourc-e/hermes-agent.git',
+      command: 'git clone https://github.com/outsourc-e/vorbium-agent.git',
       note: 'Hermes gateway APIs unlock sessions, skills, memory, and other workspace extras automatically',
     },
     {
@@ -188,12 +188,12 @@ export function ConnectionStartupScreen({ onConnected }: Props) {
       <div className="flex w-full max-w-lg flex-col items-center text-center">
         <img
           src="/hermes-avatar.webp"
-          alt="Hermes"
+          alt="Vorbium"
           className="mb-5 h-20 w-20 rounded-2xl object-cover shadow-[0_12px_40px_rgba(0,0,0,0.45)]"
         />
 
         <h1 className="text-[2rem] font-semibold tracking-tight text-white">
-          Hermes Workspace
+          Vorbium Engine
         </h1>
 
         {/* Connecting spinner */}
@@ -222,7 +222,7 @@ export function ConnectionStartupScreen({ onConnected }: Props) {
               Welcome! Let&apos;s connect your backend
             </p>
             <p className="mt-2 text-sm leading-6 text-white/60">
-              Hermes Workspace works with any OpenAI-compatible backend. Hermes
+              Vorbium Engine works with any OpenAI-compatible backend. Hermes
               gateway APIs unlock enhanced features automatically when they are
               available.
             </p>

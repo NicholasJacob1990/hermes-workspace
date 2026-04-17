@@ -15,8 +15,8 @@ const DEFAULT_CONFIG: KnowledgeBaseConfig = {
 }
 
 function getConfigPath(): string {
-  const hermesHome = path.join(os.homedir(), '.hermes')
-  return path.join(hermesHome, 'knowledge-config.json')
+  const vorbiumHome = path.join(os.homedir(), '.vorbium')
+  return path.join(vorbiumHome, 'knowledge-config.json')
 }
 
 export function readKnowledgeBaseConfig(): KnowledgeBaseConfig {
@@ -52,7 +52,7 @@ export function getKnowledgeBaseEffectiveRoot(): string {
   }
   // fallback: legacy env var or default
   if (process.env.KNOWLEDGE_DIR) return path.resolve(process.env.KNOWLEDGE_DIR)
-  const hermesKnowledge = path.join(os.homedir(), '.hermes', 'knowledge')
-  if (fs.existsSync(hermesKnowledge)) return hermesKnowledge
-  return hermesKnowledge
+  const vorbiumKnowledge = path.join(os.homedir(), '.vorbium', 'knowledge')
+  if (fs.existsSync(vorbiumKnowledge)) return vorbiumKnowledge
+  return vorbiumKnowledge
 }

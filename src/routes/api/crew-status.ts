@@ -34,7 +34,7 @@ function titleCase(value: string): string {
 }
 
 function buildCrewDefinitions(): CrewDefinition[] {
-  const base = join(homedir(), '.hermes')
+  const base = join(homedir(), '.vorbium')
   const profilesDir = join(base, 'profiles')
   const dynamicProfiles = existsSync(profilesDir)
     ? readdirSync(profilesDir, { withFileTypes: true })
@@ -54,13 +54,13 @@ function buildCrewDefinitions(): CrewDefinition[] {
   ]
 }
 
-function getHermesHome(profilePath: string | null): string {
-  const base = join(homedir(), '.hermes')
+function getVorbiumHome(profilePath: string | null): string {
+  const base = join(homedir(), '.vorbium')
   return profilePath ? join(base, 'profiles', profilePath) : base
 }
 
-function readGatewayState(hermesHome: string) {
-  const path = join(hermesHome, 'gateway_state.json')
+function readGatewayState(vorbiumHome: string) {
+  const path = join(vorbiumHome, 'gateway_state.json')
   if (!existsSync(path)) return { pid: null, gatewayState: 'unknown', platforms: {}, updatedAt: null }
   try {
     const raw = JSON.parse(readFileSync(path, 'utf-8'))
@@ -85,8 +85,8 @@ function checkProcessAlive(pid: number | null): boolean {
   }
 }
 
-function readDbStats(hermesHome: string): DbStats {
-  const dbPath = join(hermesHome, 'state.db')
+function readDbStats(vorbiumHome: string): DbStats {
+  const dbPath = join(vorbiumHome, 'state.db')
   if (!existsSync(dbPath)) {
     return {
       sessionCount: 0,
@@ -156,8 +156,8 @@ print(json.dumps(out))
   }
 }
 
-function readConfig(hermesHome: string): { model: string; provider: string } {
-  const configPath = join(hermesHome, 'config.yaml')
+function readConfig(vorbiumHome: string): { model: string; provider: string } {
+  const configPath = join(vorbiumHome, 'config.yaml')
   if (!existsSync(configPath)) return { model: 'unknown', provider: 'unknown' }
   try {
     const raw = yaml.parse(readFileSync(configPath, 'utf-8')) as Record<string, unknown>
@@ -181,8 +181,8 @@ function readConfig(hermesHome: string): { model: string; provider: string } {
   }
 }
 
-function readCronJobCount(hermesHome: string): number {
-  const cronPath = join(hermesHome, 'cron', 'jobs.json')
+function readCronJobCount(vorbiumHome: string): number {
+  const cronPath = join(vorbiumHome, 'cron', 'jobs.json')
   if (!existsSync(cronPath)) return 0
   try {
     const jobs = JSON.parse(readFileSync(cronPath, 'utf-8'))
@@ -232,8 +232,8 @@ export const Route = createFileRoute('/api/crew-status')({
         const crewDefinitions = buildCrewDefinitions()
 
         const crew = crewDefinitions.map((member) => {
-          const hermesHome = getHermesHome(member.profilePath)
-          const profileFound = existsSync(hermesHome)
+          const vorbiumHome = getVorbiumHome(member.profilePath)
+          const profileFound = existsSync(vorbiumHome)
 
           if (!profileFound) {
             return {
@@ -258,9 +258,9 @@ export const Route = createFileRoute('/api/crew-status')({
             }
           }
 
-          const gatewayInfo = readGatewayState(hermesHome)
-          const dbStats = readDbStats(hermesHome)
-          const config = readConfig(hermesHome)
+          const gatewayInfo = readGatewayState(vorbiumHome)
+          const dbStats = readDbStats(vorbiumHome)
+          const config = readConfig(vorbiumHome)
 
           return {
             id: member.id,
@@ -279,7 +279,7 @@ export const Route = createFileRoute('/api/crew-status')({
             toolCallCount: dbStats.toolCallCount,
             totalTokens: dbStats.totalTokens,
             estimatedCostUsd: dbStats.estimatedCostUsd,
-            cronJobCount: readCronJobCount(hermesHome),
+            cronJobCount: readCronJobCount(vorbiumHome),
             assignedTaskCount: taskCounts[member.id] ?? 0,
           }
         })

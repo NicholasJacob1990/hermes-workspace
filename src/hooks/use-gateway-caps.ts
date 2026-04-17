@@ -8,7 +8,7 @@ import { useQuery } from '@tanstack/react-query'
 
 interface GatewayStatus {
   capabilities: Record<string, boolean>
-  hermesUrl: string
+  vorbiumUrl: string
 }
 
 function useGatewayStatus() {

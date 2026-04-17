@@ -6,7 +6,7 @@ import {
   ensureGatewayProbed,
   getCapabilities,
 } from '../../server/gateway-capabilities'
-import { getMemory } from '../../server/hermes-api'
+import { getMemory } from '../../server/vorbium-api'
 
 export const Route = createFileRoute('/api/memory')({
   server: {

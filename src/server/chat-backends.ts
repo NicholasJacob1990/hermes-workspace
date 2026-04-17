@@ -1,4 +1,4 @@
-import { streamChat } from './hermes-api'
+import { streamChat } from './vorbium-api'
 import { resolveChatBackend } from './chat-mode'
 import { openaiChat } from './openai-compat-api'
 
@@ -16,7 +16,7 @@ export type UnifiedChatOptions = {
   attachments?: Array<Record<string, unknown>>
 }
 
-async function* streamHermesChat(
+async function* streamVorbiumChat(
   messages: Array<ChatMessage>,
   options: UnifiedChatOptions,
 ): AsyncGenerator<string, void, void> {
@@ -111,9 +111,9 @@ export async function sendChatUnified(
     })
   }
 
-  if (backend === 'hermes-enhanced') {
+  if (backend === 'vorbium-enhanced') {
     let text = ''
-    for await (const delta of streamHermesChat(messages, options)) {
+    for await (const delta of streamVorbiumChat(messages, options)) {
       text += delta
     }
     return text
@@ -144,8 +144,8 @@ export async function streamChatUnified(
     return toStringStream()
   }
 
-  if (backend === 'hermes-enhanced') {
-    return streamHermesChat(messages, options)
+  if (backend === 'vorbium-enhanced') {
+    return streamVorbiumChat(messages, options)
   }
 
   throw new Error('No chat backend available')

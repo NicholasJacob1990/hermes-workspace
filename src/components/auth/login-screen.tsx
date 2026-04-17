@@ -61,7 +61,7 @@ export function LoginScreen() {
                 <circle cx="50" cy="50" r="15" fill="currentColor" />
               </svg>
               <h1 className="text-2xl font-bold tracking-tight text-primary-900">
-                Hermes Workspace
+                Vorbium Engine
               </h1>
             </div>
           </div>
@@ -108,7 +108,7 @@ export function LoginScreen() {
         <p className="mt-6 text-center text-xs text-primary-500">
           Powered by{' '}
           <a
-            href="https://github.com/NousResearch/hermes-agent"
+            href="https://github.com/NousResearch/vorbium-agent"
             target="_blank"
             rel="noopener noreferrer"
             className="text-accent-500 hover:text-accent-600 transition-colors"

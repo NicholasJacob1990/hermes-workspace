@@ -186,7 +186,7 @@ function normalizeSkill(value: unknown): SkillSummary | null {
   }
 }
 
-async function fetchHermesSkills(): Promise<Array<SkillSummary>> {
+async function fetchVorbiumSkills(): Promise<Array<SkillSummary>> {
   const headers: Record<string, string> = {}
   if (BEARER_TOKEN) headers['Authorization'] = `Bearer ${BEARER_TOKEN}`
 
@@ -279,7 +279,7 @@ export const Route = createFileRoute('/api/skills')({
             Math.max(1, Number(url.searchParams.get('limit') || '30')),
           )
 
-          const sourceItems = await fetchHermesSkills()
+          const sourceItems = await fetchVorbiumSkills()
           const installedLookup = new Set(
             sourceItems
               .filter((skill) => skill.installed)

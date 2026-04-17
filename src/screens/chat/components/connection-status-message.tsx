@@ -25,7 +25,7 @@ function classifyConnectionError(
   if (!normalizedError && !status) {
     return {
       title: 'Not connected',
-      description: "Hermes Workspace can't reach Hermes.",
+      description: "Vorbium Engine can't reach Hermes.",
       action: 'Check that Hermes is running, then try again.',
     }
   }

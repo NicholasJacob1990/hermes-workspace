@@ -699,7 +699,7 @@ export function useStreamingMessage(options: UseStreamingMessageOptions = {}) {
             attachments: params.attachments,
             idempotencyKey: params.idempotencyKey ?? crypto.randomUUID(),
             model: params.model || undefined,
-            locale: typeof window !== 'undefined' ? localStorage.getItem('hermes-workspace-locale') || 'en' : 'en',
+            locale: typeof window !== 'undefined' ? localStorage.getItem('vorbium-workspace-locale') || 'en' : 'en',
           }),
           signal: abortController.signal,
         })

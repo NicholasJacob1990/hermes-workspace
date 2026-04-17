@@ -695,7 +695,102 @@ code {
   animation: pulse-glow 2s ease-in-out infinite;
 }
 
-/* ── Hermes Workspace Themes ── */
+/* ── Vorbium Engine Themes ── */
+/* Paleta: #0F172A deep slate · #E2E8F0 pale · #22D3EE cyan accent
+ * Inspiração: LegalTech moderna (Harvey, Spellbook, Casetext) + CLI aesthetic */
+[data-theme='vorbium-official'] {
+  --theme-bg: #0F172A;
+  --theme-sidebar: #0B1324;
+  --theme-panel: #0B1324;
+  --theme-card: #111C33;
+  --theme-card2: #17233D;
+  --theme-border: #2A3654;
+  --theme-border-subtle: #1D2842;
+  --theme-text: #E2E8F0;
+  --theme-muted: #94A3B8;
+  --theme-shadow-1: 0 1px 2px rgba(0, 0, 0, 0.6);
+  --theme-shadow-2: 0 6px 16px rgba(0, 0, 0, 0.55);
+  --theme-shadow-3: 0 16px 36px rgba(0, 0, 0, 0.65);
+  --theme-glass: rgba(15, 23, 42, 0.88);
+  --theme-focus: #22D3EE;
+  --theme-accent: #22D3EE;
+  --theme-accent-secondary: #67E8F9;
+  --theme-accent-subtle: rgba(34, 211, 238, 0.12);
+  --theme-accent-border: rgba(34, 211, 238, 0.32);
+  --theme-active: #22D3EE;
+  --theme-link: #67E8F9;
+  --theme-success: #22C55E;
+  --theme-warning: #F59E0B;
+  --theme-danger: #EF4444;
+  --theme-stripe: rgba(42, 54, 84, 0.48);
+  --theme-header-bg: #0B1324;
+  --theme-header-border: #2A3654;
+  --chat-user-bg: #15263E;
+  --chat-user-border: #2E4566;
+  --chat-user-foreground: #E2E8F0;
+  --chat-assistant-bg: #111C33;
+  --chat-assistant-border: #1D2842;
+  --chat-assistant-foreground: #E2E8F0;
+  --composer-bg: #0E1A30;
+  --composer-border: #2A3654;
+  --composer-placeholder: #64748B;
+  --tool-card-bg: #0E1A30;
+  --tool-card-border: #2A3654;
+  --tool-card-title: #E2E8F0;
+  --tool-card-muted: #94A3B8;
+  --code-bg: #0E1A30;
+  --code-border: #2A3654;
+  --code-foreground: #E2E8F0;
+  --theme-input: #0E1A30;
+}
+
+[data-theme='vorbium-official-light'] {
+  --theme-bg: #F8FAFC;
+  --theme-sidebar: #F1F5F9;
+  --theme-panel: #F1F5F9;
+  --theme-card: #FFFFFF;
+  --theme-card2: #F8FAFC;
+  --theme-border: #CBD5E1;
+  --theme-border-subtle: #E2E8F0;
+  --theme-text: #0F172A;
+  --theme-muted: #64748B;
+  --theme-shadow-1: 0 1px 2px rgba(15, 23, 42, 0.08);
+  --theme-shadow-2: 0 6px 16px rgba(15, 23, 42, 0.08);
+  --theme-shadow-3: 0 16px 36px rgba(15, 23, 42, 0.1);
+  --theme-glass: rgba(248, 250, 252, 0.88);
+  --theme-focus: #0891B2;
+  --theme-accent: #0891B2;
+  --theme-accent-secondary: #0E7490;
+  --theme-accent-subtle: rgba(8, 145, 178, 0.1);
+  --theme-accent-border: rgba(8, 145, 178, 0.3);
+  --theme-active: #0891B2;
+  --theme-link: #0E7490;
+  --theme-success: #16A34A;
+  --theme-warning: #D97706;
+  --theme-danger: #DC2626;
+  --theme-stripe: rgba(203, 213, 225, 0.4);
+  --theme-header-bg: #F1F5F9;
+  --theme-header-border: #CBD5E1;
+  --chat-user-bg: #ECFEFF;
+  --chat-user-border: #A5F3FC;
+  --chat-user-foreground: #0F172A;
+  --chat-assistant-bg: #FFFFFF;
+  --chat-assistant-border: #E2E8F0;
+  --chat-assistant-foreground: #0F172A;
+  --composer-bg: #FFFFFF;
+  --composer-border: #CBD5E1;
+  --composer-placeholder: #94A3B8;
+  --tool-card-bg: #FFFFFF;
+  --tool-card-border: #E2E8F0;
+  --tool-card-title: #0F172A;
+  --tool-card-muted: #64748B;
+  --code-bg: #F1F5F9;
+  --code-border: #E2E8F0;
+  --code-foreground: #0F172A;
+  --theme-input: #FFFFFF;
+}
+
+/* ── Vorbium Engine Themes (legacy — mantidas para compatibilidade) ── */
 [data-theme='hermes-official'] {
   --theme-bg: #0a0e1a;
   --theme-sidebar: #0d1220;

@@ -12,7 +12,7 @@ type ConnectionStatus = {
   activeModel: string
   chatMode: 'enhanced-hermes' | 'portable' | 'disconnected'
   capabilities: Record<string, boolean>
-  hermesUrl: string
+  vorbiumUrl: string
 }
 
 async function fetchConnectionStatus(): Promise<ConnectionStatus> {
@@ -30,7 +30,7 @@ async function fetchConnectionStatus(): Promise<ConnectionStatus> {
       activeModel: '',
       chatMode: 'disconnected',
       capabilities: {},
-      hermesUrl: '',
+      vorbiumUrl: '',
     }
   }
   return response.json() as Promise<ConnectionStatus>

@@ -20,7 +20,7 @@ type AuthCheckResponse = {
   error?: string
 }
 
-type HermesConfigResponse = {
+type VorbiumConfigResponse = {
   activeProvider?: string
   activeModel?: string
 }
@@ -157,7 +157,7 @@ export function ModelConfigurationStep({
   setCanProceed,
 }: OnboardingStepComponentProps) {
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading')
-  const [config, setConfig] = useState<HermesConfigResponse | null>(null)
+  const [config, setConfig] = useState<VorbiumConfigResponse | null>(null)
 
   useEffect(() => {
     setCanProceed(true)
@@ -168,14 +168,14 @@ export function ModelConfigurationStep({
 
     async function loadConfig() {
       try {
-        const response = await fetch('/api/hermes-config', {
+        const response = await fetch('/api/vorbium-config', {
           signal: AbortSignal.timeout(5000),
         })
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}`)
         }
 
-        const data = (await response.json()) as HermesConfigResponse
+        const data = (await response.json()) as VorbiumConfigResponse
         if (!cancelled) {
           setConfig(data)
           setStatus('ready')

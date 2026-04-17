@@ -2,9 +2,9 @@
  * Jobs API client — talks to Hermes FastAPI /api/jobs endpoints.
  */
 
-const HERMES_API = '/api/hermes-jobs'
+const HERMES_API = '/api/vorbium-jobs'
 
-export type HermesJob = {
+export type VorbiumJob = {
   id: string
   name: string
   prompt: string
@@ -30,7 +30,7 @@ export type JobOutput = {
   size: number
 }
 
-export async function fetchJobs(): Promise<Array<HermesJob>> {
+export async function fetchJobs(): Promise<Array<VorbiumJob>> {
   const res = await fetch(`${HERMES_API}?include_disabled=true`)
   if (!res.ok) throw new Error(`Failed to fetch jobs: ${res.status}`)
   const data = await res.json()
@@ -44,7 +44,7 @@ export async function createJob(input: {
   deliver?: Array<string>
   skills?: Array<string>
   repeat?: number
-}): Promise<HermesJob> {
+}): Promise<VorbiumJob> {
   const res = await fetch(HERMES_API, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -60,7 +60,7 @@ export async function createJob(input: {
 export async function updateJob(
   jobId: string,
   updates: Record<string, unknown>,
-): Promise<HermesJob> {
+): Promise<VorbiumJob> {
   const res = await fetch(`${HERMES_API}/${jobId}`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
@@ -75,7 +75,7 @@ export async function deleteJob(jobId: string): Promise<void> {
   if (!res.ok) throw new Error(`Failed to delete job: ${res.status}`)
 }
 
-export async function pauseJob(jobId: string): Promise<HermesJob> {
+export async function pauseJob(jobId: string): Promise<VorbiumJob> {
   const res = await fetch(`${HERMES_API}/${jobId}?action=pause`, {
     method: 'POST',
   })
@@ -83,7 +83,7 @@ export async function pauseJob(jobId: string): Promise<HermesJob> {
   return (await res.json()).job
 }
 
-export async function resumeJob(jobId: string): Promise<HermesJob> {
+export async function resumeJob(jobId: string): Promise<VorbiumJob> {
   const res = await fetch(`${HERMES_API}/${jobId}?action=resume`, {
     method: 'POST',
   })
@@ -91,7 +91,7 @@ export async function resumeJob(jobId: string): Promise<HermesJob> {
   return (await res.json()).job
 }
 
-export async function triggerJob(jobId: string): Promise<HermesJob> {
+export async function triggerJob(jobId: string): Promise<VorbiumJob> {
   const res = await fetch(`${HERMES_API}/${jobId}?action=run`, {
     method: 'POST',
   })

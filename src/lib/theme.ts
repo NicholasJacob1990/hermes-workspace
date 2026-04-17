@@ -1,5 +1,5 @@
 export type ThemeId =
-  | 'hermes-official'
+  | 'vorbium-official'
   | 'hermes-official-light'
   | 'hermes-classic'
   | 'hermes-classic-light'
@@ -15,7 +15,7 @@ export const THEMES: Array<{
   icon: string
 }> = [
   {
-    id: 'hermes-official',
+    id: 'vorbium-official',
     label: 'Hermes Official',
     description: 'Navy and indigo flagship theme',
     icon: '⚕',
@@ -64,14 +64,14 @@ export const THEMES: Array<{
   },
 ]
 
-const STORAGE_KEY = 'hermes-theme'
-const DEFAULT_THEME: ThemeId = 'hermes-official'
+const STORAGE_KEY = 'vorbium-theme'
+const DEFAULT_THEME: ThemeId = 'vorbium-official'
 const THEME_SET = new Set<ThemeId>(THEMES.map((theme) => theme.id))
 const LIGHT_THEME_MAP: Record<
   Exclude<ThemeId, `${string}-light`>,
   Extract<ThemeId, `${string}-light`>
 > = {
-  'hermes-official': 'hermes-official-light',
+  'vorbium-official': 'hermes-official-light',
   'hermes-classic': 'hermes-classic-light',
   'hermes-slate': 'hermes-slate-light',
   'hermes-mono': 'hermes-mono-light',
@@ -80,7 +80,7 @@ const DARK_THEME_MAP: Record<
   Extract<ThemeId, `${string}-light`>,
   Exclude<ThemeId, `${string}-light`>
 > = {
-  'hermes-official-light': 'hermes-official',
+  'hermes-official-light': 'vorbium-official',
   'hermes-classic-light': 'hermes-classic',
   'hermes-slate-light': 'hermes-slate',
   'hermes-mono-light': 'hermes-mono',

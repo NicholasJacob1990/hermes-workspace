@@ -30,14 +30,14 @@ import { cn } from '@/lib/utils'
 // FIX: replaced direct server module imports with workspace API calls to avoid
 // bundling Node.js-only modules (node:sqlite, node:fs) into the client bundle.
 async function getConfig(): Promise<Record<string, unknown>> {
-  const res = await fetch('/api/hermes-config')
+  const res = await fetch('/api/vorbium-config')
   if (!res.ok) throw new Error(`Failed to load config: HTTP ${res.status}`)
   const data = await res.json() as { config?: Record<string, unknown> }
   return data.config ?? {}
 }
 
 async function patchConfig(patch: Record<string, unknown>): Promise<Record<string, unknown>> {
-  const res = await fetch('/api/hermes-config', {
+  const res = await fetch('/api/vorbium-config', {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ config: patch }),
@@ -93,11 +93,11 @@ type ProvidersScreenProps = {
   embedded?: boolean
 }
 
-type HermesConfig = Record<string, unknown>
+type VorbiumConfig = Record<string, unknown>
 
 type ConfigQueryResponse = {
   ok?: boolean
-  payload?: HermesConfig
+  payload?: VorbiumConfig
   error?: string
 }
 
@@ -197,7 +197,7 @@ async function fetchModels(): Promise<{
             ? record.owned_by.trim()
             : id.includes('/')
               ? id.split('/')[0]
-              : 'hermes-agent'
+              : 'vorbium-engine'
 
       return {
         ...record,
@@ -454,7 +454,7 @@ function defaultFormatValue(
 
 function getDraftValue(
   setting: SettingDefinition,
-  config: HermesConfig | undefined,
+  config: VorbiumConfig | undefined,
   draftValues: Record<string, string>,
 ): string {
   if (draftValues[setting.id] !== undefined) return draftValues[setting.id]
@@ -546,7 +546,7 @@ function ProviderStatusBadge({ status }: { status: ProviderStatus }) {
 
 function SettingCard(props: {
   setting: SettingDefinition
-  config: HermesConfig | undefined
+  config: VorbiumConfig | undefined
   draftValues: Record<string, string>
   setDraftValues: React.Dispatch<React.SetStateAction<Record<string, string>>>
   saveSetting: (payload: SaveSettingPayload) => Promise<void>
@@ -828,7 +828,7 @@ function parseModelProvider(value: unknown): ModelProviderOption {
 }
 
 function readPrimaryModelConfig(
-  config: HermesConfig | undefined,
+  config: VorbiumConfig | undefined,
 ): ModelConfigDraft {
   const modelBlock = readRecord(config?.model)
   const flatModel = typeof config?.model === 'string' ? config.model : ''
@@ -841,7 +841,7 @@ function readPrimaryModelConfig(
 }
 
 function readFallbackModelConfig(
-  config: HermesConfig | undefined,
+  config: VorbiumConfig | undefined,
 ): ModelConfigDraft {
   const fallbackBlock = readRecord(config?.fallback_model)
 
@@ -853,7 +853,7 @@ function readFallbackModelConfig(
 }
 
 function readPerformanceConfig(
-  config: HermesConfig | undefined,
+  config: VorbiumConfig | undefined,
 ): PerformanceDraft {
   const performanceBlock = readRecord(config?.performance)
   const staleTimeout =
@@ -1541,7 +1541,7 @@ export function ProvidersScreen({ embedded = false }: ProvidersScreenProps) {
 
     setDeletingId(provider.id)
     try {
-      const res = await fetch('/api/hermes-config', {
+      const res = await fetch('/api/vorbium-config', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({

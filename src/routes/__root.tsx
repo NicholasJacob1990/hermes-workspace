@@ -11,14 +11,15 @@ import { Toaster } from '@/components/ui/toast'
 import { OnboardingTour } from '@/components/onboarding/onboarding-tour'
 import { KeyboardShortcutsModal } from '@/components/keyboard-shortcuts-modal'
 import { initializeSettingsAppearance } from '@/hooks/use-settings'
-import { HermesOnboarding } from '@/components/onboarding/hermes-onboarding'
+import { VorbiumOnboarding } from '@/components/onboarding/vorbium-onboarding'
 
 const APP_CSP = [
   "default-src 'self'",
   "base-uri 'self'",
   "object-src 'none'",
   "form-action 'self'",
-  "frame-ancestors 'none'",
+  // Permitir embedding no Iudex (/vorbium) e em outros hosts locais de dev.
+  "frame-ancestors 'self' http://localhost:3000 http://127.0.0.1:3000",
   "script-src 'self' 'unsafe-inline'",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https:",
@@ -29,10 +30,12 @@ const APP_CSP = [
   "frame-src 'self' http: https:",
 ].join('; ')
 
-const THEME_STORAGE_KEY = 'hermes-theme'
-const DEFAULT_THEME = 'hermes-official'
+const THEME_STORAGE_KEY = 'vorbium-theme'
+// Default visual idêntico ao Vorbium Engine original (paleta indigo #6366F1).
+// Tema cyan "vorbium-official" permanece disponível como opção no Settings.
+const DEFAULT_THEME = 'vorbium-official'
 const VALID_THEMES = [
-  'hermes-official',
+  'vorbium-official',
   'hermes-official-light',
   'hermes-classic',
   'hermes-classic-light',
@@ -40,6 +43,8 @@ const VALID_THEMES = [
   'hermes-slate-light',
   'hermes-mono',
   'hermes-mono-light',
+  'vorbium-official',
+  'vorbium-official-light',
 ]
 
 const themeScript = `
@@ -50,7 +55,7 @@ const themeScript = `
     const root = document.documentElement
     const storedTheme = localStorage.getItem('${THEME_STORAGE_KEY}')
     const theme = ${JSON.stringify(VALID_THEMES)}.includes(storedTheme) ? storedTheme : '${DEFAULT_THEME}'
-    const lightThemes = ['hermes-official-light', 'hermes-classic-light', 'hermes-slate-light', 'hermes-mono-light']
+    const lightThemes = ['vorbium-official-light', 'hermes-official-light', 'hermes-classic-light', 'hermes-slate-light', 'hermes-mono-light']
     const isDark = !lightThemes.includes(theme)
     root.classList.remove('light', 'dark', 'system')
     root.classList.add(isDark ? 'dark' : 'light')
@@ -73,7 +78,9 @@ const themeColorScript = `
     const root = document.documentElement
     const theme = root.getAttribute('data-theme') || '${DEFAULT_THEME}'
     const colors = {
-      'hermes-official': '#0A0E1A',
+      'vorbium-official': '#0F172A',
+      'vorbium-official-light': '#F8FAFC',
+      'vorbium-official': '#0A0E1A',
       'hermes-official-light': '#F6F8FC',
       'hermes-classic': '#0d0f12',
       'hermes-classic-light': '#F5F2ED',
@@ -83,7 +90,7 @@ const themeColorScript = `
       'hermes-mono-light': '#FAFAFA',
     }
     const nextColor = colors[theme] || colors['${DEFAULT_THEME}']
-    const isDark = !['hermes-official-light', 'hermes-classic-light', 'hermes-slate-light', 'hermes-mono-light'].includes(String(theme))
+    const isDark = !['vorbium-official-light', 'hermes-official-light', 'hermes-classic-light', 'hermes-slate-light', 'hermes-mono-light'].includes(String(theme))
 
     let meta = document.querySelector('meta[name="theme-color"]')
     if (!meta) {
@@ -109,12 +116,12 @@ export const Route = createRootRoute({
           'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-visual',
       },
       {
-        title: 'Hermes Workspace',
+        title: 'Vorbium Engine',
       },
       {
         name: 'description',
         content:
-          'Hermes Agent workspace for chat, tools, files, memory, and jobs.',
+          'Vorbium Engine — workspace jurídico com chat, ferramentas, arquivos, memória e automações.',
       },
       {
         property: 'og:image',
@@ -153,8 +160,8 @@ export const Route = createRootRoute({
       },
       {
         rel: 'icon',
-        type: 'image/png',
-        href: '/hermes-avatar.png',
+        type: 'image/svg+xml',
+        href: '/vorbium-favicon.svg',
       },
       // PWA manifest and icons
       {
@@ -218,7 +225,7 @@ function RootLayout() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <HermesOnboarding />
+      <VorbiumOnboarding />
       <GlobalShortcutListener />
       <TerminalShortcutListener />
       <MobilePromptTrigger />
@@ -302,15 +309,15 @@ function RootDocument({ children }: { children: React.ReactNode }) {
             } catch(e){}
 
             var isDark = !['hermes-official-light','hermes-classic-light','hermes-slate-light','hermes-mono-light'].includes(theme);
-            var quips = ["Consulting the oracle...","Loading ancient knowledge...","Warming up the messenger...","Calibrating tool chain...","Summoning Hermes...","Preparing the workspace...","Bridging realms...","Initializing agent runtime..."];
+            var quips = ["Consultando precedentes...","Carregando base legal...","Aquecendo o motor jurídico...","Calibrando ferramentas...","Invocando Vorbium...","Preparando o workspace...","Conectando sistemas...","Inicializando agente..."];
             var quip = quips[Math.floor(Math.random() * quips.length)];
 
             var d = document.createElement('div');
             d.id = 'splash-screen';
             d.style.cssText = 'position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:'+bg+';transition:opacity 0.5s ease;';
-            d.innerHTML = '<img src="/hermes-avatar.webp" alt="Hermes" style="width:80px;height:80px;margin-bottom:20px;border-radius:16px;filter:drop-shadow(0 8px 32px color-mix(in srgb,'+accent+' 45%, transparent))" />'
-              + '<img src="'+(isDark ? '/hermes-banner.png' : '/hermes-banner-light.png')+'" alt="Hermes Workspace" style="width:280px;height:auto;margin-bottom:8px;filter:drop-shadow(0 4px 16px '+(isDark ? 'rgba(0,0,0,0.5)' : 'rgba(0,0,0,0.1)')+')" />'
-              + '<div style="font:400 14px/1 system-ui,-apple-system,sans-serif;letter-spacing:0.04em;color:'+muted+'">Workspace</div>'
+            d.innerHTML = '<img src="/hermes-avatar.webp" alt="Vorbium" style="width:80px;height:80px;margin-bottom:20px;border-radius:16px;filter:drop-shadow(0 8px 32px color-mix(in srgb,'+accent+' 45%, transparent))" />'
+              + '<div style="font:600 26px/1 \'Inter\',system-ui,sans-serif;letter-spacing:-0.02em;color:'+txt+';margin-bottom:8px">Vorbium <span style="color:'+accent+'">Engine</span></div>'
+              + '<div style="font:400 14px/1 system-ui,-apple-system,sans-serif;letter-spacing:0.04em;color:'+muted+'">Workspace Jurídico</div>'
               + '<div style="margin-top:28px;width:140px;height:3px;background:'+(isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)')+';border-radius:3px;overflow:hidden;position:relative"><div id=splash-bar style="width:0%;height:100%;background:'+accent+';border-radius:3px;transition:width 0.4s ease"></div></div>';
             document.body.prepend(d);
 
