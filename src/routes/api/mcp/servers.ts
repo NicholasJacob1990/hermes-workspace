@@ -128,7 +128,7 @@ export const Route = createFileRoute('/api/mcp/servers')({
           return Response.json({
             servers: [],
             ok: false,
-            message: 'Could not reach Hermes gateway config endpoint.',
+            message: 'Could not reach Vorbium gateway config endpoint.',
           })
         }
       },

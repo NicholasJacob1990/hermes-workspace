@@ -11,7 +11,7 @@ type BannerState = 'hidden' | 'disconnected' | 'connected'
 
 async function probeHermesHealth(): Promise<boolean> {
   // Use the portable-aware connection status endpoint first,
-  // which works with both full Hermes and OpenAI-compatible backends.
+  // which works with both full Vorbium and OpenAI-compatible backends.
   try {
     const response = await fetch('/api/connection-status', {
       cache: 'no-store',

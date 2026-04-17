@@ -1,11 +1,11 @@
 /**
- * Probes the Hermes gateway to detect which API groups are available.
+ * Probes the Vorbium gateway to detect which API groups are available.
  * Results are cached and refreshed periodically so route handlers can
- * degrade cleanly against older Hermes gateways.
+ * degrade cleanly against older Vorbium gateways.
  *
  * Two-tier capability model:
  *   - Core: portable chat readiness (health, chat completions, models)
- *   - Enhanced: Hermes-native extras (sessions, skills, memory, config, jobs)
+ *   - Enhanced: Vorbium-native extras (sessions, skills, memory, config, jobs)
  */
 
 import { existsSync, readFileSync } from 'node:fs'
@@ -30,7 +30,7 @@ function readDotenvVar(key: string): string {
   }
   // Fallback absoluto (dev)
   candidates.push(
-    '/Users/nicholasjacob/Documents/Aplicativos/Iudex/apps/hermes-workspace/.env',
+    '/Users/nicholasjacob/Documents/Aplicativos/Iudex/apps/vorbium-workspace/.env',
   )
   for (const envPath of candidates) {
     try {
@@ -65,9 +65,9 @@ function readDotenvVar(key: string): string {
 export let HERMES_API = readDotenvVar('HERMES_API_URL') || 'http://127.0.0.1:8642'
 
 export const HERMES_UPGRADE_INSTRUCTIONS =
-  'For full features, use the enhanced fork: git clone https://github.com/outsourc-e/vorbium-agent && cd hermes-agent && pip install -e . && hermes gateway run'
+  'For full features, use the enhanced fork: git clone https://github.com/outsourc-e/vorbium-agent && cd vorbium-engine && pip install -e . && vorbium-engine dashboard run'
 
-export const SESSIONS_API_UNAVAILABLE_MESSAGE = `Your Hermes gateway does not support the sessions API. ${HERMES_UPGRADE_INSTRUCTIONS}`
+export const SESSIONS_API_UNAVAILABLE_MESSAGE = `Your Vorbium gateway does not support the sessions API. ${HERMES_UPGRADE_INSTRUCTIONS}`
 
 const PROBE_TIMEOUT_MS = 3_000
 const PROBE_TTL_MS = 120_000
@@ -94,7 +94,7 @@ export type EnhancedCapabilities = {
 /** Full capabilities — backward compat with existing code */
 export type GatewayCapabilities = CoreCapabilities & EnhancedCapabilities
 
-export type ChatMode = 'enhanced-hermes' | 'portable' | 'disconnected'
+export type ChatMode = 'enhanced-vorbium' | 'portable' | 'disconnected'
 
 export type ConnectionStatus =
   | 'connected'
@@ -214,7 +214,7 @@ function logCapabilities(next: GatewayCapabilities): void {
   const criticalMissing = missing.filter((key) => !OPTIONAL_APIS.has(key))
   if (criticalMissing.length > 0 && next.health) {
     console.warn(
-      `[gateway] Missing Hermes APIs detected. ${HERMES_UPGRADE_INSTRUCTIONS}`,
+      `[gateway] Missing Vorbium APIs detected. ${HERMES_UPGRADE_INSTRUCTIONS}`,
     )
   }
 }
@@ -243,12 +243,12 @@ export async function probeGateway(options?: {
           .catch(() => false)
         if (healthOn8643) {
           HERMES_API = fallback
-          console.log(`[gateway] Connected to Hermes at ${HERMES_API}`)
+          console.log(`[gateway] Connected to Vorbium at ${HERMES_API}`)
         } else {
-          console.warn('[gateway] Could not reach Hermes on 8642 or 8643')
+          console.warn('[gateway] Could not reach Vorbium on 8642 or 8643')
         }
       } else {
-        console.log(`[gateway] Connected to Hermes at ${HERMES_API}`)
+        console.log(`[gateway] Connected to Vorbium at ${HERMES_API}`)
       }
     }
 
@@ -327,7 +327,7 @@ export function getCoreCapabilities(): CoreCapabilities {
   }
 }
 
-/** Hermes-native enhanced capabilities only */
+/** Vorbium-native enhanced capabilities only */
 export function getEnhancedCapabilities(): EnhancedCapabilities {
   return {
     sessions: capabilities.sessions,
@@ -341,20 +341,20 @@ export function getEnhancedCapabilities(): EnhancedCapabilities {
 
 /**
  * Current chat transport mode:
- * - 'enhanced-hermes': full Hermes session API available
+ * - 'enhanced-vorbium': full Vorbium session API available
  * - 'portable': OpenAI-compatible /v1/chat/completions available
  * - 'disconnected': no usable chat backend
  */
 export function getChatMode(): ChatMode {
   if (capabilities.sessions && capabilities.enhancedChat)
-    return 'enhanced-hermes'
+    return 'enhanced-vorbium'
   if (capabilities.chatCompletions || capabilities.health) return 'portable'
   return 'disconnected'
 }
 
 /**
  * Connection status for UI display:
- * - 'enhanced': full Hermes APIs detected
+ * - 'enhanced': full Vorbium APIs detected
  * - 'connected': chat works
  * - 'partial': chat works, some advanced features unavailable
  * - 'disconnected': no backend
@@ -373,7 +373,7 @@ export function getConnectionStatus(): ConnectionStatus {
   return 'connected'
 }
 
-export function isHermesConnected(): boolean {
+export function isVorbiumConnected(): boolean {
   return capabilities.health
 }
 

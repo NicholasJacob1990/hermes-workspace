@@ -21,14 +21,14 @@ async function* streamVorbiumChat(
   options: UnifiedChatOptions,
 ): AsyncGenerator<string, void, void> {
   if (!options.sessionId) {
-    throw new Error('Hermes enhanced chat requires sessionId')
+    throw new Error('Vorbium enhanced chat requires sessionId')
   }
 
   const lastUserMessage = [...messages]
     .reverse()
     .find((message) => message.role === 'user')
   if (!lastUserMessage) {
-    throw new Error('Hermes enhanced chat requires a user message')
+    throw new Error('Vorbium enhanced chat requires a user message')
   }
 
   const queue: Array<string> = []

@@ -55,7 +55,7 @@ export const Route = createFileRoute('/api/context-usage')({
         const sessionId = url.searchParams.get('sessionId') || ''
 
         try {
-          // Step 1: Get session data from Hermes
+          // Step 1: Get session data from Vorbium
           let sessionData: Record<string, unknown> | null = null
 
           if (sessionId) {

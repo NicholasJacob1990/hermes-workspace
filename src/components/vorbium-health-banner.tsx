@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { fetchHermesAuthStatus } from '@/lib/vorbium-auth'
+import { fetchVorbiumAuthStatus } from '@/lib/vorbium-auth'
 
 const POLL_INTERVAL = 30_000
 
@@ -24,7 +24,7 @@ export function VorbiumHealthBanner({
 
     async function check() {
       try {
-        await fetchHermesAuthStatus()
+        await fetchVorbiumAuthStatus()
         if (!cancelled) {
           setStatus('ok')
           setLastError(null)
@@ -61,7 +61,7 @@ export function VorbiumHealthBanner({
         type="button"
         onClick={() => {
           setStatus('checking')
-          fetchHermesAuthStatus()
+          fetchVorbiumAuthStatus()
             .then(() => {
               setStatus('ok')
               setLastError(null)

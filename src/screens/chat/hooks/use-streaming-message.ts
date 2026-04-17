@@ -726,7 +726,7 @@ export function useStreamingMessage(options: UseStreamingMessageOptions = {}) {
         markAccepted()
         schedulePostAcceptanceTimeout('accepted')
 
-        // HTTP 200 — message accepted by Hermes. Clear optimistic "sending"
+        // HTTP 200 — message accepted by Vorbium. Clear optimistic "sending"
         // status so the Retry timer never fires. Hermes does NOT echo
         // user messages via SSE, so this is the only confirmation we get.
         if (params.idempotencyKey && onMessageAccepted) {

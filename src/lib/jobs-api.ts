@@ -1,5 +1,5 @@
 /**
- * Jobs API client — talks to Hermes FastAPI /api/jobs endpoints.
+ * Jobs API client — talks to Vorbium FastAPI /api/jobs endpoints.
  */
 
 const HERMES_API = '/api/vorbium-jobs'

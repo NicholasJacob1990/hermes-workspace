@@ -390,7 +390,7 @@ function SettingsRoute() {
 
         {/* Content area */}
         <div className="flex-1 min-w-0 flex flex-col gap-4">
-          {/* ── Hermes Agent ──────────────────────────────────── */}
+          {/* ── Vorbium Engine ──────────────────────────────────── */}
           {activeSection === 'hermes' && (
             <VorbiumConfigSection activeView="hermes" />
           )}
@@ -426,7 +426,7 @@ function SettingsRoute() {
 
                 {/* Accent color removed — themes control accent */}
               </SettingsSection>
-              {/* LoaderStyleSection removed — not relevant for Hermes */}
+              {/* LoaderStyleSection removed — not relevant for Vorbium */}
             </>
           )}
 
@@ -935,7 +935,7 @@ function _LoaderStyleSection() {
   )
 }
 
-// ── Hermes Agent Configuration ──────────────────────────────────────
+// ── Vorbium Engine Configuration ──────────────────────────────────────
 
 type HermesProvider = {
   id: string
@@ -1105,7 +1105,7 @@ function VorbiumConfigSection({
         icon={Settings02Icon}
       >
         <p className="text-sm" style={{ color: 'var(--theme-muted)' }}>
-          Make sure Hermes Agent is running on localhost:8642
+          Make sure Vorbium Engine is running on localhost:8642
         </p>
       </SettingsSection>
     )
@@ -1134,7 +1134,7 @@ function VorbiumConfigSection({
     <>
       <SettingsSection
         title="Model & Provider"
-        description="Configure the default AI model for Hermes Agent."
+        description="Configure the default AI model for Vorbium Engine."
         icon={SourceCodeSquareIcon}
       >
         <SettingsRow
@@ -1320,7 +1320,7 @@ function VorbiumConfigSection({
 
       <SettingsSection
         title="Memory"
-        description="Configure Hermes Agent memory and user profiles."
+        description="Configure Vorbium Engine memory and user profiles."
         icon={UserIcon}
       >
         <SettingsRow
@@ -1444,7 +1444,7 @@ function VorbiumConfigSection({
 
       <SettingsSection
         title="About"
-        description="Hermes Agent runtime information."
+        description="Vorbium Engine runtime information."
         icon={Notification03Icon}
       >
         <SettingsRow

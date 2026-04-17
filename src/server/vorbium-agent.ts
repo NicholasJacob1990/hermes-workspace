@@ -6,9 +6,9 @@ import { homedir } from 'node:os'
 const HERMES_HEALTH_TIMEOUT_MS = 2_000
 const HERMES_START_PORT = 8642
 
-let startPromise: Promise<StartHermesAgentResult> | null = null
+let startPromise: Promise<StartVorbiumEngineResult> | null = null
 
-export type StartHermesAgentResult =
+export type StartVorbiumEngineResult =
   | {
       ok: true
       message: string
@@ -93,7 +93,7 @@ export async function isHermesAgentHealthy(
   }
 }
 
-export async function startHermesAgent(): Promise<StartHermesAgentResult> {
+export async function startHermesAgent(): Promise<StartVorbiumEngineResult> {
   if (await isHermesAgentHealthy()) {
     return { ok: true, message: 'already running' }
   }

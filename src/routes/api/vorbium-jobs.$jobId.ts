@@ -1,5 +1,5 @@
 /**
- * Jobs API proxy — forwards individual job operations to Hermes FastAPI
+ * Jobs API proxy — forwards individual job operations to Vorbium FastAPI
  */
 import { createFileRoute } from '@tanstack/react-router'
 import { isAuthenticated } from '../../server/auth-middleware'

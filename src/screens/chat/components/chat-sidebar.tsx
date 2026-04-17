@@ -304,7 +304,7 @@ function NavItem({
 
 // ── Last-visited route tracking ─────────────────────────────────────────
 
-const LAST_ROUTE_KEY = 'hermes-sidebar-last-route'
+const LAST_ROUTE_KEY = 'vorbium-sidebar-last-route'
 
 function getLastRoute(section: string): string | null {
   try {

@@ -1,6 +1,6 @@
 /**
  * Connection status endpoint — returns a summary of portable chat readiness
- * plus whether Hermes gateway enhancements are available.
+ * plus whether Vorbium gateway enhancements are available.
  */
 import fs from 'node:fs'
 import path from 'node:path'
@@ -40,7 +40,7 @@ type ConnectionStatus = {
   chatReady: boolean
   modelConfigured: boolean
   activeModel: string
-  chatMode: 'enhanced-hermes' | 'portable' | 'disconnected'
+  chatMode: 'enhanced-vorbium' | 'portable' | 'disconnected'
   capabilities: Record<string, boolean>
   vorbiumUrl: string
 }
@@ -76,8 +76,8 @@ export const Route = createFileRoute('/api/connection-status')({
           status = 'enhanced'
           label = 'Enhanced'
           detail = modelConfigured
-            ? 'Core chat works and Hermes gateway APIs are available.'
-            : 'Hermes gateway APIs are available. Choose a model to start chatting.'
+            ? 'Core chat works and Vorbium gateway APIs are available.'
+            : 'Vorbium gateway APIs are available. Choose a model to start chatting.'
         } else if (chatReady && modelConfigured) {
           status = 'connected'
           label = 'Connected'
@@ -92,7 +92,7 @@ export const Route = createFileRoute('/api/connection-status')({
               'Backend connected. Choose a provider and model to test chat.'
           } else {
             detail =
-              'Core chat works. Enhanced Hermes gateway APIs are optional and unlock automatically when available.'
+              'Core chat works. Enhanced Vorbium gateway APIs are optional and unlock automatically when available.'
           }
         }
 

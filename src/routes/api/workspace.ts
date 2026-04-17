@@ -1,6 +1,6 @@
 /**
  * Phase 2.6: Workspace detection API
- * Auto-detects workspace from Hermes config, env, or default paths
+ * Auto-detects workspace from Vorbium config, env, or default paths
  */
 import os from 'node:os'
 import path from 'node:path'

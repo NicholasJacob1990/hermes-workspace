@@ -51,8 +51,8 @@ export function ConnectionCheckStep({
       if (!connected) {
         setLastError(
           data.error === 'server_timeout'
-            ? 'Hermes Agent did not respond in time.'
-            : 'Hermes Agent is not reachable yet.',
+            ? 'Vorbium Engine did not respond in time.'
+            : 'Vorbium Engine is not reachable yet.',
         )
       }
     } catch (error) {
@@ -127,7 +127,7 @@ export function ConnectionCheckStep({
                 2. Restart the gateway:
               </p>
               <code className="block overflow-x-auto rounded-lg bg-red-100 px-3 py-2 text-xs text-red-900">
-                cd hermes-agent && hermes --gateway
+                cd vorbium-engine && vorbium-engine dashboard
               </code>
             </div>
           </div>
@@ -213,7 +213,7 @@ export function ModelConfigurationStep({
       </h2>
 
       <p className="mb-6 max-w-md text-base leading-relaxed text-primary-600">
-        Core chat works with any OpenAI-compatible backend. Hermes gateway APIs
+        Core chat works with any OpenAI-compatible backend. Vorbium gateway APIs
         make provider and model setup editable from the workspace.
       </p>
 

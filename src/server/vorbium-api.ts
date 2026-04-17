@@ -1,7 +1,7 @@
 /**
- * Hermes FastAPI Client
+ * Vorbium FastAPI Client
  *
- * HTTP client for the Hermes FastAPI backend (default: http://127.0.0.1:8642).
+ * HTTP client for the Vorbium FastAPI backend (default: http://127.0.0.1:8642).
  * Replaces legacy WebSocket connection for the Vorbium Workspace fork.
  */
 
@@ -59,16 +59,16 @@ export type VorbiumConfig = {
 
 // ── Helpers ───────────────────────────────────────────────────────
 
-async function hermesGet<T>(path: string): Promise<T> {
+async function vorbiumGet<T>(path: string): Promise<T> {
   const res = await fetch(`${HERMES_API}${path}`, { headers: _authHeaders() })
   if (!res.ok) {
     const body = await res.text().catch(() => '')
-    throw new Error(`Hermes API ${path}: ${res.status} ${body}`)
+    throw new Error(`Vorbium API ${path}: ${res.status} ${body}`)
   }
   return res.json() as Promise<T>
 }
 
-async function hermesPost<T>(path: string, body?: unknown): Promise<T> {
+async function vorbiumPost<T>(path: string, body?: unknown): Promise<T> {
   const res = await fetch(`${HERMES_API}${path}`, {
     method: 'POST',
     headers: { ..._authHeaders(), 'Content-Type': 'application/json' },
@@ -76,12 +76,12 @@ async function hermesPost<T>(path: string, body?: unknown): Promise<T> {
   })
   if (!res.ok) {
     const text = await res.text().catch(() => '')
-    throw new Error(`Hermes API POST ${path}: ${res.status} ${text}`)
+    throw new Error(`Vorbium API POST ${path}: ${res.status} ${text}`)
   }
   return res.json() as Promise<T>
 }
 
-async function hermesPatch<T>(path: string, body: unknown): Promise<T> {
+async function vorbiumPatch<T>(path: string, body: unknown): Promise<T> {
   const res = await fetch(`${HERMES_API}${path}`, {
     method: 'PATCH',
     headers: { ..._authHeaders(), 'Content-Type': 'application/json' },
@@ -89,26 +89,26 @@ async function hermesPatch<T>(path: string, body: unknown): Promise<T> {
   })
   if (!res.ok) {
     const text = await res.text().catch(() => '')
-    throw new Error(`Hermes API PATCH ${path}: ${res.status} ${text}`)
+    throw new Error(`Vorbium API PATCH ${path}: ${res.status} ${text}`)
   }
   return res.json() as Promise<T>
 }
 
-async function hermesDeleteReq(path: string): Promise<void> {
+async function vorbiumDeleteReq(path: string): Promise<void> {
   const res = await fetch(`${HERMES_API}${path}`, {
     method: 'DELETE',
     headers: _authHeaders(),
   })
   if (!res.ok) {
     const text = await res.text().catch(() => '')
-    throw new Error(`Hermes API DELETE ${path}: ${res.status} ${text}`)
+    throw new Error(`Vorbium API DELETE ${path}: ${res.status} ${text}`)
   }
 }
 
 // ── Health ────────────────────────────────────────────────────────
 
 export async function checkHealth(): Promise<{ status: string }> {
-  return hermesGet('/health')
+  return vorbiumGet('/health')
 }
 
 // ── Sessions ─────────────────────────────────────────────────────
@@ -118,7 +118,7 @@ export async function listSessions(
   offset = 0,
 ): Promise<Array<VorbiumSession>> {
   // Backend hermes v0.10.x retorna {sessions: [...]}, versões antigas usam {items, total}.
-  const resp = await hermesGet<{
+  const resp = await vorbiumGet<{
     items?: Array<VorbiumSession>
     sessions?: Array<VorbiumSession>
   }>(`/api/sessions?limit=${limit}&offset=${offset}`)
@@ -126,7 +126,7 @@ export async function listSessions(
 }
 
 export async function getSession(sessionId: string): Promise<VorbiumSession> {
-  const resp = await hermesGet<{ session: VorbiumSession }>(
+  const resp = await vorbiumGet<{ session: VorbiumSession }>(
     `/api/sessions/${sessionId}`,
   )
   return resp.session
@@ -137,7 +137,7 @@ export async function createSession(opts?: {
   title?: string
   model?: string
 }): Promise<VorbiumSession> {
-  const resp = await hermesPost<{ session: VorbiumSession }>(
+  const resp = await vorbiumPost<{ session: VorbiumSession }>(
     '/api/sessions',
     opts || {},
   )
@@ -148,7 +148,7 @@ export async function updateSession(
   sessionId: string,
   updates: { title?: string },
 ): Promise<VorbiumSession> {
-  const resp = await hermesPatch<{ session: VorbiumSession }>(
+  const resp = await vorbiumPatch<{ session: VorbiumSession }>(
     `/api/sessions/${sessionId}`,
     updates,
   )
@@ -156,13 +156,13 @@ export async function updateSession(
 }
 
 export async function deleteSession(sessionId: string): Promise<void> {
-  return hermesDeleteReq(`/api/sessions/${sessionId}`)
+  return vorbiumDeleteReq(`/api/sessions/${sessionId}`)
 }
 
 export async function getMessages(
   sessionId: string,
 ): Promise<Array<VorbiumMessage>> {
-  const resp = await hermesGet<{ items: Array<VorbiumMessage>; total: number }>(
+  const resp = await vorbiumGet<{ items: Array<VorbiumMessage>; total: number }>(
     `/api/sessions/${sessionId}/messages`,
   )
   return resp.items
@@ -172,7 +172,7 @@ export async function searchSessions(
   query: string,
   limit = 20,
 ): Promise<{ query: string; count: number; results: Array<unknown> }> {
-  return hermesGet(
+  return vorbiumGet(
     `/api/sessions/search?q=${encodeURIComponent(query)}&limit=${limit}`,
   )
 }
@@ -180,7 +180,7 @@ export async function searchSessions(
 export async function forkSession(
   sessionId: string,
 ): Promise<{ session: VorbiumSession; forked_from: string }> {
-  return hermesPost(`/api/sessions/${sessionId}/fork`)
+  return vorbiumPost(`/api/sessions/${sessionId}/fork`)
 }
 
 // ── Conversion helpers (Hermes → Chat format) ─────────────────
@@ -309,7 +309,7 @@ type StreamChatOptions = {
 }
 
 /**
- * Send a chat message and stream SSE events from Hermes FastAPI.
+ * Send a chat message and stream SSE events from Vorbium FastAPI.
  * Returns a promise that resolves when the stream ends.
  */
 export async function streamChat(
@@ -334,7 +334,7 @@ export async function streamChat(
 
   if (!res.ok) {
     const text = await res.text().catch(() => '')
-    throw new Error(`Hermes chat stream: ${res.status} ${text}`)
+    throw new Error(`Vorbium chat stream: ${res.status} ${text}`)
   }
 
   const reader = res.body?.getReader()
@@ -378,7 +378,7 @@ export async function sendChat(
   const msg =
     typeof messageOrOpts === 'string' ? messageOrOpts : messageOrOpts.message
   const mdl = typeof messageOrOpts === 'string' ? model : messageOrOpts.model
-  return hermesPost(`/api/sessions/${sessionId}/chat`, {
+  return vorbiumPost(`/api/sessions/${sessionId}/chat`, {
     message: msg,
     model: mdl,
   })
@@ -387,33 +387,33 @@ export async function sendChat(
 // ── Memory ───────────────────────────────────────────────────────
 
 export async function getMemory(): Promise<unknown> {
-  return hermesGet('/api/memory')
+  return vorbiumGet('/api/memory')
 }
 
 // ── Skills ───────────────────────────────────────────────────────
 
 export async function listSkills(): Promise<unknown> {
-  return hermesGet('/api/skills')
+  return vorbiumGet('/api/skills')
 }
 
 export async function getSkill(name: string): Promise<unknown> {
-  return hermesGet(`/api/skills/${encodeURIComponent(name)}`)
+  return vorbiumGet(`/api/skills/${encodeURIComponent(name)}`)
 }
 
 export async function getSkillCategories(): Promise<unknown> {
-  return hermesGet('/api/skills/categories')
+  return vorbiumGet('/api/skills/categories')
 }
 
 // ── Config ───────────────────────────────────────────────────────
 
 export async function getConfig(): Promise<VorbiumConfig> {
-  return hermesGet<VorbiumConfig>('/api/config')
+  return vorbiumGet<VorbiumConfig>('/api/config')
 }
 
 export async function patchConfig(
   patch: Record<string, unknown>,
 ): Promise<Record<string, unknown>> {
-  return hermesPatch<Record<string, unknown>>('/api/config', patch)
+  return vorbiumPatch<Record<string, unknown>>('/api/config', patch)
 }
 
 // ── Models ───────────────────────────────────────────────────────
@@ -422,12 +422,12 @@ export async function listModels(): Promise<{
   object: string
   data: Array<{ id: string; object: string }>
 }> {
-  return hermesGet('/v1/models')
+  return vorbiumGet('/v1/models')
 }
 
 // ── Connection check ─────────────────────────────────────────────
 
-export async function isHermesAvailable(): Promise<boolean> {
+export async function isVorbiumAvailable(): Promise<boolean> {
   try {
     const res = await fetch(`${HERMES_API}/health`, {
       signal: AbortSignal.timeout(3000),

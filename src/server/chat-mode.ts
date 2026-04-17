@@ -6,7 +6,7 @@ export type ChatBackend = 'vorbium-enhanced' | 'openai-compat' | 'none'
 
 export function resolveChatBackend(): ChatBackend {
   const mode = getChatMode()
-  if (mode === 'enhanced-hermes') return 'vorbium-enhanced'
+  if (mode === 'enhanced-vorbium') return 'vorbium-enhanced'
   if (mode === 'portable') return 'openai-compat'
   return 'none'
 }

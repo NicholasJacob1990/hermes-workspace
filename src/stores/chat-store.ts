@@ -161,7 +161,7 @@ function persistStreamingState(
   if (_streamingPersistTimer) clearTimeout(_streamingPersistTimer)
   _streamingPersistTimer = setTimeout(() => {
     sessionStorage.setItem(
-      `hermes_streaming_${sessionKey}`,
+      `vorbium_streaming_${sessionKey}`,
       JSON.stringify({ ...state, _savedAt: Date.now() }),
     )
   }, 500)
@@ -172,7 +172,7 @@ export function restoreStreamingState(
 ): StreamingState | null {
   if (typeof sessionStorage === 'undefined') return null
 
-  const storageKey = `hermes_streaming_${sessionKey}`
+  const storageKey = `vorbium_streaming_${sessionKey}`
   const raw = sessionStorage.getItem(storageKey)
   if (!raw) return null
 
@@ -1088,7 +1088,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
         streamingMap.delete(sessionKey)
         set({ streamingState: streamingMap, lastEventAt: now })
         if (typeof sessionStorage !== 'undefined') {
-          sessionStorage.removeItem(`hermes_streaming_${sessionKey}`)
+          sessionStorage.removeItem(`vorbium_streaming_${sessionKey}`)
         }
         break
       }

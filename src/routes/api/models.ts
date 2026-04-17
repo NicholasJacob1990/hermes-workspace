@@ -133,7 +133,7 @@ function normalizeHermesModel(entry: unknown): ModelEntry | null {
   }
 }
 
-async function fetchHermesModels(): Promise<Array<ModelEntry>> {
+async function fetchVorbiumModels(): Promise<Array<ModelEntry>> {
   const headers: Record<string, string> = {}
   if (BEARER_TOKEN) headers['Authorization'] = `Bearer ${BEARER_TOKEN}`
   const response = await fetch(`${HERMES_API}/v1/models`, { headers })
@@ -170,7 +170,7 @@ export const Route = createFileRoute('/api/models')({
           })
         }
         try {
-          const models = await fetchHermesModels()
+          const models = await fetchVorbiumModels()
           // Add models from auth store providers (Anthropic, OpenAI, etc.)
           const authModels = getAuthStoreModels()
           const existingIds = new Set(models.map((m) => m.id))

@@ -412,7 +412,7 @@ export function McpSettingsScreen() {
         setNotice(payload.message ?? null)
       } catch {
         setNotice(
-          'Could not load MCP config from Hermes. You can still draft servers here.',
+          'Could not load MCP config from Vorbium. You can still draft servers here.',
         )
       } finally {
         setLoading(false)

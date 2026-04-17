@@ -6,7 +6,7 @@
  *
  * - Probes on first request + re-probes every 30s
  * - Merges discovered models into /api/models response
- * - Auto-writes custom_providers to ~/.hermes/config.yaml if not already configured
+ * - Auto-writes custom_providers to ~/.vorbium/config.yaml (or ~/.hermes/ legacy) if not already configured
  */
 
 import fs from 'node:fs'

@@ -356,7 +356,7 @@ function HermesContent() {
   if (!configAvailable) {
     return (
       <BackendUnavailableState
-        feature="Hermes Agent Settings"
+        feature="Vorbium Engine Settings"
         description={getUnavailableReason('config')}
       />
     )
@@ -489,7 +489,7 @@ function HermesContent() {
         if (!disc || !disc.needsRestart) return null
         return (
           <div className="rounded-lg border border-yellow-500/30 bg-yellow-500/10 px-3 py-2 text-xs text-yellow-200">
-            ⚠️ Gateway restart needed to use {disc.name}. Run <code className="rounded bg-black/30 px-1">hermes gateway restart</code> in your terminal.
+            ⚠️ Gateway restart needed to use {disc.name}. Run <code className="rounded bg-black/30 px-1">vorbium-engine dashboard restart</code> in your terminal.
           </div>
         )
       })()}
@@ -674,7 +674,7 @@ function HermesContent() {
               '—'}
           </span>
           <span style={mutedStyle}>Config</span>
-          <span className="font-mono font-medium">~/.hermes/config.yaml</span>
+          <span className="font-mono font-medium">~/.vorbium/config.yaml (or ~/.hermes/ legacy)</span>
         </div>
       </div>
     </div>
@@ -901,7 +901,7 @@ function AppearanceContent() {
           />
         </Row>
 
-        {/* Mobile chat nav removed — not relevant for Hermes */}
+        {/* Mobile chat nav removed — not relevant for Vorbium */}
       </div>
     </div>
   )
@@ -1219,7 +1219,7 @@ function ChatContent() {
           />
         </Row>
       </div>
-      {/* Loading animation removed — not relevant for Hermes */}
+      {/* Loading animation removed — not relevant for Vorbium */}
     </div>
   )
 }

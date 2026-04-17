@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { AuthStatus } from '@/lib/vorbium-auth'
 import { writeTextToClipboard } from '@/lib/clipboard'
-import { fetchHermesAuthStatus } from '@/lib/vorbium-auth'
+import { fetchVorbiumAuthStatus } from '@/lib/vorbium-auth'
 
 const POLL_INTERVAL_MS = 2_000
 const FAILURE_REVEAL_MS = 5_000
@@ -30,13 +30,13 @@ function getSetupSteps(
       note: 'Portable chat works with any backend that exposes /v1/chat/completions (Ollama, LiteLLM, vLLM, etc.)',
     },
     {
-      title: 'Optional: run a Hermes gateway locally',
+      title: 'Optional: run a Vorbium gateway locally',
       command: 'git clone https://github.com/outsourc-e/vorbium-agent.git',
-      note: 'Hermes gateway APIs unlock sessions, skills, memory, and other workspace extras automatically',
+      note: 'Vorbium gateway APIs unlock sessions, skills, memory, and other workspace extras automatically',
     },
     {
       title: 'Install the gateway',
-      command: `cd hermes-agent && ${python} -m venv .venv && ${platform === 'windows' ? '.venv\\Scripts\\activate' : 'source .venv/bin/activate'} && ${pip} install -e .`,
+      command: `cd vorbium-engine && ${python} -m venv .venv && ${platform === 'windows' ? '.venv\\Scripts\\activate' : 'source .venv/bin/activate'} && ${pip} install -e .`,
     },
     {
       title: 'Enable the HTTP API server',
@@ -45,7 +45,7 @@ function getSetupSteps(
     },
     {
       title: 'Start the gateway',
-      command: `cd hermes-agent && ${platform === 'windows' ? '.venv\\Scripts\\activate' : 'source .venv/bin/activate'} && hermes --gateway`,
+      command: `cd vorbium-engine && ${platform === 'windows' ? '.venv\\Scripts\\activate' : 'source .venv/bin/activate'} && vorbium-engine dashboard`,
       note: 'Or use Auto-Start below if hermes-agent is already installed locally',
     },
   ]
@@ -96,7 +96,7 @@ export function ConnectionStartupScreen({ onConnected }: Props) {
 
     const tryConnect = async () => {
       try {
-        const status = await fetchHermesAuthStatus()
+        const status = await fetchVorbiumAuthStatus()
         if (isDone.current) return
         isDone.current = true
         clearTimeout(failureTimer)

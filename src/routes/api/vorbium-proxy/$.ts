@@ -9,7 +9,7 @@ function getBearerToken(): string {
   if (BEARER_TOKEN) return BEARER_TOKEN
   if (process.env.VORBIUM_API_TOKEN ?? process.env.HERMES_API_TOKEN) return process.env.VORBIUM_API_TOKEN ?? process.env.HERMES_API_TOKEN
   const ENV_PATH =
-    '/Users/nicholasjacob/Documents/Aplicativos/Iudex/apps/hermes-workspace/.env'
+    '/Users/nicholasjacob/Documents/Aplicativos/Iudex/apps/vorbium-workspace/.env'
   try {
     if (!existsSync(ENV_PATH)) return ''
     for (const line of readFileSync(ENV_PATH, 'utf-8').split('\n')) {

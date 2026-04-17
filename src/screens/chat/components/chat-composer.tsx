@@ -119,7 +119,7 @@ type ModelSwitchNotice = {
 
 // Models are fetched through the workspace API proxy (/api/models, /api/vorbium-proxy)
 // to support Docker and reverse-proxy deployments where the browser cannot reach
-// the Hermes gateway directly.
+// the Vorbium gateway directly.
 
 function readModelText(value: unknown): string {
   return typeof value === 'string' ? value.trim() : ''
@@ -427,7 +427,7 @@ async function switchModel(
   // Switching to a cloud model — clear any local override
   setLocalModelOverride('')
 
-  // Write the model change to ~/.hermes/config.yaml via the webapi
+  // Write the model change to ~/.vorbium/config.yaml (or ~/.hermes/ legacy) via the webapi
   const patch: Record<string, string> = { model: modelId }
   if (modelProvider) patch.provider = modelProvider
 
@@ -870,7 +870,7 @@ function ChatComposerComponent({
   const [internalThinkingLevel, setInternalThinkingLevel] =
     useState<ThinkingLevel>('low')
   const thinkingLevel = externalThinkingLevel ?? internalThinkingLevel
-  // Thinking toggle removed for Hermes (not supported) — keeping state for type compat
+  // Thinking toggle removed for Vorbium (not supported) — keeping state for type compat
   const _handleThinkingToggle = useCallback(() => {
     const next = nextThinkingLevel(thinkingLevel)
     if (onThinkingLevelChange) {
@@ -1024,7 +1024,7 @@ function ChatComposerComponent({
 
   // Auto-switch to hermes-agent model on mount (Vorbium Engine always uses Hermes)
   // Removed: auto-switch to hermes-agent. The workspace respects the
-  // model/provider configured in ~/.hermes/config.yaml. Users switch
+  // model/provider configured in ~/.vorbium/config.yaml (or ~/.hermes/ legacy). Users switch
   // via the model selector or Settings page.
 
   // When model switches to Claude 4.6 and thinking is 'off', auto-upgrade to 'adaptive'
@@ -1058,7 +1058,7 @@ function ChatComposerComponent({
     return typeof first === 'string' ? first : first.id || first.name || ''
   }, [modelsQuery.data])
   const modelButtonLabel =
-    currentSelectedModel || currentModel || configuredModel || '⚕ Hermes Agent'
+    currentSelectedModel || currentModel || configuredModel || '⚕ Vorbium Engine'
 
   // Measure composer height and set CSS variable for scroll padding
   useLayoutEffect(() => {

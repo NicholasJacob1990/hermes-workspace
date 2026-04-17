@@ -559,7 +559,7 @@ export function ProviderWizard({
                     <p className="mt-1 text-sm text-primary-600 text-pretty">
                       This will run{' '}
                       <code className="font-mono text-primary-800">
-                        hermes setup
+                        vorbium-engine setup
                       </code>{' '}
                       in the terminal to start the OAuth flow. A browser window
                       will open for you to sign in with Google.
@@ -571,7 +571,7 @@ export function ProviderWizard({
                         onClick={function onLaunchOAuth() {
                           window.open('/terminal', '_blank')
                           setVerificationMessage(
-                            'Run "hermes setup" in the terminal and select Google OAuth when prompted. ' +
+                            'Run "vorbium-engine setup" in the terminal and select Google OAuth when prompted. ' +
                               'A browser window will open for sign-in. Once complete, Hermes will restart automatically.',
                           )
                           setVerifyState('warning')
@@ -586,7 +586,7 @@ export function ProviderWizard({
                           In the terminal, run:
                         </p>
                         <pre className="mt-1 rounded-lg bg-primary-200/60 px-2 py-1.5 text-xs font-mono text-primary-900">
-                          hermes setup
+                          vorbium-engine setup
                         </pre>
                         <p className="mt-1.5 text-xs text-primary-600 text-pretty">
                           Select <strong>Google Antigravity</strong> →{' '}
@@ -604,7 +604,7 @@ export function ProviderWizard({
                             rel="noopener noreferrer"
                             className="text-primary-800 underline decoration-primary-400 hover:text-primary-900"
                           >
-                            See the Hermes Agent docs
+                            See the Vorbium Engine docs
                           </a>{' '}
                           for setup instructions.
                         </p>
@@ -625,7 +625,7 @@ export function ProviderWizard({
                         onClick={function onLaunchCLI() {
                           window.open('/terminal', '_blank')
                           setVerificationMessage(
-                            'Run "hermes setup" in the terminal and select Anthropic → CLI Token. ' +
+                            'Run "vorbium-engine setup" in the terminal and select Anthropic → CLI Token. ' +
                               'It will detect your Claude CLI credentials and import them automatically.',
                           )
                           setVerifyState('warning')
@@ -640,7 +640,7 @@ export function ProviderWizard({
                           In the terminal, run:
                         </p>
                         <pre className="mt-1 rounded-lg bg-primary-200/60 px-2 py-1.5 text-xs font-mono text-primary-900">
-                          hermes setup
+                          vorbium-engine setup
                         </pre>
                         <p className="mt-1.5 text-xs text-primary-600 text-pretty">
                           Select <strong>Anthropic</strong> →{' '}
@@ -668,7 +668,7 @@ export function ProviderWizard({
                             rel="noopener noreferrer"
                             className="text-primary-800 underline decoration-primary-400 hover:text-primary-900"
                           >
-                            See the Hermes Agent docs
+                            See the Vorbium Engine docs
                           </a>{' '}
                           for CLI token setup instructions.
                         </p>
@@ -856,7 +856,7 @@ export function ProviderWizard({
                     {verifyTitle}
                   </p>
                   <p className="mt-1 text-sm text-primary-600 text-pretty">
-                    {verificationMessage || 'Waiting for Hermes to respond…'}
+                    {verificationMessage || 'Waiting for Vorbium to respond…'}
                   </p>
                 </div>
 

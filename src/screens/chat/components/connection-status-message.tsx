@@ -26,7 +26,7 @@ function classifyConnectionError(
     return {
       title: 'Not connected',
       description: "Vorbium Engine can't reach Hermes.",
-      action: 'Check that Hermes is running, then try again.',
+      action: 'Check that Vorbium is running, then try again.',
     }
   }
 
@@ -50,8 +50,8 @@ function classifyConnectionError(
   ) {
     return {
       title: 'Pairing required',
-      description: "This device isn't paired with Hermes yet.",
-      action: 'Check Hermes Agent connection.',
+      description: "This device isn't paired with Vorbium yet.",
+      action: 'Check Vorbium Engine connection.',
     }
   }
 
@@ -59,7 +59,7 @@ function classifyConnectionError(
     return {
       title: 'Hermes WebAPI not running',
       description: 'The Hermes WebAPI server is not running on port 8642.',
-      action: 'Run: cd hermes-agent && pip install -e . && hermes-webapi',
+      action: 'Run: cd vorbium-engine && pip install -e . && hermes-webapi',
     }
   }
 
@@ -72,8 +72,8 @@ function classifyConnectionError(
   ) {
     return {
       title: 'Hermes unreachable',
-      description: "Can't connect to Hermes at the configured URL.",
-      action: 'Make sure Hermes is running and the URL is correct.',
+      description: "Can't connect to Vorbium at the configured URL.",
+      action: 'Make sure Vorbium is running and the URL is correct.',
     }
   }
 
@@ -133,7 +133,7 @@ export function ConnectionStatusMessage({
         />
         <div className="flex-1 text-xs">
           <p className="font-medium">
-            {isChecking ? 'Connecting to Hermes...' : errorInfo.title}
+            {isChecking ? 'Connecting to Vorbium...' : errorInfo.title}
           </p>
           {!isChecking ? (
             <>

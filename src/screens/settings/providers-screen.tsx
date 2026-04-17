@@ -291,7 +291,7 @@ const SETTINGS: Array<SettingDefinition> = [
     min: 1,
     step: 1000,
   },
-  // Thinking/reasoning settings removed — not supported by Hermes Agent
+  // Thinking/reasoning settings removed — not supported by Vorbium Engine
   // Legacy settings removed: bootstrap, block streaming,
   // compaction, thinking, verbose, and fast mode do not apply here.
   {
@@ -1104,7 +1104,7 @@ function ActiveModelCard({
           <p className="text-sm text-primary-600">
             Update the primary model, optional fallback, and stream timeout
             settings saved in{' '}
-            <code className="font-mono">~/.hermes/config.yaml</code>.
+            <code className="font-mono">~/.vorbium/config.yaml (or ~/.hermes/ legacy)</code>.
           </p>
         </div>
         <Button
@@ -1122,7 +1122,7 @@ function ActiveModelCard({
         </p>
       ) : configQuery.error ? (
         <p className="mt-4 text-sm text-red-500">
-          Could not load config — is Hermes Agent running?
+          Could not load config — is Vorbium Engine running?
         </p>
       ) : (
         <div className="mt-5 space-y-4">
@@ -1298,7 +1298,7 @@ function ProviderManagementSection(props: {
 
         {modelsQuery.isPending ? (
           <p className="rounded-xl border border-primary-200 bg-white px-3 py-2 text-sm text-primary-600">
-            Loading providers from Hermes...
+            Loading providers from Vorbium...
           </p>
         ) : null}
 

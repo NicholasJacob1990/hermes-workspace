@@ -10,7 +10,7 @@ type ConnectionStatus = {
   chatReady: boolean
   modelConfigured: boolean
   activeModel: string
-  chatMode: 'enhanced-hermes' | 'portable' | 'disconnected'
+  chatMode: 'enhanced-vorbium' | 'portable' | 'disconnected'
   capabilities: Record<string, boolean>
   vorbiumUrl: string
 }
@@ -84,7 +84,7 @@ function buildTooltip(
     if (!data.modelConfigured) parts.push('No model selected')
   }
   if (data.status === 'enhanced') {
-    parts.push('Hermes gateway enhancements detected')
+    parts.push('Vorbium gateway enhancements detected')
   }
   if (data.activeModel) parts.push(`Model: ${data.activeModel}`)
   return parts.join(' · ')

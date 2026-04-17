@@ -12,6 +12,7 @@ import { OnboardingTour } from '@/components/onboarding/onboarding-tour'
 import { KeyboardShortcutsModal } from '@/components/keyboard-shortcuts-modal'
 import { initializeSettingsAppearance } from '@/hooks/use-settings'
 import { VorbiumOnboarding } from '@/components/onboarding/vorbium-onboarding'
+import { migrateHermesLocalStorage } from '@/lib/localstorage-migration'
 
 const APP_CSP = [
   "default-src 'self'",
@@ -204,6 +205,7 @@ function RootLayout() {
   // Unregister any existing service workers — they cause stale asset issues
   // after Docker image updates and behind reverse proxies (Pangolin, Cloudflare, etc.)
   useEffect(() => {
+    migrateHermesLocalStorage()
     initializeSettingsAppearance()
 
     if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {

@@ -30,7 +30,7 @@ function stripProviderPrefix(model: string): string {
   return model
 }
 
-const ONBOARDING_KEY = 'hermes-onboarding-complete'
+const ONBOARDING_KEY = 'vorbium-onboarding-complete'
 
 type Step = 'welcome' | 'connect' | 'provider' | 'test' | 'done'
 
@@ -225,7 +225,7 @@ export function VorbiumOnboarding() {
         setBackendStatus('ready')
         setBackendMessage(
           data.capabilities.sessions
-            ? 'Backend connected. Core chat works, and Hermes gateway enhancements are available.'
+            ? 'Backend connected. Core chat works, and Vorbium gateway enhancements are available.'
             : 'Backend connected. Core chat is ready.',
         )
         return
@@ -514,7 +514,7 @@ export function VorbiumOnboarding() {
               />
               <h2 className="text-xl font-bold">Welcome to Vorbium Engine</h2>
               <p className="text-sm" style={mutedStyle}>
-                Works with any OpenAI-compatible backend. Hermes gateway APIs
+                Works with any OpenAI-compatible backend. Vorbium gateway APIs
                 unlock sessions, memory, skills, and other extras automatically.
               </p>
               <button
@@ -585,7 +585,7 @@ export function VorbiumOnboarding() {
                     <p className="mt-2" style={mutedStyle}>
                       Use any backend that exposes{' '}
                       <code>/v1/chat/completions</code>. If you point Hermes
-                      Workspace at a Hermes gateway, enhanced features unlock
+                      Workspace at a Vorbium gateway, enhanced features unlock
                       automatically.
                     </p>
                     <div
@@ -598,7 +598,7 @@ export function VorbiumOnboarding() {
                       className="mt-2 rounded-lg px-3 py-2 font-mono text-[11px]"
                       style={{ background: 'rgba(0,0,0,0.2)' }}
                     >
-                      hermes --gateway
+                      vorbium-engine dashboard
                     </div>
                   </div>
                 </div>
@@ -641,7 +641,7 @@ export function VorbiumOnboarding() {
                 <p style={mutedStyle}>Backend mode</p>
                 <p className="mt-1">
                   {backendInfo?.capabilities?.sessions
-                    ? 'Hermes gateway detected'
+                    ? 'Vorbium gateway detected'
                     : 'Portable OpenAI-compatible backend'}
                 </p>
                 {configuredModel ? (
@@ -1067,8 +1067,8 @@ export function VorbiumOnboarding() {
               <p className="text-sm" style={mutedStyle}>
                 Core chat is set up.{' '}
                 {enhancedFeatures.length > 0
-                  ? 'This backend also exposes Hermes gateway enhancements.'
-                  : 'If you later connect a Hermes gateway, enhanced features unlock automatically.'}
+                  ? 'This backend also exposes Vorbium gateway enhancements.'
+                  : 'If you later connect a Vorbium gateway, enhanced features unlock automatically.'}
               </p>
               <div
                 className="grid grid-cols-3 gap-2 text-xs"
