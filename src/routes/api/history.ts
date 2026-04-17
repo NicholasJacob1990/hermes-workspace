@@ -47,7 +47,7 @@ export const Route = createFileRoute('/api/history')({
               messages: [],
             })
           }
-          // "main" doesn't exist in Hermes — resolve it to the latest session.
+          // "main" doesn't exist in Vorbium — resolve it to the latest session.
           if (sessionKey === 'main') {
             try {
               const sessions = await listSessions(1, 0)

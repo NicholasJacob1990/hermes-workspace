@@ -584,7 +584,7 @@ export function VorbiumOnboarding() {
                     </p>
                     <p className="mt-2" style={mutedStyle}>
                       Use any backend that exposes{' '}
-                      <code>/v1/chat/completions</code>. If you point Hermes
+                      <code>/v1/chat/completions</code>. If you point Vorbium
                       Workspace at a Vorbium gateway, enhanced features unlock
                       automatically.
                     </p>
@@ -780,7 +780,7 @@ export function VorbiumOnboarding() {
                       className="rounded-lg px-3 py-2 font-mono text-xs"
                       style={{ background: 'rgba(0,0,0,0.2)' }}
                     >
-                      hermes auth login openai-codex
+                      vorbium auth login openai-codex
                     </div>
                     <p className="text-xs" style={mutedStyle}>
                       After the login flow completes, click below to refresh
@@ -947,7 +947,7 @@ export function VorbiumOnboarding() {
               <div className="text-4xl">🧪</div>
               <h2 className="text-lg font-bold">Test Chat</h2>
               <p className="text-sm" style={mutedStyle}>
-                Verify that core chat works first. Enhanced Hermes features are
+                Verify that core chat works first. Enhanced Vorbium features are
                 optional and appear automatically when supported.
               </p>
 

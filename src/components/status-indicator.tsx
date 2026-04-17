@@ -96,7 +96,7 @@ function buildTooltip(
  */
 export function StatusDot() {
   const { data, isLoading } = useQuery({
-    queryKey: ['hermes', 'connection-status'],
+    queryKey: ['vorbium', 'connection-status'],
     queryFn: fetchConnectionStatus,
     refetchInterval: 15_000,
     retry: false,
@@ -127,7 +127,7 @@ export function StatusIndicator({
   inline?: boolean
 }) {
   const { data, isLoading } = useQuery({
-    queryKey: ['hermes', 'connection-status'],
+    queryKey: ['vorbium', 'connection-status'],
     queryFn: fetchConnectionStatus,
     refetchInterval: 15_000,
     retry: false,

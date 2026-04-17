@@ -40,13 +40,13 @@ function getSetupSteps(
     },
     {
       title: 'Enable the HTTP API server',
-      command: 'echo "API_SERVER_ENABLED=true" >> ~/.hermes/.env',
+      command: 'echo "API_SERVER_ENABLED=true" >> ~/.vorbium/.env',
       note: 'The gateway HTTP API is opt-in. Without this, the gateway serves messaging platforms but does not expose port 8642 for the workspace.',
     },
     {
       title: 'Start the gateway',
       command: `cd vorbium-engine && ${platform === 'windows' ? '.venv\\Scripts\\activate' : 'source .venv/bin/activate'} && vorbium-engine dashboard`,
-      note: 'Or use Auto-Start below if hermes-agent is already installed locally',
+      note: 'Or use Auto-Start below if vorbium-agent is already installed locally',
     },
   ]
 }
@@ -136,9 +136,9 @@ export function ConnectionStartupScreen({ onConnected }: Props) {
   const handleAutoStart = async () => {
     setServerStarting(true)
     setServerError(null)
-    setServerLog(['Looking for hermes-agent...'])
+    setServerLog(['Looking for vorbium-agent...'])
     try {
-      const res = await fetch('/api/start-hermes', {
+      const res = await fetch('/api/start-vorbium', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       })
@@ -160,7 +160,7 @@ export function ConnectionStartupScreen({ onConnected }: Props) {
         return
       }
 
-      const msg = String(data.error || 'Could not find hermes-agent')
+      const msg = String(data.error || 'Could not find vorbium-agent')
       const hint = data.hint ? String(data.hint) : ''
       setServerLog([`Error: ${msg}`])
       if (hint) setServerLog((prev) => [...prev, `Hint: ${hint}`])
@@ -222,7 +222,7 @@ export function ConnectionStartupScreen({ onConnected }: Props) {
               Welcome! Let&apos;s connect your backend
             </p>
             <p className="mt-2 text-sm leading-6 text-white/60">
-              Vorbium Engine works with any OpenAI-compatible backend. Hermes
+              Vorbium Engine works with any OpenAI-compatible backend. Vorbium
               gateway APIs unlock enhanced features automatically when they are
               available.
             </p>
@@ -246,7 +246,7 @@ export function ConnectionStartupScreen({ onConnected }: Props) {
                     Detecting...
                   </span>
                 ) : (
-                  'Auto-Start Hermes Gateway'
+                  'Auto-Start Vorbium Gateway'
                 )}
               </button>
 

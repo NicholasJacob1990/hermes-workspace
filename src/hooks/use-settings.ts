@@ -65,7 +65,7 @@ export const useSettingsStore = create<SettingsState>()(
       }
     },
     {
-      name: 'hermes-settings',
+      name: 'vorbium-settings',
       skipHydration: true,
     },
   ),

@@ -73,21 +73,21 @@ function ThemeToggleMini() {
 
   // Map between dark and light counterparts
   const LIGHT_DARK_PAIRS: Record<string, string> = {
-    'vorbium-official': 'hermes-official-light',
-    'hermes-official-light': 'vorbium-official',
-    'hermes-classic': 'hermes-classic-light',
-    'hermes-classic-light': 'hermes-classic',
-    'hermes-slate': 'hermes-slate-light',
-    'hermes-slate-light': 'hermes-slate',
-    'hermes-mono': 'hermes-mono-light',
-    'hermes-mono-light': 'hermes-mono',
+    'vorbium-official': 'vorbium-official-light',
+    'vorbium-official-light': 'vorbium-official',
+    'vorbium-classic': 'vorbium-classic-light',
+    'vorbium-classic-light': 'vorbium-classic',
+    'vorbium-slate': 'vorbium-slate-light',
+    'vorbium-slate-light': 'vorbium-slate',
+    'vorbium-mono': 'vorbium-mono-light',
+    'vorbium-mono-light': 'vorbium-mono',
   }
 
   return (
     <button
       type="button"
       onClick={() => {
-        const nextDataTheme = LIGHT_DARK_PAIRS[currentDataTheme] || (isDark ? 'hermes-official-light' : 'vorbium-official')
+        const nextDataTheme = LIGHT_DARK_PAIRS[currentDataTheme] || (isDark ? 'vorbium-official-light' : 'vorbium-official')
         // Import and call setTheme to persist and apply
         import('@/lib/theme').then(({ setTheme }) => {
           setTheme(nextDataTheme as any)
@@ -524,7 +524,7 @@ function ChatSidebarComponent({
   useEffect(() => {
     function handleOpenSettingsEvent(event: Event) {
       const detail = (event as CustomEvent<ChatOpenSettingsDetail>).detail
-      handleOpenSettings(detail?.section === 'appearance' ? 'appearance' : 'hermes')
+      handleOpenSettings(detail?.section === 'appearance' ? 'appearance' : 'vorbium')
     }
 
     window.addEventListener(CHAT_OPEN_SETTINGS_EVENT, handleOpenSettingsEvent)
@@ -581,15 +581,15 @@ function ChatSidebarComponent({
 
   // Collapsible section states
   const [mainExpanded, toggleMain] = usePersistedBool(
-    'hermes-sidebar-main-expanded',
+    'vorbium-sidebar-main-expanded',
     true,
   )
   const [knowledgeExpanded, toggleKnowledge] = usePersistedBool(
-    'hermes-sidebar-knowledge-expanded',
+    'vorbium-sidebar-knowledge-expanded',
     true,
   )
   const [_systemExpanded, _toggleSystem] = usePersistedBool(
-    'hermes-sidebar-system-expanded',
+    'vorbium-sidebar-system-expanded',
     false,
   )
 
@@ -1076,7 +1076,7 @@ function ChatSidebarComponent({
             <MenuContent side="top" align="start" className="min-w-[200px]">
               <MenuItem
                 onClick={function onOpenSettings() {
-                  handleOpenSettings('hermes')
+                  handleOpenSettings('vorbium')
                 }}
                 className="justify-between"
               >
@@ -1097,7 +1097,7 @@ function ChatSidebarComponent({
             <div className="flex items-center gap-0.5">
               <button
                 type="button"
-                onClick={() => handleOpenSettings('hermes')}
+                onClick={() => handleOpenSettings('vorbium')}
                 className="shrink-0 rounded-lg p-1.5 text-primary-400 hover:bg-primary-200 dark:hover:bg-neutral-800 hover:text-primary-600 dark:hover:text-neutral-300 transition-colors"
                 aria-label="Settings"
               >

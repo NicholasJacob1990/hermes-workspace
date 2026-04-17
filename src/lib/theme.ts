@@ -1,12 +1,12 @@
 export type ThemeId =
   | 'vorbium-official'
-  | 'hermes-official-light'
-  | 'hermes-classic'
-  | 'hermes-classic-light'
-  | 'hermes-slate'
-  | 'hermes-slate-light'
-  | 'hermes-mono'
-  | 'hermes-mono-light'
+  | 'vorbium-official-light'
+  | 'vorbium-classic'
+  | 'vorbium-classic-light'
+  | 'vorbium-slate'
+  | 'vorbium-slate-light'
+  | 'vorbium-mono'
+  | 'vorbium-mono-light'
 
 export const THEMES: Array<{
   id: ThemeId
@@ -16,48 +16,48 @@ export const THEMES: Array<{
 }> = [
   {
     id: 'vorbium-official',
-    label: 'Hermes Official',
+    label: 'Vorbium Official',
     description: 'Navy and indigo flagship theme',
     icon: '⚕',
   },
   {
-    id: 'hermes-official-light',
-    label: 'Hermes Official Light',
+    id: 'vorbium-official-light',
+    label: 'Vorbium Official Light',
     description: 'Soft indigo light palette',
     icon: '⚕',
   },
   {
-    id: 'hermes-classic',
-    label: 'Hermes Classic',
+    id: 'vorbium-classic',
+    label: 'Vorbium Classic',
     description: 'Bronze accents on dark charcoal',
     icon: '🔶',
   },
   {
-    id: 'hermes-classic-light',
+    id: 'vorbium-classic-light',
     label: 'Classic Light',
     description: 'Warm parchment with bronze accents',
     icon: '🔶',
   },
   {
-    id: 'hermes-slate',
+    id: 'vorbium-slate',
     label: 'Slate',
     description: 'Cool blue developer theme',
     icon: '🔷',
   },
   {
-    id: 'hermes-slate-light',
+    id: 'vorbium-slate-light',
     label: 'Slate Light',
     description: 'GitHub-light palette with blue accents',
     icon: '🔷',
   },
   {
-    id: 'hermes-mono',
+    id: 'vorbium-mono',
     label: 'Mono',
     description: 'Clean monochrome grayscale',
     icon: '◐',
   },
   {
-    id: 'hermes-mono-light',
+    id: 'vorbium-mono-light',
     label: 'Mono Light',
     description: 'Bright monochrome grayscale',
     icon: '◐',
@@ -71,26 +71,26 @@ const LIGHT_THEME_MAP: Record<
   Exclude<ThemeId, `${string}-light`>,
   Extract<ThemeId, `${string}-light`>
 > = {
-  'vorbium-official': 'hermes-official-light',
-  'hermes-classic': 'hermes-classic-light',
-  'hermes-slate': 'hermes-slate-light',
-  'hermes-mono': 'hermes-mono-light',
+  'vorbium-official': 'vorbium-official-light',
+  'vorbium-classic': 'vorbium-classic-light',
+  'vorbium-slate': 'vorbium-slate-light',
+  'vorbium-mono': 'vorbium-mono-light',
 }
 const DARK_THEME_MAP: Record<
   Extract<ThemeId, `${string}-light`>,
   Exclude<ThemeId, `${string}-light`>
 > = {
-  'hermes-official-light': 'vorbium-official',
-  'hermes-classic-light': 'hermes-classic',
-  'hermes-slate-light': 'hermes-slate',
-  'hermes-mono-light': 'hermes-mono',
+  'vorbium-official-light': 'vorbium-official',
+  'vorbium-classic-light': 'vorbium-classic',
+  'vorbium-slate-light': 'vorbium-slate',
+  'vorbium-mono-light': 'vorbium-mono',
 }
 
 const LIGHT_THEMES = new Set<ThemeId>([
-  'hermes-official-light',
-  'hermes-classic-light',
-  'hermes-slate-light',
-  'hermes-mono-light',
+  'vorbium-official-light',
+  'vorbium-classic-light',
+  'vorbium-slate-light',
+  'vorbium-mono-light',
 ])
 
 export function isValidTheme(

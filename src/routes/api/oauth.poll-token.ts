@@ -63,7 +63,7 @@ export const Route = createFileRoute('/api/oauth/poll-token')({
           try {
             const params = new URLSearchParams({
               grant_type: 'urn:ietf:params:oauth:grant-type:device_code',
-              client_id: 'hermes-cli',
+              client_id: 'vorbium-cli',
               device_code: deviceCode,
             })
 

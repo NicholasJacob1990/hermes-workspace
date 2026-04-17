@@ -9,7 +9,7 @@ export type ProviderInfo = {
   configExample: string
 }
 
-export const HERMES_CONFIG_PATH = '~/.vorbium/config.yaml (or ~/.hermes/ legacy)'
+export const HERMES_CONFIG_PATH = '~/.vorbium/config.yaml (or ~/.vorbium/ legacy)'
 
 export const PROVIDER_CATALOG: Array<ProviderInfo> = [
   {

@@ -336,7 +336,7 @@ function ModelCard() {
   const sessionsAvailable = useFeatureAvailable('sessions')
   const configAvailable = useFeatureAvailable('config')
   const configQuery = useQuery({
-    queryKey: ['hermes-config'],
+    queryKey: ['vorbium-config'],
     queryFn: async () => {
       const res = await fetch('/api/vorbium-config')
       if (!res.ok) return null
@@ -432,7 +432,7 @@ function ModelCard() {
 function SkillsWidget() {
   const skillsAvailable = useFeatureAvailable('skills')
   const skillsQuery = useQuery({
-    queryKey: ['hermes-skills'],
+    queryKey: ['vorbium-skills'],
     queryFn: async () => {
       const res = await fetch(
         '/api/skills?tab=installed&limit=8&summary=search',
@@ -700,17 +700,17 @@ export function DashboardScreen() {
           aria-label="Toggle theme"
           onClick={() => {
             const LIGHT_DARK_PAIRS: Record<string, string> = {
-              'vorbium-official': 'hermes-official-light',
-              'hermes-official-light': 'vorbium-official',
-              'hermes-classic': 'hermes-classic-light',
-              'hermes-classic-light': 'hermes-classic',
-              'hermes-slate': 'hermes-slate-light',
-              'hermes-slate-light': 'hermes-slate',
-              'hermes-mono': 'hermes-mono-light',
-              'hermes-mono-light': 'hermes-mono',
+              'vorbium-official': 'vorbium-official-light',
+              'vorbium-official-light': 'vorbium-official',
+              'vorbium-classic': 'vorbium-classic-light',
+              'vorbium-classic-light': 'vorbium-classic',
+              'vorbium-slate': 'vorbium-slate-light',
+              'vorbium-slate-light': 'vorbium-slate',
+              'vorbium-mono': 'vorbium-mono-light',
+              'vorbium-mono-light': 'vorbium-mono',
             }
             const cur = document.documentElement.getAttribute('data-theme') || 'vorbium-official'
-            const nextDataTheme = LIGHT_DARK_PAIRS[cur] || (isDark ? 'hermes-official-light' : 'vorbium-official')
+            const nextDataTheme = LIGHT_DARK_PAIRS[cur] || (isDark ? 'vorbium-official-light' : 'vorbium-official')
             import('@/lib/theme').then(({ setTheme }) => { setTheme(nextDataTheme as any) })
             const nextMode = nextDataTheme.endsWith('-light') ? 'light' : 'dark'
             applyTheme(nextMode)
@@ -724,7 +724,7 @@ export function DashboardScreen() {
         </button>
       </div>
       <div className="px-4 pt-14 md:pt-4 py-4 md:px-8 md:py-6 lg:px-10 space-y-5 pb-28">
-      {/* ── Header: Hermes Logo + Quick Actions ── */}
+      {/* ── Header: Vorbium Logo + Quick Actions ── */}
       <div className="flex flex-col items-center gap-3 py-3">
         <img
           src="/hermes-avatar.webp"

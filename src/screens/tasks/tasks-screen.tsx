@@ -24,8 +24,8 @@ import {
 } from '@/lib/tasks-api'
 import type { VorbiumTask, TaskColumn, CreateTaskInput, TaskAssignee } from '@/lib/tasks-api'
 
-const QUERY_KEY = ['hermes', 'tasks'] as const
-const ASSIGNEES_KEY = ['hermes', 'tasks', 'assignees'] as const
+const QUERY_KEY = ['vorbium', 'tasks'] as const
+const ASSIGNEES_KEY = ['vorbium', 'tasks', 'assignees'] as const
 
 function SkeletonCard() {
   return (

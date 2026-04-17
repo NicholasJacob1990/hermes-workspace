@@ -17,7 +17,7 @@ import {
 const _authHeaders = (): Record<string, string> =>
   BEARER_TOKEN ? { Authorization: `Bearer ${BEARER_TOKEN}` } : {}
 
-console.log(`[hermes-api] Configured API: ${HERMES_API}`)
+console.log(`[vorbium-api] Configured API: ${HERMES_API}`)
 
 // ── Types ─────────────────────────────────────────────────────────
 
@@ -117,7 +117,7 @@ export async function listSessions(
   limit = 50,
   offset = 0,
 ): Promise<Array<VorbiumSession>> {
-  // Backend hermes v0.10.x retorna {sessions: [...]}, versões antigas usam {items, total}.
+  // Backend vorbium v0.10.x retorna {sessions: [...]}, versões antigas usam {items, total}.
   const resp = await vorbiumGet<{
     items?: Array<VorbiumSession>
     sessions?: Array<VorbiumSession>
@@ -183,7 +183,7 @@ export async function forkSession(
   return vorbiumPost(`/api/sessions/${sessionId}/fork`)
 }
 
-// ── Conversion helpers (Hermes → Chat format) ─────────────────
+// ── Conversion helpers (Vorbium → Chat format) ─────────────────
 
 /** Convert a VorbiumMessage to the ChatMessage format the frontend expects */
 export function toChatMessage(

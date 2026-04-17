@@ -31,8 +31,8 @@ const AUTH_STORE_MODELS: Record<string, Array<ModelEntry>> = {
     },
   ],
   nous: [
-    { id: 'hermes-3-llama-3.1-405b', name: 'Hermes 3 405B', provider: 'nous' },
-    { id: 'hermes-3-llama-3.1-70b', name: 'Hermes 3 70B', provider: 'nous' },
+    { id: 'vorbium-3-llama-3.1-405b', name: 'Vorbium 3 405B', provider: 'nous' },
+    { id: 'vorbium-3-llama-3.1-70b', name: 'Vorbium 3 70B', provider: 'nous' },
     { id: 'deepseek/deepseek-r1', name: 'DeepSeek R1', provider: 'nous' },
   ],
   xiaomi: [
@@ -138,7 +138,7 @@ async function fetchVorbiumModels(): Promise<Array<ModelEntry>> {
   if (BEARER_TOKEN) headers['Authorization'] = `Bearer ${BEARER_TOKEN}`
   const response = await fetch(`${HERMES_API}/v1/models`, { headers })
   if (!response.ok)
-    throw new Error(`Hermes models request failed (${response.status})`)
+    throw new Error(`Vorbium models request failed (${response.status})`)
   const payload = asRecord(await response.json())
   const rawModels = Array.isArray(payload.data)
     ? payload.data

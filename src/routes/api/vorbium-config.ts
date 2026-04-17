@@ -1,5 +1,5 @@
 /**
- * Hermes Config API — read/write ~/.vorbium/config.yaml (or ~/.hermes/ legacy) and ~/.hermes/.env
+ * Vorbium Config API — read/write ~/.vorbium/config.yaml (or ~/.vorbium/ legacy) and ~/.vorbium/.env
  * Gives the web UI the same config power as `vorbium-engine setup`
  */
 import fs from 'node:fs'
@@ -20,7 +20,7 @@ const VORBIUM_HOME = path.join(os.homedir(), '.vorbium')
 const CONFIG_PATH = path.join(VORBIUM_HOME, 'config.yaml')
 const ENV_PATH = path.join(VORBIUM_HOME, '.env')
 
-// Known Hermes providers
+// Known Vorbium providers
 const PROVIDERS = [
   { id: 'nous', name: 'Nous Portal', authType: 'oauth', envKeys: [] },
   { id: 'openai-codex', name: 'OpenAI Codex', authType: 'oauth', envKeys: [] },
@@ -141,7 +141,7 @@ function checkAuthStore(providerId: string): {
   source: string
   maskedKey?: string
 } {
-  // Check Hermes auth store
+  // Check Vorbium auth store
   for (const storePath of [
     path.join(os.homedir(), '.vorbium', 'auth-profiles.json'),
     path.join(
@@ -164,7 +164,7 @@ function checkAuthStore(providerId: string): {
         const token = String(p.token || p.key || p.access || '').trim()
         if (token) {
           const source = storePath.includes('.vorbium')
-            ? 'hermes-auth-store'
+            ? 'vorbium-auth-store'
             : 'openclaw-auth-store'
           return { hasToken: true, source, maskedKey: maskKey(token) }
         }
@@ -318,7 +318,7 @@ export const Route = createFileRoute('/api/vorbium-config')({
 
         return Response.json({
           ok: true,
-          message: 'Config updated. Restart Hermes to apply changes.',
+          message: 'Config updated. Restart Vorbium to apply changes.',
         })
       },
     },

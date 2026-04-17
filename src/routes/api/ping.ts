@@ -33,7 +33,7 @@ export const Route = createFileRoute('/api/ping')({
           return Response.json(
             {
               ok: false,
-              error: 'Hermes unavailable',
+              error: 'Vorbium unavailable',
               status: 503,
               vorbiumUrl: HERMES_API,
             } satisfies PingResponse,

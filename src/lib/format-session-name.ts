@@ -1,5 +1,5 @@
 /**
- * Convert raw Hermes session keys to human-readable names.
+ * Convert raw Vorbium session keys to human-readable names.
  *
  * Examples:
  *   "agent:main:main" → "Main"
@@ -14,8 +14,8 @@ const PLATFORM_NAMES: Record<string, string> = {
   whatsapp: 'WhatsApp',
   signal: 'Signal',
   imessage: 'iMessage',
-  webchat: 'Hermes',
-  'hermes-workspace': 'Hermes',
+  webchat: 'Vorbium',
+  'vorbium-workspace': 'Vorbium',
   slack: 'Slack',
   irc: 'IRC',
   googlechat: 'Google Chat',

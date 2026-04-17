@@ -99,7 +99,7 @@ function ChatRoute() {
       })
       // Persist last session for refresh recovery
       try {
-        localStorage.setItem('hermes-last-session', payload.friendlyId)
+        localStorage.setItem('vorbium-last-session', payload.friendlyId)
       } catch {}
       navigate({
         to: '/chat/$sessionKey',

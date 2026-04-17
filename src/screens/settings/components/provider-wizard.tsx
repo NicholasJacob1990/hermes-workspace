@@ -277,7 +277,7 @@ export function ProviderWizard({
       setSaveState('saved')
       setVerifyState('checking')
       setVerificationMessage(
-        `${providerName} API key saved. Hermes is restarting…`,
+        `${providerName} API key saved. Vorbium is restarting…`,
       )
       setStep('verify')
 
@@ -301,7 +301,7 @@ export function ProviderWizard({
         } else {
           setVerifyState('warning')
           setVerificationMessage(
-            `Hermes restarted, but ${providerName} models haven't appeared yet. ` +
+            `Vorbium restarted, but ${providerName} models haven't appeared yet. ` +
               `Check your API key or wait a moment and refresh.`,
           )
         }
@@ -353,7 +353,7 @@ export function ProviderWizard({
                 </DialogTitle>
                 <DialogDescription className="text-pretty">
                   Add provider credentials safely. API keys stay local in your
-                  Hermes config file and are never sent to Studio.
+                  Vorbium config file and are never sent to Studio.
                 </DialogDescription>
               </div>
               <Button
@@ -572,7 +572,7 @@ export function ProviderWizard({
                           window.open('/terminal', '_blank')
                           setVerificationMessage(
                             'Run "vorbium-engine setup" in the terminal and select Google OAuth when prompted. ' +
-                              'A browser window will open for sign-in. Once complete, Hermes will restart automatically.',
+                              'A browser window will open for sign-in. Once complete, Vorbium will restart automatically.',
                           )
                           setVerifyState('warning')
                           setStep('verify')
@@ -615,7 +615,7 @@ export function ProviderWizard({
                   <>
                     <p className="mt-1 text-sm text-primary-600 text-pretty">
                       If you have Claude Code or the Claude CLI installed,
-                      Hermes can use the same auth token. Run the configure
+                      Vorbium can use the same auth token. Run the configure
                       command to detect and import it automatically.
                     </p>
 
@@ -723,7 +723,7 @@ export function ProviderWizard({
                             strokeWidth={1.5}
                             className="inline mr-1"
                           />
-                          Key saved! Hermes is restarting to apply changes.
+                          Key saved! Vorbium is restarting to apply changes.
                         </p>
                       ) : null}
                     </div>

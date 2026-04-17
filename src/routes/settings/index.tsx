@@ -98,49 +98,49 @@ const THEME_PREVIEWS: Record<
     accent: '#6366F1',
     text: '#E6EAF2',
   },
-  'hermes-official-light': {
+  'vorbium-official-light': {
     bg: '#F6F8FC',
     panel: '#FFFFFF',
     border: '#D7DEEE',
     accent: '#4F46E5',
     text: '#111827',
   },
-  'hermes-classic': {
+  'vorbium-classic': {
     bg: '#0d0f12',
     panel: '#1a1f26',
     border: '#2a313b',
     accent: '#b98a44',
     text: '#eceff4',
   },
-  'hermes-slate': {
+  'vorbium-slate': {
     bg: '#0d1117',
     panel: '#1c2128',
     border: '#30363d',
     accent: '#7eb8f6',
     text: '#c9d1d9',
   },
-  'hermes-mono': {
+  'vorbium-mono': {
     bg: '#111111',
     panel: '#222222',
     border: '#333333',
     accent: '#aaaaaa',
     text: '#e6edf3',
   },
-  'hermes-classic-light': {
+  'vorbium-classic-light': {
     bg: '#F5F2ED',
     panel: '#FFFFFF',
     border: '#D9D0C4',
     accent: '#b98a44',
     text: '#1a1f26',
   },
-  'hermes-slate-light': {
+  'vorbium-slate-light': {
     bg: '#F6F8FA',
     panel: '#FFFFFF',
     border: '#D0D7DE',
     accent: '#3b82f6',
     text: '#1F2328',
   },
-  'hermes-mono-light': {
+  'vorbium-mono-light': {
     bg: '#FAFAFA',
     panel: '#FFFFFF',
     border: '#D4D4D4',
@@ -249,7 +249,7 @@ type SettingsSectionId =
   | 'profile'
   | 'appearance'
   | 'chat'
-  | 'hermes'
+  | 'vorbium'
   | 'agent'
   | 'routing'
   | 'voice'
@@ -264,7 +264,7 @@ type SettingsNavItem = {
 }
 
 const SETTINGS_NAV_ITEMS: Array<SettingsNavItem> = [
-  { id: 'hermes', label: 'Model & Provider' },
+  { id: 'vorbium', label: 'Model & Provider' },
   { id: 'agent', label: 'Agent Behavior' },
   { id: 'routing', label: 'Smart Routing' },
   { id: 'voice', label: 'Voice' },
@@ -311,7 +311,7 @@ function SettingsRoute() {
   }, [])
 
   const [activeSection, setActiveSection] =
-    useState<SettingsSectionId>('hermes')
+    useState<SettingsSectionId>('vorbium')
 
   return (
     <div className="min-h-screen bg-surface text-primary-900">
@@ -391,8 +391,8 @@ function SettingsRoute() {
         {/* Content area */}
         <div className="flex-1 min-w-0 flex flex-col gap-4">
           {/* ── Vorbium Engine ──────────────────────────────────── */}
-          {activeSection === 'hermes' && (
-            <VorbiumConfigSection activeView="hermes" />
+          {activeSection === 'vorbium' && (
+            <VorbiumConfigSection activeView="vorbium" />
           )}
           {activeSection === 'agent' && (
             <VorbiumConfigSection activeView="agent" />
@@ -857,7 +857,7 @@ type LoaderStyleOption = { value: LoaderStyle; label: string }
 
 const LOADER_STYLES: Array<LoaderStyleOption> = [
   { value: 'dots', label: 'Dots' },
-  { value: 'braille-hermes', label: 'Hermes' },
+  { value: 'braille-vorbium', label: 'Vorbium' },
   { value: 'braille-orbit', label: 'Orbit' },
   { value: 'braille-breathe', label: 'Breathe' },
   { value: 'braille-pulse', label: 'Pulse' },
@@ -868,7 +868,7 @@ const LOADER_STYLES: Array<LoaderStyleOption> = [
 
 function getPreset(style: LoaderStyle): BrailleSpinnerPreset | null {
   const map: Record<string, BrailleSpinnerPreset> = {
-    'braille-hermes': 'hermes',
+    'braille-vorbium': 'vorbium',
     'braille-orbit': 'orbit',
     'braille-breathe': 'breathe',
     'braille-pulse': 'pulse',
@@ -963,9 +963,9 @@ type AvailableModelsResponse = {
 }
 
 function VorbiumConfigSection({
-  activeView = 'hermes',
+  activeView = 'vorbium',
 }: {
-  activeView?: 'hermes' | 'agent' | 'routing' | 'voice' | 'display'
+  activeView?: 'vorbium' | 'agent' | 'routing' | 'voice' | 'display'
 }) {
   const [data, setData] = useState<VorbiumConfigData | null>(null)
   const [loading, setLoading] = useState(true)
@@ -1101,7 +1101,7 @@ function VorbiumConfigSection({
     return (
       <SettingsSection
         title="Vorbium Engine"
-        description="Could not load Hermes configuration."
+        description="Could not load Vorbium configuration."
         icon={Settings02Icon}
       >
         <p className="text-sm" style={{ color: 'var(--theme-muted)' }}>
@@ -1174,7 +1174,7 @@ function VorbiumConfigSection({
         </SettingsRow>
         <SettingsRow
           label="Model"
-          description="The model Hermes uses for conversations."
+          description="The model Vorbium uses for conversations."
         >
           <div className="flex w-full max-w-sm gap-2">
             {availableModels.length > 0 ? (
@@ -1243,7 +1243,7 @@ function VorbiumConfigSection({
 
       <SettingsSection
         title="API Keys"
-        description="Manage provider API keys stored in ~/.hermes/.env"
+        description="Manage provider API keys stored in ~/.vorbium/.env"
         icon={CloudIcon}
       >
         {data.providers
@@ -1449,7 +1449,7 @@ function VorbiumConfigSection({
       >
         <SettingsRow
           label="Config location"
-          description="Where Hermes stores its configuration."
+          description="Where Vorbium stores its configuration."
         >
           <span
             className="text-xs font-mono"
@@ -1850,7 +1850,7 @@ function VorbiumConfigSection({
   )
 
   const sectionContent = {
-    hermes: renderHermesOverview(),
+    vorbium: renderHermesOverview(),
     agent: renderAgentBehavior(),
     routing: renderSmartRouting(),
     voice: renderVoice(),

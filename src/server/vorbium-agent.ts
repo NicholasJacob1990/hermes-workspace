@@ -20,7 +20,7 @@ export type StartVorbiumEngineResult =
     }
 
 /**
- * Read ~/.hermes/.env and return key=value pairs as an object.
+ * Read ~/.vorbium/.env and return key=value pairs as an object.
  * Silently returns {} if the file doesn't exist or can't be parsed.
  */
 function readHermesEnv(): Record<string, string> {

@@ -32,7 +32,7 @@ import {
   updateJob,
 } from '@/lib/jobs-api'
 
-const QUERY_KEY = ['hermes', 'jobs'] as const
+const QUERY_KEY = ['vorbium', 'jobs'] as const
 
 function formatNextRun(nextRun?: string | null): string {
   if (!nextRun) return '—'
@@ -113,7 +113,7 @@ function JobCard({
   const isCompleted = job.state === 'completed'
   const lastRunStatus = getLastRunStatus(job)
   const outputQuery = useQuery({
-    queryKey: ['hermes', 'jobs', job.id, 'output'],
+    queryKey: ['vorbium', 'jobs', job.id, 'output'],
     queryFn: () => fetchJobOutput(job.id),
     enabled: expanded,
     staleTime: 30_000,

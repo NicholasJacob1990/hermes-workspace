@@ -113,7 +113,7 @@ export function LoginScreen() {
             rel="noopener noreferrer"
             className="text-accent-500 hover:text-accent-600 transition-colors"
           >
-            Hermes
+            Vorbium
           </a>
         </p>
       </div>

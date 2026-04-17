@@ -47,7 +47,7 @@ async function patchConfig(patch: Record<string, unknown>): Promise<Record<strin
 }
 
 /**
- * Strip the provider prefix that hermes-agent adds internally via litellm.
+ * Strip the provider prefix that vorbium-agent adds internally via litellm.
  * e.g. "openrouter/nvidia/nemotron-..." → "nvidia/nemotron-..."
  *      "anthropic/claude-3-5-sonnet"    → "claude-3-5-sonnet"
  * Only strips the first path segment if it matches a known provider ID.
@@ -135,7 +135,7 @@ type SaveSettingPayload = {
 }
 
 // Models are fetched through the workspace API proxy to support Docker and
-// reverse-proxy deployments where the browser cannot reach Hermes directly.
+// reverse-proxy deployments where the browser cannot reach Vorbium directly.
 
 type HermesCatalogEntry =
   | string
@@ -409,7 +409,7 @@ function buildProviderSummaries(payload: {
       name: getProviderDisplayName(providerId),
       description:
         metadata?.description ||
-        'Configured provider in your local Hermes setup.',
+        'Configured provider in your local Vorbium setup.',
       modelCount,
       status: modelCount > 0 ? 'active' : 'configured',
     })
@@ -1024,7 +1024,7 @@ function ActiveModelCard({
   const [showFallback, setShowFallback] = useState(false)
 
   const configQuery = useQuery({
-    queryKey: ['hermes', 'active-config'],
+    queryKey: ['vorbium', 'active-config'],
     queryFn: getConfig,
   })
 
@@ -1070,10 +1070,10 @@ function ActiveModelCard({
     onSuccess: async () => {
       await Promise.all([
         queryClient.invalidateQueries({
-          queryKey: ['hermes', 'active-config'],
+          queryKey: ['vorbium', 'active-config'],
         }),
-        queryClient.invalidateQueries({ queryKey: ['hermes', 'config'] }),
-        queryClient.invalidateQueries({ queryKey: ['hermes-config'] }),
+        queryClient.invalidateQueries({ queryKey: ['vorbium', 'config'] }),
+        queryClient.invalidateQueries({ queryKey: ['vorbium-config'] }),
       ])
       toast('Model config saved — takes effect on next message', {
         type: 'success',
@@ -1104,7 +1104,7 @@ function ActiveModelCard({
           <p className="text-sm text-primary-600">
             Update the primary model, optional fallback, and stream timeout
             settings saved in{' '}
-            <code className="font-mono">~/.vorbium/config.yaml (or ~/.hermes/ legacy)</code>.
+            <code className="font-mono">~/.vorbium/config.yaml (or ~/.vorbium/ legacy)</code>.
           </p>
         </div>
         <Button
@@ -1128,7 +1128,7 @@ function ActiveModelCard({
         <div className="mt-5 space-y-4">
           <ModelConfigSection
             title="Primary Model"
-            description="Default provider, model, and base URL used for new Hermes requests."
+            description="Default provider, model, and base URL used for new Vorbium requests."
             value={primaryConfig}
             onChange={setPrimaryConfig}
             modelOptions={modelOptions}
@@ -1143,7 +1143,7 @@ function ActiveModelCard({
                   Fallback Model
                 </h3>
                 <p className="text-sm text-primary-600">
-                  Optional secondary model Hermes can use if the primary path
+                  Optional secondary model Vorbium can use if the primary path
                   fails.
                 </p>
               </div>
@@ -1227,7 +1227,7 @@ function ActiveModelCard({
 
             <p className="mt-4 rounded-xl border border-[var(--theme-border)] bg-[var(--theme-card2)] px-3 py-2 text-sm text-primary-600">
               Slow local runners such as Ollama and `llama-server` often need
-              more headroom before Hermes decides a stream has stalled.
+              more headroom before Vorbium decides a stream has stalled.
             </p>
           </section>
         </div>
@@ -1286,7 +1286,7 @@ function ProviderManagementSection(props: {
               Configured Providers
             </h3>
             <p className="mt-1 text-xs text-primary-600">
-              API keys stay in your local Hermes config and are never sent to
+              API keys stay in your local Vorbium config and are never sent to
               Studio.
             </p>
           </div>
@@ -1305,7 +1305,7 @@ function ProviderManagementSection(props: {
         {modelsQuery.error ? (
           <div className="rounded-xl border border-primary-200 bg-white px-4 py-3">
             <p className="mb-2 text-sm text-primary-700">
-              Unable to load providers right now. Check your Hermes connection.
+              Unable to load providers right now. Check your Vorbium connection.
             </p>
             <Button
               variant="outline"
@@ -1422,7 +1422,7 @@ export function ProvidersScreen({ embedded = false }: ProvidersScreenProps) {
   const [deletingId, setDeletingId] = useState<string | null>(null)
 
   const modelsQuery = useQuery({
-    queryKey: ['hermes', 'providers', 'models'],
+    queryKey: ['vorbium', 'providers', 'models'],
     queryFn: fetchModels,
     refetchInterval: 60_000,
     retry: false,
@@ -1430,7 +1430,7 @@ export function ProvidersScreen({ embedded = false }: ProvidersScreenProps) {
   })
 
   const configQuery = useQuery({
-    queryKey: ['hermes', 'config'],
+    queryKey: ['vorbium', 'config'],
     queryFn: async () => {
       const response = await fetch('/api/config-get')
       const payload = (await response
@@ -1460,7 +1460,7 @@ export function ProvidersScreen({ embedded = false }: ProvidersScreenProps) {
       }
     },
     onSuccess: async (_, variables) => {
-      await queryClient.invalidateQueries({ queryKey: ['hermes', 'config'] })
+      await queryClient.invalidateQueries({ queryKey: ['vorbium', 'config'] })
       toast(`${variables.label} saved`, { type: 'success' })
     },
     onError: (error) => {
@@ -1556,7 +1556,7 @@ export function ProvidersScreen({ embedded = false }: ProvidersScreenProps) {
         })
       } else {
         await queryClient.invalidateQueries({
-          queryKey: ['hermes', 'providers', 'models'],
+          queryKey: ['vorbium', 'providers', 'models'],
         })
         toast(`Provider "${provider.name}" removed`, { type: 'success' })
       }
@@ -1614,7 +1614,7 @@ export function ProvidersScreen({ embedded = false }: ProvidersScreenProps) {
                 Settings
               </h1>
               <p className="text-sm text-primary-600">
-                Configure providers plus Hermes agent defaults in one place.
+                Configure providers plus Vorbium agent defaults in one place.
               </p>
             </div>
 

@@ -37,13 +37,13 @@ const THEME_STORAGE_KEY = 'vorbium-theme'
 const DEFAULT_THEME = 'vorbium-official'
 const VALID_THEMES = [
   'vorbium-official',
-  'hermes-official-light',
-  'hermes-classic',
-  'hermes-classic-light',
-  'hermes-slate',
-  'hermes-slate-light',
-  'hermes-mono',
-  'hermes-mono-light',
+  'vorbium-official-light',
+  'vorbium-classic',
+  'vorbium-classic-light',
+  'vorbium-slate',
+  'vorbium-slate-light',
+  'vorbium-mono',
+  'vorbium-mono-light',
   'vorbium-official',
   'vorbium-official-light',
 ]
@@ -56,7 +56,7 @@ const themeScript = `
     const root = document.documentElement
     const storedTheme = localStorage.getItem('${THEME_STORAGE_KEY}')
     const theme = ${JSON.stringify(VALID_THEMES)}.includes(storedTheme) ? storedTheme : '${DEFAULT_THEME}'
-    const lightThemes = ['vorbium-official-light', 'hermes-official-light', 'hermes-classic-light', 'hermes-slate-light', 'hermes-mono-light']
+    const lightThemes = ['vorbium-official-light', 'vorbium-official-light', 'vorbium-classic-light', 'vorbium-slate-light', 'vorbium-mono-light']
     const isDark = !lightThemes.includes(theme)
     root.classList.remove('light', 'dark', 'system')
     root.classList.add(isDark ? 'dark' : 'light')
@@ -82,16 +82,16 @@ const themeColorScript = `
       'vorbium-official': '#0F172A',
       'vorbium-official-light': '#F8FAFC',
       'vorbium-official': '#0A0E1A',
-      'hermes-official-light': '#F6F8FC',
-      'hermes-classic': '#0d0f12',
-      'hermes-classic-light': '#F5F2ED',
-      'hermes-slate': '#0d1117',
-      'hermes-slate-light': '#F6F8FA',
-      'hermes-mono': '#111111',
-      'hermes-mono-light': '#FAFAFA',
+      'vorbium-official-light': '#F6F8FC',
+      'vorbium-classic': '#0d0f12',
+      'vorbium-classic-light': '#F5F2ED',
+      'vorbium-slate': '#0d1117',
+      'vorbium-slate-light': '#F6F8FA',
+      'vorbium-mono': '#111111',
+      'vorbium-mono-light': '#FAFAFA',
     }
     const nextColor = colors[theme] || colors['${DEFAULT_THEME}']
-    const isDark = !['vorbium-official-light', 'hermes-official-light', 'hermes-classic-light', 'hermes-slate-light', 'hermes-mono-light'].includes(String(theme))
+    const isDark = !['vorbium-official-light', 'vorbium-official-light', 'vorbium-classic-light', 'vorbium-slate-light', 'vorbium-mono-light'].includes(String(theme))
 
     let meta = document.querySelector('meta[name="theme-color"]')
     if (!meta) {
@@ -272,37 +272,37 @@ function RootDocument({ children }: { children: React.ReactNode }) {
             var bg = '#0A0E1A', txt = '#E6EAF2', muted = '#9AA5BD', accent = '#6366F1';
             try {
               var theme = localStorage.getItem('${THEME_STORAGE_KEY}') || '${DEFAULT_THEME}';
-              if (theme === 'hermes-classic') {
+              if (theme === 'vorbium-classic') {
                 bg = '#0d0f12';
                 txt = '#eceff4';
                 muted = '#7f8a96';
                 accent = '#b98a44';
-              } else if (theme === 'hermes-official-light') {
+              } else if (theme === 'vorbium-official-light') {
                 bg = '#F6F8FC';
                 txt = '#111827';
                 muted = '#4B5563';
                 accent = '#4F46E5';
-              } else if (theme === 'hermes-classic-light') {
+              } else if (theme === 'vorbium-classic-light') {
                 bg = '#F5F2ED';
                 txt = '#1a1f26';
                 muted = '#6F675E';
                 accent = '#b98a44';
-              } else if (theme === 'hermes-slate') {
+              } else if (theme === 'vorbium-slate') {
                 bg = '#0d1117';
                 txt = '#c9d1d9';
                 muted = '#8b949e';
                 accent = '#7eb8f6';
-              } else if (theme === 'hermes-slate-light') {
+              } else if (theme === 'vorbium-slate-light') {
                 bg = '#F6F8FA';
                 txt = '#24292f';
                 muted = '#57606A';
                 accent = '#3b82f6';
-              } else if (theme === 'hermes-mono') {
+              } else if (theme === 'vorbium-mono') {
                 bg = '#111111';
                 txt = '#e6edf3';
                 muted = '#888888';
                 accent = '#aaaaaa';
-              } else if (theme === 'hermes-mono-light') {
+              } else if (theme === 'vorbium-mono-light') {
                 bg = '#FAFAFA';
                 txt = '#1a1a1a';
                 muted = '#666666';
@@ -310,7 +310,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
               }
             } catch(e){}
 
-            var isDark = !['hermes-official-light','hermes-classic-light','hermes-slate-light','hermes-mono-light'].includes(theme);
+            var isDark = !['vorbium-official-light','vorbium-classic-light','vorbium-slate-light','vorbium-mono-light'].includes(theme);
             var quips = ["Consultando precedentes...","Carregando base legal...","Aquecendo o motor jurídico...","Calibrando ferramentas...","Invocando Vorbium...","Preparando o workspace...","Conectando sistemas...","Inicializando agente..."];
             var quip = quips[Math.floor(Math.random() * quips.length)];
 
@@ -345,7 +345,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
             setTimeout(function(){ window.__dismissSplash && window.__dismissSplash(); }, 5000);
             // Fast dismiss: returning users skip quickly
             try {
-              if (localStorage.getItem('hermes-hermes-url') || localStorage.getItem('hermes-url')) {
+              if (localStorage.getItem('vorbium-vorbium-url') || localStorage.getItem('vorbium-url')) {
                 setTimeout(function(){ window.__dismissSplash && window.__dismissSplash(); }, 600);
               }
             } catch(e) {}

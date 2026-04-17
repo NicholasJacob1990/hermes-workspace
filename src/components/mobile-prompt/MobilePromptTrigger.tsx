@@ -29,9 +29,9 @@ export function MobilePromptTrigger() {
     }
 
     const isDismissed =
-      localStorage.getItem('hermes-mobile-access-dismissed') === 'true' ||
-      localStorage.getItem('hermes-mobile-prompt-dismissed') === 'true'
-    const isSetup = localStorage.getItem('hermes-mobile-setup-seen') === 'true'
+      localStorage.getItem('vorbium-mobile-access-dismissed') === 'true' ||
+      localStorage.getItem('vorbium-mobile-prompt-dismissed') === 'true'
+    const isSetup = localStorage.getItem('vorbium-mobile-setup-seen') === 'true'
 
     if (isDismissed || isSetup) {
       return
@@ -58,7 +58,7 @@ export function MobilePromptTrigger() {
 
   const persistDismissalPreference = () => {
     if (dontShowAgain) {
-      localStorage.setItem('hermes-mobile-access-dismissed', 'true')
+      localStorage.setItem('vorbium-mobile-access-dismissed', 'true')
     }
   }
 

@@ -59,7 +59,7 @@ import {
 // ── Types ───────────────────────────────────────────────────────────────
 
 type SectionId =
-  | 'hermes'
+  | 'vorbium'
   | 'agent'
   | 'routing'
   | 'voice'
@@ -70,7 +70,7 @@ type SectionId =
   | 'language'
 
 const SECTIONS: Array<{ id: SectionId; label: string; icon: any }> = [
-  { id: 'hermes', label: 'Model & Provider', icon: CloudIcon },
+  { id: 'vorbium', label: 'Model & Provider', icon: CloudIcon },
   { id: 'agent', label: 'Agent', icon: Settings02Icon },
   { id: 'routing', label: 'Smart Routing', icon: SparklesIcon },
   { id: 'voice', label: 'Voice', icon: VolumeHighIcon },
@@ -83,9 +83,9 @@ const SECTIONS: Array<{ id: SectionId; label: string; icon: any }> = [
 
 const DARK_ENTERPRISE_THEMES = new Set<ThemeId>([
   'vorbium-official',
-  'hermes-classic',
-  'hermes-slate',
-  'hermes-mono',
+  'vorbium-classic',
+  'vorbium-slate',
+  'vorbium-mono',
 ])
 
 function _isDarkEnterpriseTheme(theme: string | null): theme is ThemeId {
@@ -185,7 +185,7 @@ const PROVIDER_CARDS: Array<{
     id: 'nous',
     name: 'Nous Portal',
     logo: '/providers/nous.png',
-    models: ['xiaomi/mimo-v2-pro', 'xiaomi/mimo-v2-omni', 'hermes-3-llama-3.1-405b', 'hermes-3-llama-3.1-70b'],
+    models: ['xiaomi/mimo-v2-pro', 'xiaomi/mimo-v2-omni', 'vorbium-3-llama-3.1-405b', 'vorbium-3-llama-3.1-70b'],
     authType: 'oauth',
   },
   {
@@ -674,7 +674,7 @@ function HermesContent() {
               '—'}
           </span>
           <span style={mutedStyle}>Config</span>
-          <span className="font-mono font-medium">~/.vorbium/config.yaml (or ~/.hermes/ legacy)</span>
+          <span className="font-mono font-medium">~/.vorbium/config.yaml (or ~/.vorbium/ legacy)</span>
         </div>
       </div>
     </div>
@@ -841,7 +841,7 @@ function AppearanceContent() {
   }
 
   function _handleAccentColorChange(selectedAccent: AccentColor) {
-    localStorage.setItem('hermes-accent', selectedAccent)
+    localStorage.setItem('vorbium-accent', selectedAccent)
     document.documentElement.setAttribute('data-accent', selectedAccent)
     applyAccentColor(selectedAccent)
     updateSettings({ accentColor: selectedAccent })
@@ -890,7 +890,7 @@ function AppearanceContent() {
       <div className={SETTINGS_CARD_CLASS}>
         <Row
           label="System metrics footer"
-          description="Show a persistent footer with CPU, RAM, disk, and Hermes status."
+          description="Show a persistent footer with CPU, RAM, disk, and Vorbium status."
         >
           <Switch
             checked={settings.showSystemMetricsFooter}
@@ -909,9 +909,9 @@ function AppearanceContent() {
 
 const ENTERPRISE_THEME_FAMILIES: Array<ThemeId> = [
   'vorbium-official',
-  'hermes-classic',
-  'hermes-slate',
-  'hermes-mono',
+  'vorbium-classic',
+  'vorbium-slate',
+  'vorbium-mono',
 ]
 
 const ENTERPRISE_THEMES = THEMES.map((theme) => ({
@@ -926,7 +926,7 @@ const ENTERPRISE_THEMES = THEMES.map((theme) => ({
           accent: '#6366F1',
           text: '#E6EAF2',
         }
-      : theme.id === 'hermes-official-light'
+      : theme.id === 'vorbium-official-light'
         ? {
             bg: '#F6F8FC',
             panel: '#FFFFFF',
@@ -934,7 +934,7 @@ const ENTERPRISE_THEMES = THEMES.map((theme) => ({
             accent: '#4F46E5',
             text: '#111827',
           }
-        : theme.id === 'hermes-classic'
+        : theme.id === 'vorbium-classic'
           ? {
               bg: '#0d0f12',
               panel: '#1a1f26',
@@ -942,7 +942,7 @@ const ENTERPRISE_THEMES = THEMES.map((theme) => ({
               accent: '#b98a44',
               text: '#eceff4',
             }
-          : theme.id === 'hermes-classic-light'
+          : theme.id === 'vorbium-classic-light'
             ? {
                 bg: '#F5F2ED',
                 panel: '#FCFAF7',
@@ -950,7 +950,7 @@ const ENTERPRISE_THEMES = THEMES.map((theme) => ({
                 accent: '#b98a44',
                 text: '#1a1f26',
               }
-            : theme.id === 'hermes-slate'
+            : theme.id === 'vorbium-slate'
               ? {
                   bg: '#0d1117',
                   panel: '#1c2128',
@@ -958,7 +958,7 @@ const ENTERPRISE_THEMES = THEMES.map((theme) => ({
                   accent: '#7eb8f6',
                   text: '#c9d1d9',
                 }
-              : theme.id === 'hermes-slate-light'
+              : theme.id === 'vorbium-slate-light'
                 ? {
                     bg: '#F6F8FA',
                     panel: '#FFFFFF',
@@ -966,7 +966,7 @@ const ENTERPRISE_THEMES = THEMES.map((theme) => ({
                     accent: '#3b82f6',
                     text: '#24292f',
                   }
-                : theme.id === 'hermes-mono'
+                : theme.id === 'vorbium-mono'
                   ? {
                       bg: '#111111',
                       panel: '#222222',
@@ -1124,7 +1124,7 @@ function _LoaderContent() {
   const { settings: cs, updateSettings: updateCS } = useChatSettingsStore()
   const styles: Array<{ value: LoaderStyle; label: string }> = [
     { value: 'dots', label: 'Dots' },
-    { value: 'braille-hermes', label: 'Hermes' },
+    { value: 'braille-vorbium', label: 'Vorbium' },
     { value: 'braille-orbit', label: 'Orbit' },
     { value: 'braille-breathe', label: 'Breathe' },
     { value: 'braille-pulse', label: 'Pulse' },
@@ -1134,7 +1134,7 @@ function _LoaderContent() {
   ]
   function getPreset(s: LoaderStyle): BrailleSpinnerPreset | null {
     const m: Record<string, BrailleSpinnerPreset> = {
-      'braille-hermes': 'hermes',
+      'braille-vorbium': 'vorbium',
       'braille-orbit': 'orbit',
       'braille-breathe': 'breathe',
       'braille-pulse': 'pulse',
@@ -1299,16 +1299,16 @@ function _AdvancedContent() {
     }
   }
 
-  const urlErrorId = 'hermes-url-error'
+  const urlErrorId = 'vorbium-url-error'
 
   return (
     <div className="space-y-4">
       <SectionHeader
         title="Advanced"
-        description="Hermes endpoint and connectivity."
+        description="Vorbium endpoint and connectivity."
       />
       <div className={SETTINGS_CARD_CLASS}>
-        <Row label="Hermes URL" description="Used for API requests from Studio">
+        <Row label="Vorbium URL" description="Used for API requests from Studio">
           <div className="w-full max-w-sm">
             <Input
               type="url"
@@ -1316,7 +1316,7 @@ function _AdvancedContent() {
               value={settings.vorbiumUrl}
               onChange={(e) => validateAndUpdateUrl(e.target.value)}
               className="h-8 w-full rounded-lg border-primary-200 text-sm"
-              aria-label="Hermes URL"
+              aria-label="Vorbium URL"
               aria-invalid={!!urlError}
               aria-describedby={urlError ? urlErrorId : undefined}
             />
@@ -1869,7 +1869,7 @@ function LanguageContent() {
 // ── Main Dialog ─────────────────────────────────────────────────────────
 
 const CONTENT_MAP: Record<SectionId, () => React.JSX.Element> = {
-  hermes: HermesContent,
+  vorbium: HermesContent,
   agent: AgentBehaviorContent,
   routing: SmartRoutingContent,
   voice: VoiceContent,
@@ -1889,7 +1889,7 @@ type SettingsDialogProps = {
 export function SettingsDialog({
   open,
   onOpenChange,
-  initialSection = 'hermes',
+  initialSection = 'vorbium',
 }: SettingsDialogProps) {
   const [active, setActive] = useState<SectionId>(initialSection)
   const [mobileView, setMobileView] = useState<'nav' | 'content'>('nav')

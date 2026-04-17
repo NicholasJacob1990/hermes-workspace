@@ -29,7 +29,7 @@ export const Route = createFileRoute('/api/skills/hub-search')({
             return json({ results: [], source: 'idle' })
           }
 
-          // Call the Python skills-search wrapper which uses hermes-agent's
+          // Call the Python skills-search wrapper which uses vorbium-agent's
           // unified_search across all registries (official, skills.sh,
           // well-known GitHub, LobeHub, etc.)
           const scriptPath = path.join(

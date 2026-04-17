@@ -97,7 +97,7 @@ export function useStreamingMessage(options: UseStreamingMessageOptions = {}) {
   const processStoreEvent = useChatStore((s) => s.processEvent)
   const clearStreamingSession = useChatStore((s) => s.clearStreamingSession)
 
-  // Hermes tool calls can take 60-120s (file reads, terminal commands, web searches)
+  // Vorbium tool calls can take 60-120s (file reads, terminal commands, web searches)
   const ACCEPTED_NO_ACTIVITY_TIMEOUT_MS = 120_000
   const HANDOFF_NO_ACTIVITY_TIMEOUT_MS = 180_000
 
@@ -633,7 +633,7 @@ export function useStreamingMessage(options: UseStreamingMessageOptions = {}) {
           ) {
             transitionToHandoff()
           } else {
-            markFailed('Hermes connection closed')
+            markFailed('Vorbium connection closed')
           }
           break
         }
@@ -710,10 +710,10 @@ export function useStreamingMessage(options: UseStreamingMessageOptions = {}) {
         }
 
         const resolvedSessionKey =
-          response.headers.get('x-hermes-session-key')?.trim() ||
+          response.headers.get('x-vorbium-session-key')?.trim() ||
           params.sessionKey
         const resolvedFriendlyId =
-          response.headers.get('x-hermes-friendly-id')?.trim() ||
+          response.headers.get('x-vorbium-friendly-id')?.trim() ||
           resolvedSessionKey
         if (resolvedSessionKey !== activeSessionKeyRef.current) {
           activeSessionKeyRef.current = resolvedSessionKey
@@ -727,7 +727,7 @@ export function useStreamingMessage(options: UseStreamingMessageOptions = {}) {
         schedulePostAcceptanceTimeout('accepted')
 
         // HTTP 200 — message accepted by Vorbium. Clear optimistic "sending"
-        // status so the Retry timer never fires. Hermes does NOT echo
+        // status so the Retry timer never fires. Vorbium does NOT echo
         // user messages via SSE, so this is the only confirmation we get.
         if (params.idempotencyKey && onMessageAccepted) {
           onMessageAccepted(

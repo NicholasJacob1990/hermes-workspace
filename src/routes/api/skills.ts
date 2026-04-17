@@ -176,7 +176,7 @@ function normalizeSkill(value: unknown): SkillSummary | null {
         ? record.fileCount
         : 0,
     sourcePath,
-    // Hermes /api/skills returns the installed skill inventory. Older payloads
+    // Vorbium /api/skills returns the installed skill inventory. Older payloads
     // omit explicit installed/enabled flags, so default to installed=true.
     installed: Boolean(record.installed ?? true),
     enabled: Boolean(record.enabled ?? record.installed ?? true),
@@ -193,7 +193,7 @@ async function fetchVorbiumSkills(): Promise<Array<SkillSummary>> {
   const response = await fetch(`${HERMES_API}/api/skills`, { headers })
   if (!response.ok) {
     const body = await response.text().catch(() => '')
-    throw new Error(body || `Hermes skills request failed (${response.status})`)
+    throw new Error(body || `Vorbium skills request failed (${response.status})`)
   }
 
   const payload = (await response.json()) as unknown

@@ -229,7 +229,7 @@ function exportConversationTranscript(payload: {
     .join('\n\n')
     .trim()
 
-  const content = `# Hermes Conversation Export\n\nSession: ${payload.sessionLabel}\nExported: ${new Date().toISOString()}\n\n${body || '_No messages in this conversation._'}\n`
+  const content = `# Vorbium Conversation Export\n\nSession: ${payload.sessionLabel}\nExported: ${new Date().toISOString()}\n\n${body || '_No messages in this conversation._'}\n`
   const blob = new Blob([content], { type: 'text/markdown;charset=utf-8' })
   const url = URL.createObjectURL(blob)
   const link = document.createElement('a')
@@ -504,7 +504,7 @@ export function ChatScreen({
   // Per-session thinking level — stored in sessionStorage keyed by session
   const [thinkingLevel, setThinkingLevel] = useState<ThinkingLevel>(() => {
     if (typeof window === 'undefined') return 'low'
-    const key = `hermes-thinking-${activeFriendlyId || 'new'}`
+    const key = `vorbium-thinking-${activeFriendlyId || 'new'}`
     const stored = window.sessionStorage.getItem(key)
     if (stored === 'off' || stored === 'low' || stored === 'adaptive')
       return stored
@@ -525,7 +525,7 @@ export function ChatScreen({
   } | null>(null)
   const [fileExplorerCollapsed, setFileExplorerCollapsed] = useState(() => {
     if (typeof window === 'undefined') return true
-    const stored = localStorage.getItem('hermes-file-explorer-collapsed')
+    const stored = localStorage.getItem('vorbium-file-explorer-collapsed')
     return stored === null ? true : stored === 'true'
   })
   const { isMobile } = useChatMobile(queryClient)
@@ -674,14 +674,14 @@ export function ChatScreen({
       const agentId =
         typeof agentIdValue === 'string' && agentIdValue.trim().length > 0
           ? agentIdValue
-          : 'hermes'
+          : 'vorbium'
 
       addApproval({
         agentId,
         agentName,
         action,
         context,
-        source: 'hermes',
+        source: 'vorbium',
         approvalId: approvalId || undefined,
       })
       setPendingApprovals(
@@ -929,7 +929,7 @@ export function ChatScreen({
   })
 
   const currentModelQuery = useQuery({
-    queryKey: ['hermes', 'session-status-model'],
+    queryKey: ['vorbium', 'session-status-model'],
     queryFn: async () => {
       try {
         const res = await fetch('/api/session-status')
@@ -976,7 +976,7 @@ export function ChatScreen({
       currentModel.toLowerCase().includes('4-6') ||
       currentModel.toLowerCase().includes('claude-4.6')
     if (is46) {
-      const key = `hermes-thinking-${activeFriendlyId || 'new'}`
+      const key = `vorbium-thinking-${activeFriendlyId || 'new'}`
       const stored =
         typeof window !== 'undefined'
           ? window.sessionStorage.getItem(key)
@@ -993,7 +993,7 @@ export function ChatScreen({
     (level: ThinkingLevel) => {
       setThinkingLevel(level)
       if (typeof window !== 'undefined') {
-        const key = `hermes-thinking-${activeFriendlyId || 'new'}`
+        const key = `vorbium-thinking-${activeFriendlyId || 'new'}`
         window.sessionStorage.setItem(key, level)
       }
     },
@@ -1445,7 +1445,7 @@ export function ChatScreen({
   ])
 
   const statusQuery = useQuery({
-    queryKey: ['hermes', 'status'],
+    queryKey: ['vorbium', 'status'],
     queryFn: fetchStatus,
     retry: 2,
     retryDelay: 1000,
@@ -1465,7 +1465,7 @@ export function ChatScreen({
           }
         : statusQuery.data && !statusQuery.data.ok
           ? {
-              message: statusQuery.data.error || 'Hermes unavailable',
+              message: statusQuery.data.error || 'Vorbium unavailable',
               status: statusQuery.data.status,
             }
           : null
@@ -1487,9 +1487,9 @@ export function ChatScreen({
     const handleRefreshRequest = () => {
       void historyQuery.refetch()
     }
-    window.addEventListener('hermes:chat-refresh', handleRefreshRequest)
+    window.addEventListener('vorbium:chat-refresh', handleRefreshRequest)
     return () => {
-      window.removeEventListener('hermes:chat-refresh', handleRefreshRequest)
+      window.removeEventListener('vorbium:chat-refresh', handleRefreshRequest)
     }
   }, [historyQuery])
 
@@ -1508,7 +1508,7 @@ export function ChatScreen({
   // Memory, etc.), the component re-mounts. If a response finished while we
   // were away, the initial refetch may hit stale data. A delayed re-refetch
   // ensures we pick up responses that were persisted shortly after the first
-  // fetch. See: https://github.com/outsourc-e/hermes-workspace/issues/43
+  // fetch. See: https://github.com/outsourc-e/vorbium-workspace/issues/43
   useEffect(() => {
     const timer = window.setTimeout(() => {
       void historyQuery.refetch()
@@ -1520,9 +1520,9 @@ export function ChatScreen({
     function handleSSEDrop() {
       void historyQuery.refetch()
     }
-    window.addEventListener('hermes:sse-dropped', handleSSEDrop)
+    window.addEventListener('vorbium:sse-dropped', handleSSEDrop)
     return () => {
-      window.removeEventListener('hermes:sse-dropped', handleSSEDrop)
+      window.removeEventListener('vorbium:sse-dropped', handleSSEDrop)
     }
   }, [historyQuery])
 
@@ -1592,7 +1592,7 @@ export function ChatScreen({
       : historyError
         ? `Failed to load history. ${historyError}`
         : statusError
-          ? `Hermes unavailable. ${statusError.message}`
+          ? `Vorbium unavailable. ${statusError.message}`
           : null
     if (message) setError(message)
   }, [
@@ -2016,7 +2016,7 @@ export function ChatScreen({
 
   useEffect(() => {
     if (false) {
-      // Server connection checks removed — Hermes uses direct API
+      // Server connection checks removed — Vorbium uses direct API
       hasSeenDisconnectRef.current = true
       retriedQueuedMessageKeysRef.current.clear()
       return
@@ -2050,9 +2050,9 @@ export function ChatScreen({
       handleRefetch()
     }
 
-    window.addEventListener('hermes:health-restored', handleHealthRestored)
+    window.addEventListener('vorbium:health-restored', handleHealthRestored)
     return () => {
-      window.removeEventListener('hermes:health-restored', handleHealthRestored)
+      window.removeEventListener('vorbium:health-restored', handleHealthRestored)
     }
   }, [flushRetryableMessages, handleRefetch])
 
@@ -2176,7 +2176,7 @@ export function ChatScreen({
         window.dispatchEvent(
           new CustomEvent(CHAT_OPEN_SETTINGS_EVENT, {
             detail: {
-              section: trimmedCommand === '/skin' ? 'appearance' : 'hermes',
+              section: trimmedCommand === '/skin' ? 'appearance' : 'vorbium',
             },
           }),
         )
@@ -2386,7 +2386,7 @@ export function ChatScreen({
     setFileExplorerCollapsed((prev) => {
       const next = !prev
       if (typeof window !== 'undefined') {
-        localStorage.setItem('hermes-file-explorer-collapsed', String(next))
+        localStorage.setItem('vorbium-file-explorer-collapsed', String(next))
       }
       return next
     })
@@ -2489,9 +2489,9 @@ export function ChatScreen({
     const handler = () => {
       /* agent view removed */
     }
-    window.addEventListener('hermes:chat-agent-details', handler)
+    window.addEventListener('vorbium:chat-agent-details', handler)
     return () =>
-      window.removeEventListener('hermes:chat-agent-details', handler)
+      window.removeEventListener('vorbium:chat-agent-details', handler)
   }, [])
 
   return (

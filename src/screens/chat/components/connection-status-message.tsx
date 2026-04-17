@@ -25,7 +25,7 @@ function classifyConnectionError(
   if (!normalizedError && !status) {
     return {
       title: 'Not connected',
-      description: "Vorbium Engine can't reach Hermes.",
+      description: "Vorbium Engine can't reach Vorbium.",
       action: 'Check that Vorbium is running, then try again.',
     }
   }
@@ -38,8 +38,8 @@ function classifyConnectionError(
   ) {
     return {
       title: 'Authentication required',
-      description: 'Hermes rejected the connection token.',
-      action: 'Go to Settings -> Advanced -> Hermes to update your token.',
+      description: 'Vorbium rejected the connection token.',
+      action: 'Go to Settings -> Advanced -> Vorbium to update your token.',
     }
   }
 
@@ -57,9 +57,9 @@ function classifyConnectionError(
 
   if (lower.includes('econnrefused') && lower.includes('8642')) {
     return {
-      title: 'Hermes WebAPI not running',
-      description: 'The Hermes WebAPI server is not running on port 8642.',
-      action: 'Run: cd vorbium-engine && pip install -e . && hermes-webapi',
+      title: 'Vorbium WebAPI not running',
+      description: 'The Vorbium WebAPI server is not running on port 8642.',
+      action: 'Run: cd vorbium-engine && pip install -e . && vorbium-webapi',
     }
   }
 
@@ -71,7 +71,7 @@ function classifyConnectionError(
     lower.includes('timeout')
   ) {
     return {
-      title: 'Hermes unreachable',
+      title: 'Vorbium unreachable',
       description: "Can't connect to Vorbium at the configured URL.",
       action: 'Make sure Vorbium is running and the URL is correct.',
     }
@@ -80,7 +80,7 @@ function classifyConnectionError(
   return {
     title: 'Connection error',
     description: normalizedError || 'Something went wrong.',
-    action: 'Try refreshing or check Settings -> Advanced -> Hermes.',
+    action: 'Try refreshing or check Settings -> Advanced -> Vorbium.',
   }
 }
 
@@ -102,9 +102,9 @@ export function ConnectionStatusMessage({
       setFadingOut(true)
       setTimeout(() => setVisible(false), 300)
     }
-    window.addEventListener('hermes:health-restored', handleRestored)
+    window.addEventListener('vorbium:health-restored', handleRestored)
     return () =>
-      window.removeEventListener('hermes:health-restored', handleRestored)
+      window.removeEventListener('vorbium:health-restored', handleRestored)
   }, [])
 
   if (!visible) return null

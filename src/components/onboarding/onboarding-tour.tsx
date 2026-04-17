@@ -7,7 +7,7 @@ import type { CallBackProps, Styles } from 'react-joyride'
 import { useSettingsStore } from '@/hooks/use-settings'
 import { useResolvedTheme } from '@/hooks/use-chat-settings'
 
-const TOUR_STORAGE_KEY = 'hermes-onboarding-completed'
+const TOUR_STORAGE_KEY = 'vorbium-onboarding-completed'
 
 // Accent color mapping to hex values
 const ACCENT_COLORS = {
@@ -45,7 +45,7 @@ export function OnboardingTour() {
       if (hasCompletedTour) return
 
       // Wait for setup wizard to finish before starting tour
-      const HERMES_SETUP_KEY = 'hermes-configured'
+      const HERMES_SETUP_KEY = 'vorbium-configured'
       const checkAndStart = () => {
         const hermesConfigured =
           localStorage.getItem(HERMES_SETUP_KEY) === 'true'

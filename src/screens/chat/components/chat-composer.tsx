@@ -160,7 +160,7 @@ async function fetchModels(): Promise<{
   providerLabels?: Record<string, string>
   providers?: Array<HermesProviderOption>
 }> {
-  // Prefer Hermes' current provider models; fetch other providers lazily if needed.
+  // Prefer Vorbium' current provider models; fetch other providers lazily if needed.
   try {
     const richRes = await fetch('/api/vorbium-proxy/api/available-models')
     if (richRes.ok) {
@@ -384,7 +384,7 @@ async function fetchModelsForProvider(
     `/api/vorbium-proxy/api/available-models?provider=${encodeURIComponent(normalizedProvider)}`,
   )
   if (!response.ok) {
-    throw new Error(`Hermes models request failed (${response.status})`)
+    throw new Error(`Vorbium models request failed (${response.status})`)
   }
 
   const payload = (await response.json()) as HermesAvailableModelsResponse
@@ -427,7 +427,7 @@ async function switchModel(
   // Switching to a cloud model — clear any local override
   setLocalModelOverride('')
 
-  // Write the model change to ~/.vorbium/config.yaml (or ~/.hermes/ legacy) via the webapi
+  // Write the model change to ~/.vorbium/config.yaml (or ~/.vorbium/ legacy) via the webapi
   const patch: Record<string, string> = { model: modelId }
   if (modelProvider) patch.provider = modelProvider
 
@@ -743,7 +743,7 @@ function normalizeDraftSessionKey(sessionKey?: string): string {
 }
 
 function toDraftStorageKey(sessionKey?: string): string {
-  return `hermes-draft-${normalizeDraftSessionKey(sessionKey)}`
+  return `vorbium-draft-${normalizeDraftSessionKey(sessionKey)}`
 }
 
 function readSlashCommandQuery(inputValue: string): string | null {
@@ -895,7 +895,7 @@ function ChatComposerComponent({
   const { pinned, isPinned, togglePin } = usePinnedModels()
 
   const modelsQuery = useQuery({
-    queryKey: ['hermes', 'models'],
+    queryKey: ['vorbium', 'models'],
     queryFn: fetchModels,
     refetchInterval: 60_000,
     retry: false,
@@ -910,7 +910,7 @@ function ChatComposerComponent({
   )
   const otherProviderModelsQuery = useQuery({
     queryKey: [
-      'hermes',
+      'vorbium',
       'models',
       'other-providers',
       otherProviders
@@ -938,7 +938,7 @@ function ChatComposerComponent({
     },
   })
   const currentModelQuery = useQuery({
-    queryKey: ['hermes', 'session-status-model'],
+    queryKey: ['vorbium', 'session-status-model'],
     queryFn: fetchCurrentModelFromStatus,
     refetchInterval: 30_000,
     retry: false,
@@ -1022,9 +1022,9 @@ function ChatComposerComponent({
 
   const currentModel = currentModelQuery.data ?? ''
 
-  // Auto-switch to hermes-agent model on mount (Vorbium Engine always uses Hermes)
-  // Removed: auto-switch to hermes-agent. The workspace respects the
-  // model/provider configured in ~/.vorbium/config.yaml (or ~/.hermes/ legacy). Users switch
+  // Auto-switch to vorbium-agent model on mount (Vorbium Engine always uses Vorbium)
+  // Removed: auto-switch to vorbium-agent. The workspace respects the
+  // model/provider configured in ~/.vorbium/config.yaml (or ~/.vorbium/ legacy). Users switch
   // via the model selector or Settings page.
 
   // When model switches to Claude 4.6 and thinking is 'off', auto-upgrade to 'adaptive'
@@ -2270,7 +2270,7 @@ function ChatComposerComponent({
                                   No models available
                                 </p>
                                 <p className="text-xs">
-                                  Check your Hermes provider configuration.
+                                  Check your Vorbium provider configuration.
                                 </p>
                               </div>
                             )
@@ -2496,7 +2496,7 @@ function ChatComposerComponent({
                     </Button>
                   </PromptInputAction>
                 )}
-                {/* Token counter — bottom bar, mirrors Hermes style, triggers at ~25 tokens */}
+                {/* Token counter — bottom bar, mirrors Vorbium style, triggers at ~25 tokens */}
                 {value.length >= 100 && (
                   <span className="ml-1 text-[10px] text-primary-400 tabular-nums select-none">
                     ~{Math.ceil(value.length / 4)} tokens

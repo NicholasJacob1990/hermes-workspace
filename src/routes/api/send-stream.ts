@@ -23,7 +23,7 @@ import {
   streamChat,
 } from '../../server/vorbium-api'
 import type {OpenAICompatContentPart, OpenAICompatMessage} from '../../server/openai-compat-api';
-// Hermes agent runs can take 5+ minutes with complex tool chains
+// Vorbium agent runs can take 5+ minutes with complex tool chains
 const SEND_STREAM_RUN_TIMEOUT_MS = 600_000
 const SESSION_BOOTSTRAP_KEYS = new Set(['main', 'new'])
 
@@ -185,8 +185,8 @@ function normalizePortableHistory(
 function normalizeHermesErrorMessage(error: unknown): string {
   const raw = error instanceof Error ? error.message : String(error)
   const message = raw.trim()
-  if (!message) return 'Hermes request failed'
-  return message.replace(/\bserver\b/gi, 'Hermes')
+  if (!message) return 'Vorbium request failed'
+  return message.replace(/\bserver\b/gi, 'Vorbium')
 }
 
 function readRecord(value: unknown): Record<string, unknown> | undefined {
@@ -601,7 +601,7 @@ export const Route = createFileRoute('/api/send-stream')({
                               ],
                             },
                             sessionKey: sessionKeyFromEvent,
-                            source: 'hermes',
+                            source: 'vorbium',
                             runId,
                           })
                       }
@@ -821,7 +821,7 @@ export const Route = createFileRoute('/api/send-stream')({
                             ?.message,
                         ) ||
                         readString(data.message) ||
-                        'Hermes stream error'
+                        'Vorbium stream error'
                       sendEvent('error', {
                         message: errorMessage,
                         sessionKey: sessionKeyFromEvent,
@@ -874,8 +874,8 @@ export const Route = createFileRoute('/api/send-stream')({
             'Content-Type': 'text/event-stream; charset=utf-8',
             'Cache-Control': 'no-cache',
             Connection: 'keep-alive',
-            'X-Hermes-Session-Key': sessionKey,
-            'X-Hermes-Friendly-Id': resolvedFriendlyId,
+            'X-Vorbium-Session-Key': sessionKey,
+            'X-Vorbium-Friendly-Id': resolvedFriendlyId,
           },
         })
       },
