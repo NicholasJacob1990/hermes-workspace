@@ -133,6 +133,66 @@ function normalizeVorbiumModel(entry: unknown): ModelEntry | null {
   }
 }
 
+/**
+ * Read user-configured models from ~/.vorbium/models.json (with ~/.hermes
+ * fallback for users migrating from upstream installs). Curated list the
+ * user manages via the Vorbium CLI or UI. Each entry has:
+ * { id, name, provider, model, baseUrl, createdAt }.
+ */
+function readVorbiumModelsJson(): Array<ModelEntry> {
+  for (const home of ['.vorbium', '.hermes']) {
+    const modelsPath = path.join(os.homedir(), home, 'models.json')
+    try {
+      if (!fs.existsSync(modelsPath)) continue
+      const raw = fs.readFileSync(modelsPath, 'utf-8')
+      const entries = JSON.parse(raw)
+      if (!Array.isArray(entries)) continue
+      const parsed = entries
+        .map((entry: Record<string, unknown>) => {
+          const modelId = readString(entry.model) || readString(entry.id)
+          if (!modelId) return null
+          return {
+            id: modelId,
+            name: readString(entry.name) || modelId,
+            provider: readString(entry.provider) || 'unknown',
+          }
+        })
+        .filter((e: ModelEntry | null): e is ModelEntry => e !== null)
+      if (parsed.length > 0) return parsed
+    } catch {
+      // try next home
+    }
+  }
+  return []
+}
+
+/**
+ * Read the default model from ~/.vorbium/config.yaml without a YAML parser
+ * (with ~/.hermes fallback). Looks for "default: <model-id>" under the
+ * "model:" section.
+ */
+function readVorbiumDefaultModel(): ModelEntry | null {
+  for (const home of ['.vorbium', '.hermes']) {
+    const configPath = path.join(os.homedir(), home, 'config.yaml')
+    try {
+      if (!fs.existsSync(configPath)) continue
+      const raw = fs.readFileSync(configPath, 'utf-8')
+      const defaultMatch = raw.match(/^\s*default:\s*(.+)$/m)
+      const providerMatch = raw.match(/^\s*provider:\s*(.+)$/m)
+      if (!defaultMatch) continue
+      const modelId = defaultMatch[1].trim()
+      const provider = providerMatch ? providerMatch[1].trim() : 'unknown'
+      return { id: modelId, name: modelId, provider }
+    } catch {
+      // try next home
+    }
+  }
+  return null
+}
+
+/**
+ * Fallback: fetch models from the vorbium-engine /v1/models endpoint.
+ */
 async function fetchVorbiumModels(): Promise<Array<ModelEntry>> {
   const headers: Record<string, string> = {}
   if (BEARER_TOKEN) headers['Authorization'] = `Bearer ${BEARER_TOKEN}`
@@ -170,17 +230,38 @@ export const Route = createFileRoute('/api/models')({
           })
         }
         try {
-          const models = await fetchVorbiumModels()
-          // Add models from auth store providers (Anthropic, OpenAI, etc.)
-          const authModels = getAuthStoreModels()
+          // Primary: read user-curated models from ~/.vorbium/models.json
+          // (with ~/.hermes fallback for migration users)
+          let models = readVorbiumModelsJson()
+          let source = 'models.json'
+
+          // Ensure the default model from config.yaml is always included
+          const defaultModel = readVorbiumDefaultModel()
+          if (defaultModel) {
+            const hasDefault = models.some((m) => m.id === defaultModel.id)
+            if (!hasDefault) {
+              models.unshift(defaultModel)
+            }
+          }
+
+          // Fallback: if no models.json, fetch from vorbium-engine /v1/models
+          if (models.length === 0 && getGatewayCapabilities().models) {
+            models = await fetchVorbiumModels()
+            source = 'vorbium-engine'
+          }
+
+          // Auth-store models (Anthropic, OpenAI, etc.) — Vorbium-specific
+          // discovery layer kept in addition to upstream's curated list.
           const existingIds = new Set(models.map((m) => m.id))
-          for (const m of authModels) {
+          for (const m of getAuthStoreModels()) {
             if (!existingIds.has(m.id)) {
               models.push(m)
+              existingIds.add(m.id)
             }
           }
 
           // Auto-discover local providers (Ollama, Atomic Chat, etc.)
+
           await ensureDiscovery()
           const localModels = getDiscoveredModels()
           for (const m of localModels) {
@@ -200,12 +281,14 @@ export const Route = createFileRoute('/api/models')({
                 .filter(Boolean),
             ),
           )
+
           return json({
             ok: true,
             object: 'list',
             data: models,
             models,
             configuredProviders,
+            source,
           })
         } catch (err) {
           return json(
