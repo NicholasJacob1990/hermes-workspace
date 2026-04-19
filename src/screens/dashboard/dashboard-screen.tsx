@@ -727,7 +727,7 @@ export function DashboardScreen() {
       {/* ── Header: Vorbium Logo + Quick Actions ── */}
       <div className="flex flex-col items-center gap-3 py-3">
         <img
-          src="/hermes-avatar.webp"
+          src="/vorbium-avatar.webp"
           alt="Vorbium"
           className="size-12 md:size-14 rounded-xl shadow-md shadow-indigo-500/10 border border-[var(--theme-border)]"
         />

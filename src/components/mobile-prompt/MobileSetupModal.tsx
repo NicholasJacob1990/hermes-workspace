@@ -221,7 +221,7 @@ export function MobileSetupModal({ isOpen, onClose }: MobileSetupModalProps) {
 
         <div className="mb-4 flex items-center gap-3 pr-10">
           <img
-            src="/hermes-avatar.webp"
+            src="/vorbium-avatar.webp"
             alt="Vorbium"
             className="size-9 rounded-xl"
           />

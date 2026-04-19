@@ -35,6 +35,13 @@ import {
 } from '@/lib/theme'
 import { cn } from '@/lib/utils'
 import {
+  VOICE_FALLBACK_PROVIDER_OPTIONS,
+  VOICE_PIPECAT_TOGGLE_FIELDS,
+  VOICE_RECOMMENDED_STACK,
+  VOICE_STT_PROVIDER_OPTIONS,
+  VOICE_TTS_PROVIDER_OPTIONS,
+} from '@/lib/voice-settings-options'
+import {
   getChatProfileDisplayName,
   useChatSettingsStore,
 } from '@/hooks/use-chat-settings'
@@ -238,7 +245,7 @@ const PROVIDER_CARDS: Array<{
   { id: 'custom', name: 'Custom', logo: '', models: [], authType: 'api_key' },
 ]
 
-function HermesContent() {
+function VorbiumContent() {
   const configAvailable = useFeatureAvailable('config')
   const [activeProvider, setActiveProvider] = useState('')
   const [activeModel, setActiveModel] = useState('')
@@ -1613,6 +1620,7 @@ function SmartRoutingContent() {
 function VoiceContent() {
   const [tts, setTts] = useState<Record<string, unknown>>({})
   const [stt, setStt] = useState<Record<string, unknown>>({})
+  const [pipecat, setPipecat] = useState<Record<string, unknown>>({})
   const [msg, setMsg] = useState<string | null>(null)
 
   useEffect(() => {
@@ -1621,6 +1629,7 @@ function VoiceContent() {
       .then((d: any) => {
         setTts((d.config?.tts as Record<string, unknown>) || {})
         setStt((d.config?.stt as Record<string, unknown>) || {})
+        setPipecat((d.config?.pipecat as Record<string, unknown>) || {})
       })
       .catch(() => {})
   }, [])
@@ -1657,7 +1666,25 @@ function VoiceContent() {
     }
   }
 
-  const ttsProvider = String(tts.provider || 'edge')
+  const savePipecat = async (key: string, value: unknown) => {
+    setMsg(null)
+    try {
+      await fetch('/api/vorbium-config', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ config: { pipecat: { [key]: value } } }),
+      })
+      setPipecat((prev) => ({ ...prev, [key]: value }))
+      setMsg('Saved')
+      setTimeout(() => setMsg(null), 2000)
+    } catch {
+      setMsg('Failed')
+    }
+  }
+
+  const ttsProvider = String(tts.provider || VOICE_RECOMMENDED_STACK.ttsProvider)
+  const ttsFallbackProvider = String(tts.fallback_provider || VOICE_RECOMMENDED_STACK.fallbackProvider)
+  const sttProvider = String(stt.provider || 'local')
 
   return (
     <div className="space-y-4">
@@ -1681,16 +1708,30 @@ function VoiceContent() {
         <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-primary-500">
           Text-to-Speech
         </p>
-        <Row label="TTS Provider">
+        <Row label="TTS Provider" description="Recommended for Telegram: Edge as base voice, with Mistral as fallback.">
           <select
             value={ttsProvider}
             onChange={(e) => saveTts('provider', e.target.value)}
             className="h-8 rounded-lg border border-primary-200 bg-primary-50 px-2 text-sm text-primary-900 outline-none dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100"
           >
-            <option value="edge">Edge TTS</option>
-            <option value="elevenlabs">ElevenLabs</option>
-            <option value="openai">OpenAI TTS</option>
-            <option value="neutts">NeuTTS</option>
+            {VOICE_TTS_PROVIDER_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </Row>
+        <Row label="Fallback Provider" description="Recommended: Mistral Voxtral for Telegram voice resilience.">
+          <select
+            value={ttsFallbackProvider}
+            onChange={(e) => saveTts('fallback_provider', e.target.value)}
+            className="h-8 rounded-lg border border-primary-200 bg-primary-50 px-2 text-sm text-primary-900 outline-none dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100"
+          >
+            {VOICE_FALLBACK_PROVIDER_OPTIONS.map((option) => (
+              <option key={option.value || 'none'} value={option.value}>
+                {option.label}
+              </option>
+            ))}
           </select>
         </Row>
         {ttsProvider === 'openai' && (
@@ -1717,6 +1758,70 @@ function VoiceContent() {
             </select>
           </Row>
         )}
+        {ttsProvider === 'gemini' && (
+          <>
+            <Row label="Voice">
+              <Input
+                value={String(
+                  (tts.gemini as Record<string, unknown>)?.voice || 'Kore',
+                )}
+                onChange={(e) =>
+                  saveTts('gemini', {
+                    ...((tts.gemini as Record<string, unknown>) || {}),
+                    voice: e.target.value,
+                  })
+                }
+                className="md:w-64"
+              />
+            </Row>
+            <Row label="Model">
+              <Input
+                value={String(
+                  (tts.gemini as Record<string, unknown>)?.model || 'gemini-2.5-flash-preview-tts',
+                )}
+                onChange={(e) =>
+                  saveTts('gemini', {
+                    ...((tts.gemini as Record<string, unknown>) || {}),
+                    model: e.target.value,
+                  })
+                }
+                className="md:w-64"
+              />
+            </Row>
+          </>
+        )}
+        {ttsProvider === 'mistral' && (
+          <>
+            <Row label="Voice ID">
+              <Input
+                value={String(
+                  (tts.mistral as Record<string, unknown>)?.voice_id || '',
+                )}
+                onChange={(e) =>
+                  saveTts('mistral', {
+                    ...((tts.mistral as Record<string, unknown>) || {}),
+                    voice_id: e.target.value,
+                  })
+                }
+                className="md:w-64"
+              />
+            </Row>
+            <Row label="Model">
+              <Input
+                value={String(
+                  (tts.mistral as Record<string, unknown>)?.model || 'voxtral-mini-tts-2603',
+                )}
+                onChange={(e) =>
+                  saveTts('mistral', {
+                    ...((tts.mistral as Record<string, unknown>) || {}),
+                    model: e.target.value,
+                  })
+                }
+                className="md:w-64"
+              />
+            </Row>
+          </>
+        )}
       </div>
       <div className={SETTINGS_CARD_CLASS}>
         <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-primary-500">
@@ -1730,14 +1835,30 @@ function VoiceContent() {
         </Row>
         <Row label="STT Provider">
           <select
-            value={String(stt.provider || 'local')}
+            value={sttProvider}
             onChange={(e) => saveStt('provider', e.target.value)}
             className="h-8 rounded-lg border border-primary-200 bg-primary-50 px-2 text-sm text-primary-900 outline-none dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100"
           >
-            <option value="local">Local (Whisper)</option>
-            <option value="openai">OpenAI Whisper</option>
+            {VOICE_STT_PROVIDER_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
           </select>
         </Row>
+      </div>
+      <div className={SETTINGS_CARD_CLASS}>
+        <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-primary-500">
+          Pipecat + Gemini Live
+        </p>
+        {VOICE_PIPECAT_TOGGLE_FIELDS.map((field) => (
+          <Row key={field.key} label={field.label} description={field.description}>
+            <Switch
+              checked={Boolean(pipecat[field.key] ?? VOICE_RECOMMENDED_STACK.telegramVoiceLive)}
+              onCheckedChange={(checked) => savePipecat(field.key, checked)}
+            />
+          </Row>
+        ))}
       </div>
     </div>
   )
@@ -1869,7 +1990,7 @@ function LanguageContent() {
 // ── Main Dialog ─────────────────────────────────────────────────────────
 
 const CONTENT_MAP: Record<SectionId, () => React.JSX.Element> = {
-  vorbium: HermesContent,
+  vorbium: VorbiumContent,
   agent: AgentBehaviorContent,
   routing: SmartRoutingContent,
   voice: VoiceContent,

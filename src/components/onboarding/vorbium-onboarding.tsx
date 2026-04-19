@@ -505,7 +505,7 @@ export function VorbiumOnboarding() {
           {step === 'welcome' && (
             <div className="space-y-4 text-center">
               <img
-                src="/hermes-avatar.webp"
+                src="/vorbium-avatar.webp"
                 alt="Vorbium"
                 className="mx-auto size-20 rounded-2xl"
                 style={{

@@ -1,5 +1,5 @@
 {
-  "name": "Hermes Workspace",
+  "name": "Vorbium Workspace",
   "dockerComposeFile": "../docker-compose.yml",
   "service": "hermes-workspace",
   "workspaceFolder": "/app",

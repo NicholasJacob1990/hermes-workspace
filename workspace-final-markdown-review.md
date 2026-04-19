@@ -1,6 +1,6 @@
 # Workspace Final Markdown Review
 
-This is the final review file for the new markdown rendering in Hermes Workspace.
+This is the final review file for the new markdown rendering in Vorbium Workspace.
 
 ## What to check
 
@@ -35,4 +35,4 @@ export function markdownReviewStatus() {
 | Markdown attachment | Preview-first   |
 | Source mode         | Still available |
 
-[Hermes Agent Repo](https://github.com/NousResearch/hermes-agent)
+[Vorbium Engine Repo](https://github.com/NousResearch/hermes-agent)

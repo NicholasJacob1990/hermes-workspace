@@ -320,7 +320,7 @@ export function ProfilesScreen() {
                     )}
                   >
                     <img
-                      src="/hermes-avatar.webp"
+                      src="/vorbium-avatar.webp"
                       alt={profile.name}
                       className={cn(
                         'size-20 rounded-full border-2 object-cover',
@@ -830,7 +830,7 @@ export function ProfilesScreen() {
           <div className="shrink-0 border-b border-primary-200 px-6 pb-4 pt-5 dark:border-neutral-800">
             <div className="flex items-center gap-3">
               <img
-                src="/hermes-avatar.webp"
+                src="/vorbium-avatar.webp"
                 alt={detailsName || ''}
                 className="size-12 rounded-full border-2 border-primary-200 object-cover dark:border-neutral-700"
               />

@@ -137,7 +137,7 @@ type SaveSettingPayload = {
 // Models are fetched through the workspace API proxy to support Docker and
 // reverse-proxy deployments where the browser cannot reach Vorbium directly.
 
-type HermesCatalogEntry =
+type VorbiumCatalogEntry =
   | string
   | {
       id: string
@@ -146,9 +146,9 @@ type HermesCatalogEntry =
       [key: string]: unknown
     }
 
-function isHermesCatalogEntry(
-  entry: HermesCatalogEntry | null,
-): entry is HermesCatalogEntry {
+function isVorbiumCatalogEntry(
+  entry: VorbiumCatalogEntry | null,
+): entry is VorbiumCatalogEntry {
   return entry !== null
 }
 
@@ -214,7 +214,7 @@ async function fetchModels(): Promise<{
                 : id,
       }
     })
-    .filter(isHermesCatalogEntry)
+    .filter(isVorbiumCatalogEntry)
 
   const configuredProviders = Array.from(
     new Set(

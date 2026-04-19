@@ -25,6 +25,14 @@ import { useSettings } from '@/hooks/use-settings'
 import { getLocale, setLocale, LOCALE_LABELS, type LocaleId } from '@/lib/i18n'
 import { THEMES, getTheme, isDarkTheme, setTheme } from '@/lib/theme'
 import { cn } from '@/lib/utils'
+import { getPipecatVoiceBridgeStatus } from '@/lib/pipecat-voice'
+import {
+  VOICE_FALLBACK_PROVIDER_OPTIONS,
+  VOICE_PIPECAT_TOGGLE_FIELDS,
+  VOICE_RECOMMENDED_STACK,
+  VOICE_STT_PROVIDER_OPTIONS,
+  VOICE_TTS_PROVIDER_OPTIONS,
+} from '@/lib/voice-settings-options'
 import {
   getChatProfileDisplayName,
   useChatSettingsStore,
@@ -937,7 +945,7 @@ function _LoaderStyleSection() {
 
 // ── Vorbium Engine Configuration ──────────────────────────────────────
 
-type HermesProvider = {
+type VorbiumProvider = {
   id: string
   name: string
   authType: string
@@ -948,13 +956,13 @@ type HermesProvider = {
 
 type VorbiumConfigData = {
   config: Record<string, unknown>
-  providers: Array<HermesProvider>
+  providers: Array<VorbiumProvider>
   activeProvider: string
   activeModel: string
   vorbiumHome: string
 }
 
-const HERMES_API = (process.env.VORBIUM_API_URL ?? process.env.HERMES_API_URL) || 'http://127.0.0.1:8642'
+const VORBIUM_API = (process.env.VORBIUM_API_URL ?? process.env.HERMES_API_URL) || 'http://127.0.0.1:8642'
 
 type AvailableModelsResponse = {
   provider: string
@@ -1123,14 +1131,20 @@ function VorbiumConfigSection({
     ? (data.config.custom_providers as Array<Record<string, unknown>>)
     : []
 
-  const ttsProvider = (ttsConfig.provider as string) || 'edge'
+  const ttsProvider = (ttsConfig.provider as string) || VOICE_RECOMMENDED_STACK.ttsProvider
+  const ttsFallbackProvider = (ttsConfig.fallback_provider as string) || VOICE_RECOMMENDED_STACK.fallbackProvider
   const ttsEdge = (ttsConfig.edge as Record<string, unknown>) || {}
   const ttsElevenLabs = (ttsConfig.elevenlabs as Record<string, unknown>) || {}
   const ttsOpenAi = (ttsConfig.openai as Record<string, unknown>) || {}
+  const ttsGemini = (ttsConfig.gemini as Record<string, unknown>) || {}
+  const ttsMistral = (ttsConfig.mistral as Record<string, unknown>) || {}
   const sttProvider = (sttConfig.provider as string) || 'local'
   const sttLocal = (sttConfig.local as Record<string, unknown>) || {}
+  const sttMistral = (sttConfig.mistral as Record<string, unknown>) || {}
+  const pipecatConfig = (data.config.pipecat as Record<string, unknown>) || {}
+  const pipecatVoiceStatus = getPipecatVoiceBridgeStatus(data.config, data.providers)
 
-  const renderHermesOverview = () => (
+  const renderVorbiumOverview = () => (
     <>
       <SettingsSection
         title="Model & Provider"
@@ -1621,7 +1635,7 @@ function VorbiumConfigSection({
       >
         <SettingsRow
           label="TTS provider"
-          description="Which TTS engine to use."
+          description="Recommended for Telegram: Edge as base voice, with Mistral as fallback."
         >
           <select
             value={ttsProvider}
@@ -1630,10 +1644,29 @@ function VorbiumConfigSection({
             }
             className={selectClassName}
           >
-            <option value="edge">Edge TTS (free)</option>
-            <option value="elevenlabs">ElevenLabs</option>
-            <option value="openai">OpenAI TTS</option>
-            <option value="neutts">NeuTTS</option>
+            {VOICE_TTS_PROVIDER_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </SettingsRow>
+        <SettingsRow
+          label="Fallback provider"
+          description="Recommended: Mistral Voxtral for Telegram voice resilience."
+        >
+          <select
+            value={ttsFallbackProvider}
+            onChange={(e) =>
+              void saveConfig({ config: { tts: { fallback_provider: e.target.value } } })
+            }
+            className={selectClassName}
+          >
+            {VOICE_FALLBACK_PROVIDER_OPTIONS.map((option) => (
+              <option key={option.value || 'none'} value={option.value}>
+                {option.label}
+              </option>
+            ))}
           </select>
         </SettingsRow>
 
@@ -1719,6 +1752,64 @@ function VorbiumConfigSection({
             </SettingsRow>
           </>
         )}
+
+        {ttsProvider === 'gemini' && (
+          <>
+            <SettingsRow label="Voice" description="Gemini TTS voice preset.">
+              <Input
+                value={(ttsGemini.voice as string) || 'Kore'}
+                onChange={(e) =>
+                  void saveConfig({
+                    config: { tts: { gemini: { ...ttsGemini, voice: e.target.value } } },
+                  })
+                }
+                className="md:w-64"
+              />
+            </SettingsRow>
+            <SettingsRow label="Model" description="Gemini TTS model.">
+              <Input
+                value={(ttsGemini.model as string) || 'gemini-2.5-flash-preview-tts'}
+                onChange={(e) =>
+                  void saveConfig({
+                    config: { tts: { gemini: { ...ttsGemini, model: e.target.value } } },
+                  })
+                }
+                className="md:w-64"
+              />
+            </SettingsRow>
+          </>
+        )}
+
+        {ttsProvider === 'mistral' && (
+          <>
+            <SettingsRow label="Voice ID" description="Mistral Voxtral voice UUID.">
+              <Input
+                value={(ttsMistral.voice_id as string) || ''}
+                onChange={(e) =>
+                  void saveConfig({
+                    config: {
+                      tts: { mistral: { ...ttsMistral, voice_id: e.target.value } },
+                    },
+                  })
+                }
+                className="md:w-64"
+              />
+            </SettingsRow>
+            <SettingsRow label="Model" description="Mistral Voxtral TTS model.">
+              <Input
+                value={(ttsMistral.model as string) || 'voxtral-mini-tts-2603'}
+                onChange={(e) =>
+                  void saveConfig({
+                    config: {
+                      tts: { mistral: { ...ttsMistral, model: e.target.value } },
+                    },
+                  })
+                }
+                className="md:w-64"
+              />
+            </SettingsRow>
+          </>
+        )}
       </SettingsSection>
 
       <SettingsSection
@@ -1745,8 +1836,11 @@ function VorbiumConfigSection({
             }
             className={selectClassName}
           >
-            <option value="local">Local (Whisper)</option>
-            <option value="openai">OpenAI Whisper API</option>
+            {VOICE_STT_PROVIDER_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
           </select>
         </SettingsRow>
         {sttProvider === 'local' && (
@@ -1771,6 +1865,70 @@ function VorbiumConfigSection({
             </select>
           </SettingsRow>
         )}
+        {sttProvider === 'mistral' && (
+          <SettingsRow label="Model" description="Mistral Voxtral transcription model.">
+            <Input
+              value={(sttMistral.model as string) || 'voxtral-mini-latest'}
+              onChange={(e) =>
+                void saveConfig({
+                  config: { stt: { mistral: { ...sttMistral, model: e.target.value } } },
+                })
+              }
+              className="md:w-64"
+            />
+          </SettingsRow>
+        )}
+      </SettingsSection>
+
+      <SettingsSection
+        title="Pipecat + Gemini Live"
+        description="Use Gemini Live as the realtime voice layer while Vorbium Engine stays the downstream agent brain."
+        icon={SparklesIcon}
+      >
+        <SettingsRow
+          label="Gemini API key"
+          description="Stored in ~/.vorbium/.env or the Vorbium Engine provider entry."
+        >
+          <span
+            className="text-sm font-medium"
+            style={{
+              color: pipecatVoiceStatus.geminiKeyConfigured
+                ? 'var(--theme-accent)'
+                : 'var(--theme-muted)',
+            }}
+          >
+            {pipecatVoiceStatus.geminiKeyConfigured ? 'Configured' : 'Missing'}
+          </span>
+        </SettingsRow>
+        <SettingsRow
+          label="Bridge config"
+          description="Vorbium Engine config already exposes the Pipecat bridge defaults when configured."
+        >
+          <span
+            className="text-sm font-medium"
+            style={{
+              color: pipecatVoiceStatus.pipecatConfigured
+                ? 'var(--theme-accent)'
+                : 'var(--theme-muted)',
+            }}
+          >
+            {pipecatVoiceStatus.pipecatConfigured ? 'Ready' : 'Not configured'}
+          </span>
+        </SettingsRow>
+        {VOICE_PIPECAT_TOGGLE_FIELDS.map((field) => (
+          <SettingsRow
+            key={field.key}
+            label={field.label}
+            description={field.description}
+          >
+            <Switch
+              checked={Boolean(pipecatConfig[field.key] ?? VOICE_RECOMMENDED_STACK.telegramVoiceLive)}
+              onCheckedChange={(checked) =>
+                void saveConfig({ config: { pipecat: { [field.key]: checked } } })
+              }
+            />
+          </SettingsRow>
+        ))}
       </SettingsSection>
     </div>
   )
@@ -1850,7 +2008,7 @@ function VorbiumConfigSection({
   )
 
   const sectionContent = {
-    vorbium: renderHermesOverview(),
+    vorbium: renderVorbiumOverview(),
     agent: renderAgentBehavior(),
     routing: renderSmartRouting(),
     voice: renderVoice(),

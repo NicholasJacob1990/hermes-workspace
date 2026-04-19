@@ -55,7 +55,7 @@ export function ChatEmptyState({
             }}
           />
           <img
-            src="/hermes-avatar.webp"
+            src="/vorbium-avatar.webp"
             alt="Vorbium"
             className="relative size-20 rounded-2xl"
             style={{

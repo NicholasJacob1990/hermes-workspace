@@ -132,7 +132,7 @@ export function ConnectionCheckStep({
             </div>
           </div>
           <p className="mt-3 text-xs text-red-700">
-            Or point <code>HERMES_API_URL</code> at any OpenAI-compatible
+            Or point <code>VORBIUM_API_URL</code> at any OpenAI-compatible
             backend (Ollama, LiteLLM, vLLM, etc.).
           </p>
           {lastError && (

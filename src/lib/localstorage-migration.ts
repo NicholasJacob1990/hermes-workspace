@@ -15,7 +15,7 @@ const MIGRATIONS: Record<string, string> = {
 
 const MIGRATION_FLAG = 'vorbium-ls-migrated-v1'
 
-export function migrateHermesLocalStorage(): void {
+export function migrateVorbiumLocalStorage(): void {
   if (typeof window === 'undefined') return
   if (window.localStorage.getItem(MIGRATION_FLAG)) return
   let migrated = 0

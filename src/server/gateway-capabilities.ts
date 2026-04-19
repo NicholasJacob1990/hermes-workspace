@@ -232,7 +232,7 @@ export async function probeGateway(options?: {
 
   probePromise = (async () => {
     // Auto-detect port if no explicit env var set
-    if (!process.env.VORBIUM_API_URL ?? process.env.HERMES_API_URL) {
+    if (!(process.env.VORBIUM_API_URL ?? process.env.HERMES_API_URL)) {
       const healthOn8642 = await probe('/health')
       if (!healthOn8642) {
         const fallback = 'http://127.0.0.1:8643'

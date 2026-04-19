@@ -12,7 +12,7 @@ import { OnboardingTour } from '@/components/onboarding/onboarding-tour'
 import { KeyboardShortcutsModal } from '@/components/keyboard-shortcuts-modal'
 import { initializeSettingsAppearance } from '@/hooks/use-settings'
 import { VorbiumOnboarding } from '@/components/onboarding/vorbium-onboarding'
-import { migrateHermesLocalStorage } from '@/lib/localstorage-migration'
+import { migrateVorbiumLocalStorage } from '@/lib/localstorage-migration'
 
 const APP_CSP = [
   "default-src 'self'",
@@ -205,7 +205,7 @@ function RootLayout() {
   // Unregister any existing service workers — they cause stale asset issues
   // after Docker image updates and behind reverse proxies (Pangolin, Cloudflare, etc.)
   useEffect(() => {
-    migrateHermesLocalStorage()
+    migrateVorbiumLocalStorage()
     initializeSettingsAppearance()
 
     if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
@@ -317,7 +317,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
             var d = document.createElement('div');
             d.id = 'splash-screen';
             d.style.cssText = 'position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:'+bg+';transition:opacity 0.5s ease;';
-            d.innerHTML = '<img src="/hermes-avatar.webp" alt="Vorbium" style="width:80px;height:80px;margin-bottom:20px;border-radius:16px;filter:drop-shadow(0 8px 32px color-mix(in srgb,'+accent+' 45%, transparent))" />'
+            d.innerHTML = '<img src="/vorbium-avatar.webp" alt="Vorbium" style="width:80px;height:80px;margin-bottom:20px;border-radius:16px;filter:drop-shadow(0 8px 32px color-mix(in srgb,'+accent+' 45%, transparent))" />'
               + '<div style="font:600 26px/1 \'Inter\',system-ui,sans-serif;letter-spacing:-0.02em;color:'+txt+';margin-bottom:8px">Vorbium <span style="color:'+accent+'">Engine</span></div>'
               + '<div style="font:400 14px/1 system-ui,-apple-system,sans-serif;letter-spacing:0.04em;color:'+muted+'">Workspace Jurídico</div>'
               + '<div style="margin-top:28px;width:140px;height:3px;background:'+(isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)')+';border-radius:3px;overflow:hidden;position:relative"><div id=splash-bar style="width:0%;height:100%;background:'+accent+';border-radius:3px;transition:width 0.4s ease"></div></div>';

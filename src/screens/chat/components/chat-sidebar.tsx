@@ -865,7 +865,7 @@ function ChatSidebarComponent({
                   'w-full pl-1.5 justify-start gap-2',
                 )}
               >
-                <img src="/hermes-avatar.webp" alt="Vorbium" className="size-6 rounded-lg" />
+                <img src="/vorbium-avatar.webp" alt="Vorbium" className="size-6 rounded-lg" />
                 <span className="text-sm font-semibold tracking-tight" style={{ color: 'var(--theme-text)' }}>Vorbium Engine</span>
               </Link>
             </motion.div>

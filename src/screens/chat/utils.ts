@@ -273,7 +273,7 @@ export async function readError(res: Response): Promise<string> {
 }
 
 export const missingAuthMessage =
-  'Vorbium Engine connection failed. Make sure Hermes is running and HERMES_API_URL is set correctly.'
+  'Vorbium Engine connection failed. Make sure the Vorbium runtime is running and VORBIUM_API_URL is set correctly.'
 
 export function isMissingAuth(message: string): boolean {
   return message.includes(missingAuthMessage)

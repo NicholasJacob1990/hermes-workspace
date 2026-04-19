@@ -38,7 +38,7 @@ import { defineConfig, loadEnv } from 'vite'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
 
 // ---------------------------------------------------------------------------
-// Hermes Agent auto-start helpers
+// Vorbium Engine auto-start helpers
 // ---------------------------------------------------------------------------
 
 /** Resolve the hermes-agent directory using a priority-ordered fallback chain:
@@ -95,7 +95,7 @@ const config = defineConfig(({ mode, command }) => {
   const env = loadEnv(mode, process.cwd(), '')
   const hermesApiUrl = (env.VORBIUM_API_URL ?? env.HERMES_API_URL)?.trim() || 'http://127.0.0.1:8642'
 
-  // Hermes Agent auto-start state
+  // Vorbium Engine auto-start state
   let vorbiumEngineChild: ChildProcess | null = null
   let vorbiumEngineStarted = false
 
@@ -437,7 +437,7 @@ const config = defineConfig(({ mode, command }) => {
         ignored: ['**/routeTree.gen.ts'],
       },
       proxy: {
-        // WebSocket proxy: clients connect to /ws-hermes on the Hermes Workspace
+        // WebSocket proxy: clients connect to /ws-hermes on the Vorbium Workspace
         // server (any IP/port), which internally forwards to the local server.
         // This means phone/LAN/Docker users never need to reach port 18789 directly.
         '/ws-hermes': {

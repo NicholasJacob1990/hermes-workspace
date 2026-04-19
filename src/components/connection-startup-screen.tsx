@@ -26,7 +26,7 @@ function getSetupSteps(
   return [
     {
       title: 'Use any OpenAI-compatible backend',
-      command: 'Set HERMES_API_URL to your backend base URL',
+      command: 'Set VORBIUM_API_URL to your backend base URL',
       note: 'Portable chat works with any backend that exposes /v1/chat/completions (Ollama, LiteLLM, vLLM, etc.)',
     },
     {
@@ -187,7 +187,7 @@ export function ConnectionStartupScreen({ onConnected }: Props) {
     >
       <div className="flex w-full max-w-lg flex-col items-center text-center">
         <img
-          src="/hermes-avatar.webp"
+          src="/vorbium-avatar.webp"
           alt="Vorbium"
           className="mb-5 h-20 w-20 rounded-2xl object-cover shadow-[0_12px_40px_rgba(0,0,0,0.45)]"
         />
@@ -325,12 +325,12 @@ export function ConnectionStartupScreen({ onConnected }: Props) {
                 <p className="text-xs font-medium text-white/50">
                   Point{' '}
                   <code className="rounded bg-white/10 px-1.5 py-0.5 font-mono text-white/70">
-                    HERMES_API_URL
+                    VORBIUM_API_URL
                   </code>{' '}
                   at any OpenAI-compatible backend:
                 </p>
                 <pre className="mt-2 overflow-x-auto font-mono text-xs text-white/60">
-                  HERMES_API_URL=http://your-server:8642 pnpm dev
+                  VORBIUM_API_URL=http://your-server:8642 pnpm dev
                 </pre>
               </div>
             </div>

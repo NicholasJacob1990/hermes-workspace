@@ -3,7 +3,7 @@ import { json } from '@tanstack/react-start'
 import { isAuthenticated } from '../../server/auth-middleware'
 import { startVorbiumRuntime } from '../../server/vorbium-agent'
 
-export const Route = createFileRoute('/api/start-agent')({
+export const Route = createFileRoute('/api/start-vorbium')({
   server: {
     handlers: {
       POST: async ({ request }) => {

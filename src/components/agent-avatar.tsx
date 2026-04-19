@@ -142,7 +142,7 @@ function AgentAvatar({
             </span>
           ) : (
             <img
-              src="/hermes-avatar.webp"
+              src="/vorbium-avatar.webp"
               alt="Vorbium"
               className={cn(
                 getLogoSizeClassName(size),

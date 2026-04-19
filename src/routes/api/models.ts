@@ -104,7 +104,7 @@ function readString(value: unknown): string {
   return typeof value === 'string' ? value.trim() : ''
 }
 
-function normalizeHermesModel(entry: unknown): ModelEntry | null {
+function normalizeVorbiumModel(entry: unknown): ModelEntry | null {
   if (typeof entry === 'string') {
     const id = entry.trim()
     if (!id) return null
@@ -146,7 +146,7 @@ async function fetchVorbiumModels(): Promise<Array<ModelEntry>> {
       ? payload.models
       : []
   return rawModels
-    .map(normalizeHermesModel)
+    .map(normalizeVorbiumModel)
     .filter((e): e is ModelEntry => e !== null)
 }
 

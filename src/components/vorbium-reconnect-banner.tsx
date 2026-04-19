@@ -9,7 +9,7 @@ type VorbiumReconnectBannerProps = {
 
 type BannerState = 'hidden' | 'disconnected' | 'connected'
 
-async function probeHermesHealth(): Promise<boolean> {
+async function probeVorbiumHealth(): Promise<boolean> {
   // Use the portable-aware connection status endpoint first,
   // which works with both full Vorbium and OpenAI-compatible backends.
   try {
@@ -82,7 +82,7 @@ export function VorbiumReconnectBanner({
         setIsChecking(true)
       }
 
-      const pendingProbe = probeHermesHealth()
+      const pendingProbe = probeVorbiumHealth()
         .then((connected) => {
           if (cancelled || !mountedRef.current) return connected
 

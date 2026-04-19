@@ -182,7 +182,7 @@ function normalizePortableHistory(
   return normalized
 }
 
-function normalizeHermesErrorMessage(error: unknown): string {
+function normalizeVorbiumErrorMessage(error: unknown): string {
   const raw = error instanceof Error ? error.message : String(error)
   const message = raw.trim()
   if (!message) return 'Vorbium request failed'
@@ -319,7 +319,7 @@ export const Route = createFileRoute('/api/send-stream')({
           sessionKey = resolved.sessionKey
           resolvedFriendlyId = resolved.sessionKey
         } catch (err) {
-          const errorMsg = normalizeHermesErrorMessage(err)
+          const errorMsg = normalizeVorbiumErrorMessage(err)
           if (errorMsg === 'session not found') {
             return new Response(
               JSON.stringify({ ok: false, error: 'session not found' }),
@@ -511,7 +511,7 @@ export const Route = createFileRoute('/api/send-stream')({
                 } catch (err) {
                   if (!streamClosed) {
                     sendEvent('error', {
-                      message: normalizeHermesErrorMessage(err),
+                      message: normalizeVorbiumErrorMessage(err),
                       sessionKey: portableSessionKey,
                       runId,
                     })
@@ -855,7 +855,7 @@ export const Route = createFileRoute('/api/send-stream')({
             } catch (err) {
               // Only send error if stream hasn't already completed successfully
               if (!streamClosed) {
-                const errorMsg = normalizeHermesErrorMessage(err)
+                const errorMsg = normalizeVorbiumErrorMessage(err)
                 sendEvent('error', {
                   message: errorMsg,
                   sessionKey,

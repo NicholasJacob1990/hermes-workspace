@@ -16,7 +16,7 @@ export const tourSteps: Array<Step> = [
         }}
       >
         <img
-          src="/hermes-avatar.webp"
+          src="/vorbium-avatar.webp"
           alt="Vorbium"
           style={{ width: 48, height: 48, borderRadius: 12 }}
         />

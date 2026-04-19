@@ -125,7 +125,7 @@ function readModelText(value: unknown): string {
   return typeof value === 'string' ? value.trim() : ''
 }
 
-type HermesCatalogEntry =
+type VorbiumCatalogEntry =
   | string
   | {
       id: string
@@ -134,22 +134,22 @@ type HermesCatalogEntry =
       [key: string]: unknown
     }
 
-function isHermesCatalogEntry(
-  entry: HermesCatalogEntry | null,
-): entry is HermesCatalogEntry {
+function isVorbiumCatalogEntry(
+  entry: VorbiumCatalogEntry | null,
+): entry is VorbiumCatalogEntry {
   return entry !== null
 }
 
-type HermesProviderOption = {
+type VorbiumProviderOption = {
   id: string
   label: string
   authenticated: boolean
 }
 
-type HermesAvailableModelsResponse = {
+type VorbiumAvailableModelsResponse = {
   provider: string
   models: Array<{ id: string; description: string }>
-  providers: Array<HermesProviderOption>
+  providers: Array<VorbiumProviderOption>
 }
 
 async function fetchModels(): Promise<{
@@ -158,13 +158,13 @@ async function fetchModels(): Promise<{
   configuredProviders?: Array<string>
   currentProvider?: string
   providerLabels?: Record<string, string>
-  providers?: Array<HermesProviderOption>
+  providers?: Array<VorbiumProviderOption>
 }> {
   // Prefer Vorbium' current provider models; fetch other providers lazily if needed.
   try {
     const richRes = await fetch('/api/vorbium-proxy/api/available-models')
     if (richRes.ok) {
-      const richData = (await richRes.json()) as HermesAvailableModelsResponse
+      const richData = (await richRes.json()) as VorbiumAvailableModelsResponse
       const allProviders = richData.providers || []
       const authenticatedProviders = allProviders.filter(
         (p) => p.authenticated,
@@ -253,7 +253,7 @@ async function fetchModels(): Promise<{
               `/api/vorbium-proxy/api/available-models?provider=${encodeURIComponent(provider.id)}`,
             )
             if (!res.ok) return []
-            const data = (await res.json()) as HermesAvailableModelsResponse
+            const data = (await res.json()) as VorbiumAvailableModelsResponse
             return (data.models || []).map((m) => ({
               id: m.id,
               name: m.id,
@@ -354,7 +354,7 @@ async function fetchModels(): Promise<{
           id,
       }
     })
-    .filter(isHermesCatalogEntry)
+    .filter(isVorbiumCatalogEntry)
 
   const configuredProviders = Array.from(
     new Set(
@@ -387,7 +387,7 @@ async function fetchModelsForProvider(
     throw new Error(`Vorbium models request failed (${response.status})`)
   }
 
-  const payload = (await response.json()) as HermesAvailableModelsResponse
+  const payload = (await response.json()) as VorbiumAvailableModelsResponse
   return (payload.models || []).map((model) => ({
     id: model.id,
     name: model.id,

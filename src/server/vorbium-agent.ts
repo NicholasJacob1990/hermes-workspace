@@ -3,8 +3,28 @@ import { existsSync, readFileSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { homedir } from 'node:os'
 
-const HERMES_HEALTH_TIMEOUT_MS = 2_000
-const HERMES_START_PORT = 8642
+const RUNTIME_HEALTH_TIMEOUT_MS = 2_000
+const VORBIUM_HOME = join(homedir(), '.vorbium')
+const DEFAULT_RUNTIME_URL =
+  process.env.VORBIUM_API_URL?.trim() ||
+  process.env.HERMES_API_URL?.trim() ||
+  'http://127.0.0.1:8642'
+
+function getRuntimeBaseUrl(): string {
+  return DEFAULT_RUNTIME_URL.replace(/\/$/, '')
+}
+
+function getRuntimeHostAndPort(): { host: string; port: number } {
+  try {
+    const parsed = new URL(getRuntimeBaseUrl())
+    return {
+      host: parsed.hostname || '127.0.0.1',
+      port: parsed.port ? Number(parsed.port) : parsed.protocol === 'https:' ? 443 : 80,
+    }
+  } catch {
+    return { host: '127.0.0.1', port: 8642 }
+  }
+}
 
 let startPromise: Promise<StartVorbiumEngineResult> | null = null
 
@@ -23,8 +43,8 @@ export type StartVorbiumEngineResult =
  * Read ~/.vorbium/.env and return key=value pairs as an object.
  * Silently returns {} if the file doesn't exist or can't be parsed.
  */
-function readHermesEnv(): Record<string, string> {
-  const envPath = join(homedir(), '.vorbium', '.env')
+function readVorbiumEnv(): Record<string, string> {
+  const envPath = join(VORBIUM_HOME, '.env')
   try {
     const raw = readFileSync(envPath, 'utf-8')
     const result: Record<string, string> = {}
@@ -50,10 +70,14 @@ function readHermesEnv(): Record<string, string> {
 }
 
 /** Same directory resolution logic as vite.config.ts. */
-export function resolveHermesAgentDir(
+export function resolveVorbiumRuntimeDir(
   env: Record<string, string | undefined> = process.env,
 ): string | null {
   const candidates: Array<string> = []
+
+  if (env.VORBIUM_ENGINE_PATH?.trim()) {
+    candidates.push(env.VORBIUM_ENGINE_PATH.trim())
+  }
 
   if (env.HERMES_AGENT_PATH?.trim()) {
     candidates.push(env.HERMES_AGENT_PATH.trim())
@@ -61,6 +85,8 @@ export function resolveHermesAgentDir(
 
   const workspaceRoot = dirname(resolve('.'))
   candidates.push(
+    resolve(workspaceRoot, 'vorbium-engine-runtime'),
+    resolve(workspaceRoot, '..', 'vorbium-engine-runtime'),
     resolve(workspaceRoot, 'vorbium-engine'),
     resolve(workspaceRoot, '..', 'vorbium-engine'),
   )
@@ -72,20 +98,20 @@ export function resolveHermesAgentDir(
   return null
 }
 
-export function resolveHermesPython(agentDir: string): string {
-  const venvPython = resolve(agentDir, '.venv', 'bin', 'python')
+export function resolveVorbiumPython(runtimeDir: string): string {
+  const venvPython = resolve(runtimeDir, '.venv', 'bin', 'python')
   if (existsSync(venvPython)) return venvPython
-  const uvVenv = resolve(agentDir, 'venv', 'bin', 'python')
+  const uvVenv = resolve(runtimeDir, 'venv', 'bin', 'python')
   if (existsSync(uvVenv)) return uvVenv
   return 'python3'
 }
 
-export async function isHermesAgentHealthy(
-  port = HERMES_START_PORT,
+export async function isVorbiumRuntimeHealthy(
+  runtimeUrl = getRuntimeBaseUrl(),
 ): Promise<boolean> {
   try {
-    const response = await fetch(`http://127.0.0.1:${port}/health`, {
-      signal: AbortSignal.timeout(HERMES_HEALTH_TIMEOUT_MS),
+    const response = await fetch(`${runtimeUrl}/health`, {
+      signal: AbortSignal.timeout(RUNTIME_HEALTH_TIMEOUT_MS),
     })
     return response.ok
   } catch {
@@ -93,8 +119,8 @@ export async function isHermesAgentHealthy(
   }
 }
 
-export async function startHermesAgent(): Promise<StartVorbiumEngineResult> {
-  if (await isHermesAgentHealthy()) {
+export async function startVorbiumRuntime(): Promise<StartVorbiumEngineResult> {
+  if (await isVorbiumRuntimeHealthy()) {
     return { ok: true, message: 'already running' }
   }
 
@@ -104,17 +130,18 @@ export async function startHermesAgent(): Promise<StartVorbiumEngineResult> {
 
   startPromise = (async () => {
     try {
-      const agentDir = resolveHermesAgentDir()
-      if (!agentDir) {
+      const runtimeDir = resolveVorbiumRuntimeDir()
+      if (!runtimeDir) {
         return {
           ok: false,
           error:
-            'hermes-agent not found. Clone it as a sibling directory or set HERMES_AGENT_PATH in .env',
+            'vorbium-engine-runtime not found. Clone it as a sibling directory or set VORBIUM_ENGINE_PATH in .env',
         }
       }
 
-      const python = resolveHermesPython(agentDir)
-      const hermesEnv = readHermesEnv()
+      const python = resolveVorbiumPython(runtimeDir)
+      const vorbiumEnv = readVorbiumEnv()
+      const { host, port } = getRuntimeHostAndPort()
 
       const child = spawn(
         python,
@@ -123,18 +150,20 @@ export async function startHermesAgent(): Promise<StartVorbiumEngineResult> {
           'uvicorn',
           'webapi.app:app',
           '--host',
-          '0.0.0.0',
+          host,
           '--port',
-          String(HERMES_START_PORT),
+          String(port),
         ],
         {
-          cwd: agentDir,
+          cwd: runtimeDir,
           detached: true,
           stdio: 'ignore',
           env: {
             ...process.env,
-            ...hermesEnv,
-            PATH: `${resolve(agentDir, '.venv', 'bin')}:${resolve(agentDir, 'venv', 'bin')}:${process.env.PATH || ''}`,
+            ...vorbiumEnv,
+            HERMES_HOME: vorbiumEnv.HERMES_HOME || process.env.HERMES_HOME || VORBIUM_HOME,
+            PYTHONPATH: [runtimeDir, process.env.PYTHONPATH].filter(Boolean).join(':'),
+            PATH: `${resolve(runtimeDir, '.venv', 'bin')}:${resolve(runtimeDir, 'venv', 'bin')}:${process.env.PATH || ''}`,
           },
         },
       )
@@ -143,7 +172,7 @@ export async function startHermesAgent(): Promise<StartVorbiumEngineResult> {
 
       for (let attempt = 0; attempt < 10; attempt += 1) {
         await new Promise((resolveAttempt) => setTimeout(resolveAttempt, 1_000))
-        if (await isHermesAgentHealthy()) {
+        if (await isVorbiumRuntimeHealthy()) {
           return {
             ok: true,
             pid: child.pid,

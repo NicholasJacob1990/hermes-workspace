@@ -1,4 +1,4 @@
-# Hermes Workspace + Agent — Docker Compose Setup
+# Vorbium Workspace + Agent — Docker Compose Setup
 #
 # Requirements:
 #   - Docker & Docker Compose
@@ -41,7 +41,7 @@ services:
     ports:
       - '8642:8642'
 
-  # The Hermes Workspace Web UI
+  # The Vorbium Workspace Web UI
   # Connects to hermes-agent at http://hermes-agent:8642
   hermes-workspace:
     build:

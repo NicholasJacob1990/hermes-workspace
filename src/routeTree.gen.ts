@@ -34,7 +34,7 @@ import { Route as ApiTerminalStreamRouteImport } from './routes/api/terminal-str
 import { Route as ApiTerminalResizeRouteImport } from './routes/api/terminal-resize'
 import { Route as ApiTerminalInputRouteImport } from './routes/api/terminal-input'
 import { Route as ApiTerminalCloseRouteImport } from './routes/api/terminal-close'
-import { Route as ApiStartHermesRouteImport } from './routes/api/start-hermes'
+import { Route as ApiStartVorbiumRouteImport } from './routes/api/start-vorbium'
 import { Route as ApiStartAgentRouteImport } from './routes/api/start-agent'
 import { Route as ApiSkillsRouteImport } from './routes/api/skills'
 import { Route as ApiSessionsRouteImport } from './routes/api/sessions'
@@ -213,9 +213,9 @@ const ApiTerminalCloseRoute = ApiTerminalCloseRouteImport.update({
   path: '/api/terminal-close',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiStartHermesRoute = ApiStartHermesRouteImport.update({
-  id: '/api/start-hermes',
-  path: '/api/start-hermes',
+const ApiStartVorbiumRoute = ApiStartVorbiumRouteImport.update({
+  id: '/api/start-vorbium',
+  path: '/api/start-vorbium',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiStartAgentRoute = ApiStartAgentRouteImport.update({
@@ -509,7 +509,7 @@ export interface FileRoutesByFullPath {
   '/api/sessions': typeof ApiSessionsRouteWithChildren
   '/api/skills': typeof ApiSkillsRouteWithChildren
   '/api/start-agent': typeof ApiStartAgentRoute
-  '/api/start-hermes': typeof ApiStartHermesRoute
+  '/api/start-vorbium': typeof ApiStartVorbiumRoute
   '/api/terminal-close': typeof ApiTerminalCloseRoute
   '/api/terminal-input': typeof ApiTerminalInputRoute
   '/api/terminal-resize': typeof ApiTerminalResizeRoute
@@ -587,7 +587,7 @@ export interface FileRoutesByTo {
   '/api/sessions': typeof ApiSessionsRouteWithChildren
   '/api/skills': typeof ApiSkillsRouteWithChildren
   '/api/start-agent': typeof ApiStartAgentRoute
-  '/api/start-hermes': typeof ApiStartHermesRoute
+  '/api/start-vorbium': typeof ApiStartVorbiumRoute
   '/api/terminal-close': typeof ApiTerminalCloseRoute
   '/api/terminal-input': typeof ApiTerminalInputRoute
   '/api/terminal-resize': typeof ApiTerminalResizeRoute
@@ -667,7 +667,7 @@ export interface FileRoutesById {
   '/api/sessions': typeof ApiSessionsRouteWithChildren
   '/api/skills': typeof ApiSkillsRouteWithChildren
   '/api/start-agent': typeof ApiStartAgentRoute
-  '/api/start-hermes': typeof ApiStartHermesRoute
+  '/api/start-vorbium': typeof ApiStartVorbiumRoute
   '/api/terminal-close': typeof ApiTerminalCloseRoute
   '/api/terminal-input': typeof ApiTerminalInputRoute
   '/api/terminal-resize': typeof ApiTerminalResizeRoute
@@ -748,7 +748,7 @@ export interface FileRouteTypes {
     | '/api/sessions'
     | '/api/skills'
     | '/api/start-agent'
-    | '/api/start-hermes'
+    | '/api/start-vorbium'
     | '/api/terminal-close'
     | '/api/terminal-input'
     | '/api/terminal-resize'
@@ -826,7 +826,7 @@ export interface FileRouteTypes {
     | '/api/sessions'
     | '/api/skills'
     | '/api/start-agent'
-    | '/api/start-hermes'
+    | '/api/start-vorbium'
     | '/api/terminal-close'
     | '/api/terminal-input'
     | '/api/terminal-resize'
@@ -905,7 +905,7 @@ export interface FileRouteTypes {
     | '/api/sessions'
     | '/api/skills'
     | '/api/start-agent'
-    | '/api/start-hermes'
+    | '/api/start-vorbium'
     | '/api/terminal-close'
     | '/api/terminal-input'
     | '/api/terminal-resize'
@@ -985,7 +985,7 @@ export interface RootRouteChildren {
   ApiSessionsRoute: typeof ApiSessionsRouteWithChildren
   ApiSkillsRoute: typeof ApiSkillsRouteWithChildren
   ApiStartAgentRoute: typeof ApiStartAgentRoute
-  ApiStartHermesRoute: typeof ApiStartHermesRoute
+  ApiStartVorbiumRoute: typeof ApiStartVorbiumRoute
   ApiTerminalCloseRoute: typeof ApiTerminalCloseRoute
   ApiTerminalInputRoute: typeof ApiTerminalInputRoute
   ApiTerminalResizeRoute: typeof ApiTerminalResizeRoute
@@ -1193,11 +1193,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiTerminalCloseRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/start-hermes': {
-      id: '/api/start-hermes'
-      path: '/api/start-hermes'
-      fullPath: '/api/start-hermes'
-      preLoaderRoute: typeof ApiStartHermesRouteImport
+    '/api/start-vorbium': {
+      id: '/api/start-vorbium'
+      path: '/api/start-vorbium'
+      fullPath: '/api/start-vorbium'
+      preLoaderRoute: typeof ApiStartVorbiumRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/start-agent': {
@@ -1685,7 +1685,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiSessionsRoute: ApiSessionsRouteWithChildren,
   ApiSkillsRoute: ApiSkillsRouteWithChildren,
   ApiStartAgentRoute: ApiStartAgentRoute,
-  ApiStartHermesRoute: ApiStartHermesRoute,
+  ApiStartVorbiumRoute: ApiStartVorbiumRoute,
   ApiTerminalCloseRoute: ApiTerminalCloseRoute,
   ApiTerminalInputRoute: ApiTerminalInputRoute,
   ApiTerminalResizeRoute: ApiTerminalResizeRoute,
