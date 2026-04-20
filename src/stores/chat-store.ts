@@ -1,4 +1,9 @@
 import { create } from 'zustand'
+import {
+  createCrossTabChannel,
+  type CrossTabChannel,
+} from '../lib/cross-tab-channel'
+import { isCrossTabBroadcastEnabled } from '../lib/cross-tab-feature-flag'
 import type {
   ChatMessage,
   MessageContent,
@@ -8,6 +13,68 @@ import type {
 } from '../screens/chat/types'
 
 let _streamingPersistTimer: ReturnType<typeof setTimeout> | null = null
+
+// ── Cross-tab broadcast wiring ────────────────────────────────────────
+//
+// Event-level sync across tabs. We broadcast the subset of ChatStreamEvent
+// types that carry full-turn state (message / user_message / done), plus
+// explicit diffs for the waiting-session bitmap. Streaming deltas (chunk,
+// thinking, tool) stay tab-local — they belong to whichever tab owns the
+// active SSE.
+//
+// Echo suppression: the cross-tab primitive drops messages whose tabId
+// matches the local one. The existing processEvent dedup pipeline then
+// catches any second-order duplicates (same content ID / nonce / multipart
+// signature / content-text match within 10s). See
+// docs/design-notes/CROSS_TAB_BROADCAST.md for the full model.
+
+type WaitingDiff =
+  | {
+      type: 'mark'
+      sessionKey: string
+      meta: { since: number; runId: string | null }
+    }
+  | { type: 'clear'; sessionKey: string }
+
+/**
+ * ChatStreamEvent types that are safe to replay on a peer tab. Streaming
+ * deltas are deliberately excluded — they describe a stream the peer tab
+ * does not own, and replaying them would create ghost streaming UI.
+ */
+const TRAVERSABLE_EVENT_TYPES: ReadonlySet<ChatStreamEvent['type']> = new Set([
+  'message',
+  'user_message',
+  'done',
+])
+
+let _chatEventsChannel: CrossTabChannel<ChatStreamEvent> | null = null
+let _waitingChannel: CrossTabChannel<WaitingDiff> | null = null
+let _crossTabChannelsInitAttempted = false
+
+function getChatEventsChannel(): CrossTabChannel<ChatStreamEvent> | null {
+  if (_chatEventsChannel) return _chatEventsChannel
+  if (!isCrossTabBroadcastEnabled()) return null
+  _chatEventsChannel = createCrossTabChannel<ChatStreamEvent>(
+    'vorbium:chat-events',
+  )
+  return _chatEventsChannel
+}
+
+function getWaitingChannel(): CrossTabChannel<WaitingDiff> | null {
+  if (_waitingChannel) return _waitingChannel
+  if (!isCrossTabBroadcastEnabled()) return null
+  _waitingChannel = createCrossTabChannel<WaitingDiff>('vorbium:waiting')
+  return _waitingChannel
+}
+
+function broadcastChatEventIfTraversable(event: ChatStreamEvent): void {
+  if (!TRAVERSABLE_EVENT_TYPES.has(event.type)) return
+  getChatEventsChannel()?.send(event)
+}
+
+function broadcastWaitingDiff(diff: WaitingDiff): void {
+  getWaitingChannel()?.send(diff)
+}
 
 export type ChatStreamEvent =
   | {
@@ -113,7 +180,19 @@ type ChatState = {
 
   // Actions
   setConnectionState: (state: ConnectionState, error?: string) => void
-  processEvent: (event: ChatStreamEvent) => void
+  /**
+   * Apply a chat stream event to the store.
+   *
+   * When a local SSE handler dispatches an event (default case), processEvent
+   * may broadcast the event to peer tabs via the cross-tab channel. When a
+   * peer tab replays one of its own events into this store, it passes
+   * ``{ fromRemote: true }`` so we skip the re-broadcast path — otherwise
+   * every event would echo forever.
+   */
+  processEvent: (
+    event: ChatStreamEvent,
+    options?: { fromRemote?: boolean },
+  ) => void
   getRealtimeMessages: (sessionKey: string) => Array<ChatMessage>
   getStreamingState: (sessionKey: string) => StreamingState | null
   clearSession: (sessionKey: string) => void
@@ -138,9 +217,16 @@ type ChatState = {
     { since: number; runId: string | null }
   >
   /** Mark a session as waiting for a response */
-  setSessionWaiting: (sessionKey: string, runId?: string | null) => void
+  setSessionWaiting: (
+    sessionKey: string,
+    runId?: string | null,
+    options?: { fromRemote?: boolean },
+  ) => void
   /** Clear waiting state for a session */
-  clearSessionWaiting: (sessionKey: string) => void
+  clearSessionWaiting: (
+    sessionKey: string,
+    options?: { fromRemote?: boolean },
+  ) => void
   /** Check if a session is waiting for a response */
   isSessionWaiting: (sessionKey: string) => boolean
 }
@@ -617,7 +703,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
     return get().sendStreamRunIds.has(runId)
   },
 
-  setSessionWaiting: (sessionKey, runId) => {
+  setSessionWaiting: (sessionKey, runId, options) => {
     const meta = {
       since: get().waitingSessionMeta[sessionKey]?.since ?? Date.now(),
       runId: runId ?? null,
@@ -627,21 +713,39 @@ export const useChatStore = create<ChatState>((set, get) => ({
     const nextMeta = { ...get().waitingSessionMeta, [sessionKey]: meta }
     persistWaitingState(sessionKey, meta)
     set({ waitingSessionKeys: nextKeys, waitingSessionMeta: nextMeta })
+    if (!options?.fromRemote) {
+      broadcastWaitingDiff({ type: 'mark', sessionKey, meta })
+    }
   },
 
-  clearSessionWaiting: (sessionKey) => {
+  clearSessionWaiting: (sessionKey, options) => {
     const nextKeys = new Set(get().waitingSessionKeys)
     nextKeys.delete(sessionKey)
     const { [sessionKey]: _, ...nextMeta } = get().waitingSessionMeta
     removeWaitingState(sessionKey)
     set({ waitingSessionKeys: nextKeys, waitingSessionMeta: nextMeta })
+    if (!options?.fromRemote) {
+      broadcastWaitingDiff({ type: 'clear', sessionKey })
+    }
   },
 
   isSessionWaiting: (sessionKey) => {
     return get().waitingSessionKeys.has(sessionKey)
   },
 
-  processEvent: (event) => {
+  processEvent: (event, options) => {
+    const fromRemote = options?.fromRemote === true
+
+    // Mirror traversable events to peer tabs BEFORE running local reducer.
+    // Running it at the top means dedup on the receiving tab happens against
+    // its CURRENT state, which is exactly the semantics we want (a peer that
+    // already saw this event via its own SSE will dedup it as a duplicate;
+    // a peer that didn't will append it). If the event originated from a
+    // cross-tab broadcast we suppress re-broadcast to avoid echo loops.
+    if (!fromRemote) {
+      broadcastChatEventIfTraversable(event)
+    }
+
     const state = get()
     const sessionKey = event.sessionKey
     const now = Date.now()
@@ -1234,6 +1338,36 @@ export const useChatStore = create<ChatState>((set, get) => ({
     ])
   },
 }))
+
+// ── Cross-tab subscribe ──────────────────────────────────────────────
+// Wire up channel subscribers once the store exists. The channels are
+// lazy — getChatEventsChannel() / getWaitingChannel() return null when
+// the feature flag is off, so this block turns into a no-op in that
+// case.
+if (!_crossTabChannelsInitAttempted) {
+  _crossTabChannelsInitAttempted = true
+
+  const chatCh = getChatEventsChannel()
+  if (chatCh) {
+    chatCh.subscribe((event) => {
+      useChatStore.getState().processEvent(event, { fromRemote: true })
+    })
+  }
+
+  const waitingCh = getWaitingChannel()
+  if (waitingCh) {
+    waitingCh.subscribe((diff) => {
+      const store = useChatStore.getState()
+      if (diff.type === 'mark') {
+        store.setSessionWaiting(diff.sessionKey, diff.meta.runId, {
+          fromRemote: true,
+        })
+      } else {
+        store.clearSessionWaiting(diff.sessionKey, { fromRemote: true })
+      }
+    })
+  }
+}
 
 function extractTextFromContent(
   content: Array<MessageContent> | undefined,
