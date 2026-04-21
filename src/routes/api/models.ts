@@ -148,13 +148,14 @@ function readVorbiumModelsJson(): Array<ModelEntry> {
       const entries = JSON.parse(raw)
       if (!Array.isArray(entries)) continue
       const parsed = entries
-        .map((entry: Record<string, unknown>) => {
-          const modelId = readString(entry.model) || readString(entry.id)
+        .map((entry: unknown): ModelEntry | null => {
+          const record = asRecord(entry)
+          const modelId = readString(record.model) || readString(record.id)
           if (!modelId) return null
           return {
             id: modelId,
-            name: readString(entry.name) || modelId,
-            provider: readString(entry.provider) || 'unknown',
+            name: readString(record.name) || modelId,
+            provider: readString(record.provider) || 'unknown',
           }
         })
         .filter((e: ModelEntry | null): e is ModelEntry => e !== null)

@@ -24,6 +24,10 @@ function isBrowserMemoryPath(relativePath: string): boolean {
 }
 
 function normalizeWorkspaceRoot(): string {
+  // Honor HERMES_HOME or VORBIUM_HOME when set (e.g. ~/.hermes for Hermes agent).
+  // Fall back to ~/.vorbium for the default Vorbium install location.
+  const envHome = (process.env.HERMES_HOME ?? process.env.VORBIUM_HOME)?.trim()
+  if (envHome) return envHome
   return path.join(os.homedir(), '.vorbium')
 }
 

@@ -1,6 +1,11 @@
-import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
+import {
+  HeadContent,
+  Outlet,
+  Scripts,
+  createRootRoute,
+} from '@tanstack/react-router'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import appCss from '../styles.css?url'
 import { SearchModal } from '@/components/search/search-modal'
 import { TerminalShortcutListener } from '@/components/terminal-shortcut-listener'
@@ -11,8 +16,15 @@ import { Toaster } from '@/components/ui/toast'
 import { OnboardingTour } from '@/components/onboarding/onboarding-tour'
 import { KeyboardShortcutsModal } from '@/components/keyboard-shortcuts-modal'
 import { initializeSettingsAppearance } from '@/hooks/use-settings'
-import { VorbiumOnboarding } from '@/components/onboarding/vorbium-onboarding'
+import {
+  VorbiumOnboarding as HermesOnboarding,
+  ONBOARDING_COMPLETE_EVENT,
+  ONBOARDING_KEY,
+} from '@/components/onboarding/vorbium-onboarding'
+import { ErrorBoundary } from '@/components/error-boundary'
 import { migrateVorbiumLocalStorage } from '@/lib/localstorage-migration'
+import { getRootSurfaceState } from './-root-layout-state'
+
 
 const APP_CSP = [
   "default-src 'self'",
@@ -32,8 +44,6 @@ const APP_CSP = [
 ].join('; ')
 
 const THEME_STORAGE_KEY = 'vorbium-theme'
-// Default visual idêntico ao Vorbium Engine original (paleta indigo #6366F1).
-// Tema cyan "vorbium-official" permanece disponível como opção no Settings.
 const DEFAULT_THEME = 'vorbium-official'
 const VALID_THEMES = [
   'vorbium-official',
@@ -44,8 +54,8 @@ const VALID_THEMES = [
   'vorbium-slate-light',
   'vorbium-mono',
   'vorbium-mono-light',
-  'vorbium-official',
-  'vorbium-official-light',
+  'hermes-nous',
+  'hermes-nous-light',
 ]
 
 const themeScript = `
@@ -56,7 +66,7 @@ const themeScript = `
     const root = document.documentElement
     const storedTheme = localStorage.getItem('${THEME_STORAGE_KEY}')
     const theme = ${JSON.stringify(VALID_THEMES)}.includes(storedTheme) ? storedTheme : '${DEFAULT_THEME}'
-    const lightThemes = ['vorbium-official-light', 'vorbium-official-light', 'vorbium-classic-light', 'vorbium-slate-light', 'vorbium-mono-light']
+    const lightThemes = ['vorbium-official-light', 'vorbium-classic-light', 'vorbium-slate-light', 'vorbium-mono-light', 'hermes-nous-light']
     const isDark = !lightThemes.includes(theme)
     root.classList.remove('light', 'dark', 'system')
     root.classList.add(isDark ? 'dark' : 'light')
@@ -79,8 +89,6 @@ const themeColorScript = `
     const root = document.documentElement
     const theme = root.getAttribute('data-theme') || '${DEFAULT_THEME}'
     const colors = {
-      'vorbium-official': '#0F172A',
-      'vorbium-official-light': '#F8FAFC',
       'vorbium-official': '#0A0E1A',
       'vorbium-official-light': '#F6F8FC',
       'vorbium-classic': '#0d0f12',
@@ -89,9 +97,11 @@ const themeColorScript = `
       'vorbium-slate-light': '#F6F8FA',
       'vorbium-mono': '#111111',
       'vorbium-mono-light': '#FAFAFA',
+      'hermes-nous': '#031A1A',
+      'hermes-nous-light': '#F8FAF8',
     }
     const nextColor = colors[theme] || colors['${DEFAULT_THEME}']
-    const isDark = !['vorbium-official-light', 'vorbium-official-light', 'vorbium-classic-light', 'vorbium-slate-light', 'vorbium-mono-light'].includes(String(theme))
+    const isDark = !['vorbium-official-light', 'vorbium-classic-light', 'vorbium-slate-light', 'vorbium-mono-light', 'hermes-nous-light'].includes(String(theme))
 
     let meta = document.querySelector('meta[name="theme-color"]')
     if (!meta) {
@@ -201,41 +211,127 @@ export const Route = createRootRoute({
 
 const queryClient = new QueryClient()
 
+export function getRootLayoutMode(onboardingComplete: string | null): 'onboarding' | 'workspace' {
+  return onboardingComplete === 'true' ? 'workspace' : 'onboarding'
+}
+
+export function wrapInlineScript(source: string): string {
+  return `(() => {\n  try {\n${source}\n  } catch (error) {\n    console.error('Inline bootstrap script failed', error)\n  }\n})()`
+}
+
+type ServiceWorkerLike = {
+  getRegistrations: () => Promise<ReadonlyArray<{ unregister: () => boolean | Promise<boolean> | void | Promise<void> }>>
+}
+
+type CachesLike = {
+  keys: () => Promise<Array<string>>
+  delete: (name: string) => Promise<boolean> | boolean
+}
+
+export async function unregisterServiceWorkers({
+  serviceWorker,
+  cachesApi,
+}: {
+  serviceWorker?: ServiceWorkerLike
+  cachesApi?: CachesLike
+}): Promise<void> {
+  await serviceWorker
+    ?.getRegistrations()
+    .then((registrations) =>
+      Promise.allSettled(
+        registrations.map((registration) => registration.unregister()),
+      ),
+    )
+    .catch(() => undefined)
+
+  await cachesApi
+    ?.keys()
+    .then((names) => Promise.allSettled(names.map((name) => cachesApi.delete(name))))
+    .catch(() => undefined)
+}
+
 function RootLayout() {
-  // Unregister any existing service workers — they cause stale asset issues
-  // after Docker image updates and behind reverse proxies (Pangolin, Cloudflare, etc.)
+  const [onboardingComplete, setOnboardingComplete] = useState<boolean | null>(
+    null,
+  )
+
   useEffect(() => {
     migrateVorbiumLocalStorage()
     initializeSettingsAppearance()
 
-    if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistrations().then((registrations) => {
-        for (const registration of registrations) {
-          registration.unregister()
-        }
-      })
-      // Also clear any stale caches
-      if ('caches' in window) {
-        caches.keys().then((names) => {
-          for (const name of names) {
-            caches.delete(name)
-          }
-        })
+    const syncOnboardingCompletion = () => {
+      try {
+        setOnboardingComplete(localStorage.getItem(ONBOARDING_KEY) === 'true')
+      } catch {
+        setOnboardingComplete(false)
       }
+    }
+
+    if (typeof window === 'undefined') {
+      return undefined
+    }
+
+    syncOnboardingCompletion()
+
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key && event.key !== ONBOARDING_KEY) return
+      syncOnboardingCompletion()
+    }
+
+    const handleOnboardingCompleteChanged = () => {
+      syncOnboardingCompletion()
+    }
+
+    window.addEventListener('storage', handleStorage)
+    window.addEventListener(
+      ONBOARDING_COMPLETE_EVENT,
+      handleOnboardingCompleteChanged,
+    )
+
+    void unregisterServiceWorkers({
+      serviceWorker: 'serviceWorker' in navigator ? navigator.serviceWorker : undefined,
+      cachesApi: 'caches' in window ? caches : undefined,
+    })
+
+    return () => {
+      window.removeEventListener('storage', handleStorage)
+      window.removeEventListener(
+        ONBOARDING_COMPLETE_EVENT,
+        handleOnboardingCompleteChanged,
+      )
     }
   }, [])
 
+  const rootSurfaceState = getRootSurfaceState(onboardingComplete)
+
   return (
     <QueryClientProvider client={queryClient}>
-      <VorbiumOnboarding />
-      <GlobalShortcutListener />
-      <TerminalShortcutListener />
-      <MobilePromptTrigger />
+
       <Toaster />
-      <WorkspaceShell />
-      <SearchModal />
-      <OnboardingTour />
-      <KeyboardShortcutsModal />
+      {rootSurfaceState.showOnboarding ? <HermesOnboarding /> : null}
+      {rootSurfaceState.showWorkspaceShell ? (
+        <>
+          <GlobalShortcutListener />
+          <TerminalShortcutListener />
+          <WorkspaceShell>
+            <ErrorBoundary
+              className="h-full min-h-0 flex-1"
+              title="Something went wrong"
+              description="This page failed to render. Reload to try again."
+            >
+              <Outlet />
+            </ErrorBoundary>
+          </WorkspaceShell>
+          <SearchModal />
+          <KeyboardShortcutsModal />
+          {rootSurfaceState.showPostOnboardingOverlays ? (
+            <>
+              <MobilePromptTrigger />
+              <OnboardingTour />
+            </>
+          ) : null}
+        </>
+      ) : null}
     </QueryClientProvider>
   )
 }
@@ -247,7 +343,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <meta httpEquiv="Content-Security-Policy" content={APP_CSP} />
         <script
           dangerouslySetInnerHTML={{
-            __html: `
+            __html: wrapInlineScript(`
           // Polyfill crypto.randomUUID for non-secure contexts (HTTP access via LAN IP)
           if (typeof crypto !== 'undefined' && !crypto.randomUUID) {
             crypto.randomUUID = function() {
@@ -256,23 +352,35 @@ function RootDocument({ children }: { children: React.ReactNode }) {
               });
             };
           }
-        `,
+        `),
           }}
         />
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <script dangerouslySetInnerHTML={{ __html: wrapInlineScript(themeScript) }} />
         <HeadContent />
-        <script dangerouslySetInnerHTML={{ __html: themeColorScript }} />
+        <script
+          dangerouslySetInnerHTML={{ __html: wrapInlineScript(themeColorScript) }}
+        />
       </head>
       <body>
         <script
           dangerouslySetInnerHTML={{
-            __html: `
+            __html: wrapInlineScript(`
           (function(){
             if (document.getElementById('splash-screen')) return;
-            var bg = '#0A0E1A', txt = '#E6EAF2', muted = '#9AA5BD', accent = '#6366F1';
+            var bg = '#031A1A', txt = '#F8F1E3', muted = '#9CB2AE', accent = '#FFAC02';
             try {
               var theme = localStorage.getItem('${THEME_STORAGE_KEY}') || '${DEFAULT_THEME}';
-              if (theme === 'vorbium-classic') {
+              if (theme === 'hermes-nous') {
+                bg = '#031A1A';
+                txt = '#F8F1E3';
+                muted = '#9CB2AE';
+                accent = '#FFAC02';
+              } else if (theme === 'hermes-nous-light') {
+                bg = '#F8FAF8';
+                txt = '#16315F';
+                muted = '#6F7D96';
+                accent = '#2557B7';
+              } else if (theme === 'vorbium-classic') {
                 bg = '#0d0f12';
                 txt = '#eceff4';
                 muted = '#7f8a96';
@@ -310,7 +418,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
               }
             } catch(e){}
 
-            var isDark = !['vorbium-official-light','vorbium-classic-light','vorbium-slate-light','vorbium-mono-light'].includes(theme);
+            var isDark = !['vorbium-official-light','vorbium-classic-light','vorbium-slate-light','vorbium-mono-light','hermes-nous-light'].includes(theme);
             var quips = ["Consultando precedentes...","Carregando base legal...","Aquecendo o motor jurídico...","Calibrando ferramentas...","Invocando Vorbium...","Preparando o workspace...","Conectando sistemas...","Inicializando agente..."];
             var quip = quips[Math.floor(Math.random() * quips.length)];
 
@@ -350,14 +458,14 @@ function RootDocument({ children }: { children: React.ReactNode }) {
               }
             } catch(e) {}
           })()
-        `,
+        `),
           }}
         />
         <div className="root">{children}</div>
         <Scripts />
         <script
           dangerouslySetInnerHTML={{
-            __html: `
+            __html: wrapInlineScript(`
           (function(){
             var start = Date.now();
             function check() {
@@ -368,7 +476,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
             }
             setTimeout(check, 2500);
           })()
-        `,
+        `),
           }}
         />
       </body>

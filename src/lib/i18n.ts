@@ -5,8 +5,6 @@
 
 export type LocaleId = 'pt' | 'en' | 'es' | 'fr' | 'de' | 'zh' | 'ja' | 'ko' | 'ru' | 'ar'
 
-export type TranslationKey = keyof typeof EN
-
 const EN = {
   // Nav
   'nav.dashboard': 'Dashboard',
@@ -52,7 +50,10 @@ const EN = {
   'common.noData': 'No data',
 } as const
 
-const ES: typeof EN = {
+export type TranslationKey = keyof typeof EN
+type LocaleTranslations = Record<TranslationKey, string>
+
+const ES: LocaleTranslations = {
   'nav.dashboard': 'Panel',
   'nav.chat': 'Chat',
   'nav.files': 'Archivos',
@@ -90,7 +91,7 @@ const ES: typeof EN = {
   'common.noData': 'Sin datos',
 }
 
-const FR: typeof EN = {
+const FR: LocaleTranslations = {
   'nav.dashboard': 'Tableau de bord',
   'nav.chat': 'Chat',
   'nav.files': 'Fichiers',
@@ -128,7 +129,7 @@ const FR: typeof EN = {
   'common.noData': 'Aucune donnée',
 }
 
-const ZH: typeof EN = {
+const ZH: LocaleTranslations = {
   'nav.dashboard': '仪表板',
   'nav.chat': '聊天',
   'nav.files': '文件',

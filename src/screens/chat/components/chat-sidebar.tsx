@@ -15,6 +15,7 @@ import {
   PencilEdit02Icon,
   PuzzleIcon,
 
+  Rocket01Icon,
   Search01Icon, Settings01Icon, Sun02Icon, UserGroupIcon, UserMultipleIcon
 } from '@hugeicons/core-free-icons'
 import { AnimatePresence, motion } from 'motion/react'
@@ -71,7 +72,7 @@ function ThemeToggleMini() {
     : 'vorbium-official'
   const isDark = !currentDataTheme.endsWith('-light')
 
-  // Map between dark and light counterparts
+  // Map between dark and light counterparts — must include all theme families
   const LIGHT_DARK_PAIRS: Record<string, string> = {
     'vorbium-official': 'vorbium-official-light',
     'vorbium-official-light': 'vorbium-official',
@@ -81,13 +82,16 @@ function ThemeToggleMini() {
     'vorbium-slate-light': 'vorbium-slate',
     'vorbium-mono': 'vorbium-mono-light',
     'vorbium-mono-light': 'vorbium-mono',
+    'hermes-nous': 'hermes-nous-light',
+    'hermes-nous-light': 'hermes-nous',
   }
 
   return (
     <button
       type="button"
       onClick={() => {
-        const nextDataTheme = LIGHT_DARK_PAIRS[currentDataTheme] || (isDark ? 'vorbium-official-light' : 'vorbium-official')
+        // Fall back to current family rather than dropping the user into a different theme
+        const nextDataTheme = LIGHT_DARK_PAIRS[currentDataTheme] || (isDark ? `${currentDataTheme}-light` : currentDataTheme.replace(/-light$/, ''))
         // Import and call setTheme to persist and apply
         import('@/lib/theme').then(({ setTheme }) => {
           setTheme(nextDataTheme as any)
@@ -558,6 +562,8 @@ function ChatSidebarComponent({
   const isJobsActive = pathname === '/jobs'
   const isMemoryActive = pathname === '/memory'
   const isTasksActive = pathname === '/tasks'
+  const isConductorActive = pathname === '/conductor'
+  const isOperationsActive = pathname === '/operations'
   const mainRoutes = ['/chat', '/new', '/files', '/terminal']
   const knowledgeRoutes = ['/memory', '/skills']
   const systemRoutes = ['/settings', '/logs']
@@ -793,6 +799,20 @@ function ChatSidebarComponent({
       label: t('nav.tasks'),
       active: isTasksActive,
     },
+    {
+      kind: 'link',
+      to: '/conductor',
+      icon: Rocket01Icon,
+      label: 'Conductor',
+      active: isConductorActive,
+    },
+    {
+      kind: 'link',
+      to: '/operations',
+      icon: UserGroupIcon,
+      label: 'Operations',
+      active: isOperationsActive,
+    },
   ]
 
   const knowledgeItems: Array<NavItemDef> = [
@@ -842,7 +862,7 @@ function ChatSidebarComponent({
         if (!isMobile) setIsHoverExpanded(false)
       }}
       aria-hidden={isMobile && isCollapsed ? true : undefined}
-      {...(isMobile && isCollapsed ? { inert: '' as unknown as boolean } : {})}
+      {...(isMobile && isCollapsed ? { inert: true } : {})}
     >
       {/* ── Header ──────────────────────────────────────────────────── */}
       <motion.div

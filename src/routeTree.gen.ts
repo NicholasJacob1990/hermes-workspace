@@ -14,10 +14,12 @@ import { Route as TasksRouteImport } from './routes/tasks'
 import { Route as SkillsRouteImport } from './routes/skills'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ProfilesRouteImport } from './routes/profiles'
+import { Route as OperationsRouteImport } from './routes/operations'
 import { Route as MemoryRouteImport } from './routes/memory'
 import { Route as JobsRouteImport } from './routes/jobs'
 import { Route as FilesRouteImport } from './routes/files'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as ConductorRouteImport } from './routes/conductor'
 import { Route as SplatRouteImport } from './routes/$'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SettingsIndexRouteImport } from './routes/settings/index'
@@ -39,8 +41,11 @@ import { Route as ApiStartAgentRouteImport } from './routes/api/start-agent'
 import { Route as ApiSkillsRouteImport } from './routes/api/skills'
 import { Route as ApiSessionsRouteImport } from './routes/api/sessions'
 import { Route as ApiSessionStatusRouteImport } from './routes/api/session-status'
+import { Route as ApiSessionSendRouteImport } from './routes/api/session-send'
+import { Route as ApiSessionHistoryRouteImport } from './routes/api/session-history'
 import { Route as ApiSendStreamRouteImport } from './routes/api/send-stream'
 import { Route as ApiSendRouteImport } from './routes/api/send'
+import { Route as ApiPreviewFileRouteImport } from './routes/api/preview-file'
 import { Route as ApiPingRouteImport } from './routes/api/ping'
 import { Route as ApiPathsRouteImport } from './routes/api/paths'
 import { Route as ApiModelsRouteImport } from './routes/api/models'
@@ -53,6 +58,8 @@ import { Route as ApiEventsRouteImport } from './routes/api/events'
 import { Route as ApiCrewStatusRouteImport } from './routes/api/crew-status'
 import { Route as ApiContextUsageRouteImport } from './routes/api/context-usage'
 import { Route as ApiConnectionStatusRouteImport } from './routes/api/connection-status'
+import { Route as ApiConductorStopRouteImport } from './routes/api/conductor-stop'
+import { Route as ApiConductorSpawnRouteImport } from './routes/api/conductor-spawn'
 import { Route as ApiChatEventsRouteImport } from './routes/api/chat-events'
 import { Route as ApiAuthCheckRouteImport } from './routes/api/auth-check'
 import { Route as ApiAuthRouteImport } from './routes/api/auth'
@@ -64,6 +71,7 @@ import { Route as ApiSkillsToggleRouteImport } from './routes/api/skills/toggle'
 import { Route as ApiSkillsInstallRouteImport } from './routes/api/skills/install'
 import { Route as ApiSkillsHubSearchRouteImport } from './routes/api/skills/hub-search'
 import { Route as ApiSessionsSendRouteImport } from './routes/api/sessions/send'
+import { Route as ApiProfilesUpdateRouteImport } from './routes/api/profiles/update'
 import { Route as ApiProfilesRenameRouteImport } from './routes/api/profiles/rename'
 import { Route as ApiProfilesReadRouteImport } from './routes/api/profiles/read'
 import { Route as ApiProfilesListRouteImport } from './routes/api/profiles/list'
@@ -72,6 +80,7 @@ import { Route as ApiProfilesCreateRouteImport } from './routes/api/profiles/cre
 import { Route as ApiProfilesActivateRouteImport } from './routes/api/profiles/activate'
 import { Route as ApiOauthPollTokenRouteImport } from './routes/api/oauth.poll-token'
 import { Route as ApiOauthDeviceCodeRouteImport } from './routes/api/oauth.device-code'
+import { Route as ApiModelInfoRouteImport } from './routes/api/model/info'
 import { Route as ApiMemoryWriteRouteImport } from './routes/api/memory/write'
 import { Route as ApiMemorySearchRouteImport } from './routes/api/memory/search'
 import { Route as ApiMemoryReadRouteImport } from './routes/api/memory/read'
@@ -112,6 +121,11 @@ const ProfilesRoute = ProfilesRouteImport.update({
   path: '/profiles',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OperationsRoute = OperationsRouteImport.update({
+  id: '/operations',
+  path: '/operations',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MemoryRoute = MemoryRouteImport.update({
   id: '/memory',
   path: '/memory',
@@ -130,6 +144,11 @@ const FilesRoute = FilesRouteImport.update({
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConductorRoute = ConductorRouteImport.update({
+  id: '/conductor',
+  path: '/conductor',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SplatRoute = SplatRouteImport.update({
@@ -238,6 +257,16 @@ const ApiSessionStatusRoute = ApiSessionStatusRouteImport.update({
   path: '/api/session-status',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiSessionSendRoute = ApiSessionSendRouteImport.update({
+  id: '/api/session-send',
+  path: '/api/session-send',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiSessionHistoryRoute = ApiSessionHistoryRouteImport.update({
+  id: '/api/session-history',
+  path: '/api/session-history',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiSendStreamRoute = ApiSendStreamRouteImport.update({
   id: '/api/send-stream',
   path: '/api/send-stream',
@@ -246,6 +275,11 @@ const ApiSendStreamRoute = ApiSendStreamRouteImport.update({
 const ApiSendRoute = ApiSendRouteImport.update({
   id: '/api/send',
   path: '/api/send',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPreviewFileRoute = ApiPreviewFileRouteImport.update({
+  id: '/api/preview-file',
+  path: '/api/preview-file',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPingRoute = ApiPingRouteImport.update({
@@ -308,6 +342,16 @@ const ApiConnectionStatusRoute = ApiConnectionStatusRouteImport.update({
   path: '/api/connection-status',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiConductorStopRoute = ApiConductorStopRouteImport.update({
+  id: '/api/conductor-stop',
+  path: '/api/conductor-stop',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiConductorSpawnRoute = ApiConductorSpawnRouteImport.update({
+  id: '/api/conductor-spawn',
+  path: '/api/conductor-spawn',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiChatEventsRoute = ApiChatEventsRouteImport.update({
   id: '/api/chat-events',
   path: '/api/chat-events',
@@ -363,6 +407,11 @@ const ApiSessionsSendRoute = ApiSessionsSendRouteImport.update({
   path: '/send',
   getParentRoute: () => ApiSessionsRoute,
 } as any)
+const ApiProfilesUpdateRoute = ApiProfilesUpdateRouteImport.update({
+  id: '/api/profiles/update',
+  path: '/api/profiles/update',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiProfilesRenameRoute = ApiProfilesRenameRouteImport.update({
   id: '/api/profiles/rename',
   path: '/api/profiles/rename',
@@ -401,6 +450,11 @@ const ApiOauthPollTokenRoute = ApiOauthPollTokenRouteImport.update({
 const ApiOauthDeviceCodeRoute = ApiOauthDeviceCodeRouteImport.update({
   id: '/api/oauth/device-code',
   path: '/api/oauth/device-code',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiModelInfoRoute = ApiModelInfoRouteImport.update({
+  id: '/api/model/info',
+  path: '/api/model/info',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiMemoryWriteRoute = ApiMemoryWriteRouteImport.update({
@@ -479,10 +533,12 @@ const ApiSessionsSessionKeyActiveRunRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
+  '/conductor': typeof ConductorRoute
   '/dashboard': typeof DashboardRoute
   '/files': typeof FilesRoute
   '/jobs': typeof JobsRoute
   '/memory': typeof MemoryRoute
+  '/operations': typeof OperationsRoute
   '/profiles': typeof ProfilesRoute
   '/settings': typeof SettingsRouteWithChildren
   '/skills': typeof SkillsRoute
@@ -491,6 +547,8 @@ export interface FileRoutesByFullPath {
   '/api/auth': typeof ApiAuthRoute
   '/api/auth-check': typeof ApiAuthCheckRoute
   '/api/chat-events': typeof ApiChatEventsRoute
+  '/api/conductor-spawn': typeof ApiConductorSpawnRoute
+  '/api/conductor-stop': typeof ApiConductorStopRoute
   '/api/connection-status': typeof ApiConnectionStatusRoute
   '/api/context-usage': typeof ApiContextUsageRoute
   '/api/crew-status': typeof ApiCrewStatusRoute
@@ -503,8 +561,11 @@ export interface FileRoutesByFullPath {
   '/api/models': typeof ApiModelsRoute
   '/api/paths': typeof ApiPathsRoute
   '/api/ping': typeof ApiPingRoute
+  '/api/preview-file': typeof ApiPreviewFileRoute
   '/api/send': typeof ApiSendRoute
   '/api/send-stream': typeof ApiSendStreamRoute
+  '/api/session-history': typeof ApiSessionHistoryRoute
+  '/api/session-send': typeof ApiSessionSendRoute
   '/api/session-status': typeof ApiSessionStatusRoute
   '/api/sessions': typeof ApiSessionsRouteWithChildren
   '/api/skills': typeof ApiSkillsRouteWithChildren
@@ -536,6 +597,7 @@ export interface FileRoutesByFullPath {
   '/api/memory/read': typeof ApiMemoryReadRoute
   '/api/memory/search': typeof ApiMemorySearchRoute
   '/api/memory/write': typeof ApiMemoryWriteRoute
+  '/api/model/info': typeof ApiModelInfoRoute
   '/api/oauth/device-code': typeof ApiOauthDeviceCodeRoute
   '/api/oauth/poll-token': typeof ApiOauthPollTokenRoute
   '/api/profiles/activate': typeof ApiProfilesActivateRoute
@@ -544,6 +606,7 @@ export interface FileRoutesByFullPath {
   '/api/profiles/list': typeof ApiProfilesListRoute
   '/api/profiles/read': typeof ApiProfilesReadRoute
   '/api/profiles/rename': typeof ApiProfilesRenameRoute
+  '/api/profiles/update': typeof ApiProfilesUpdateRoute
   '/api/sessions/send': typeof ApiSessionsSendRoute
   '/api/skills/hub-search': typeof ApiSkillsHubSearchRoute
   '/api/skills/install': typeof ApiSkillsInstallRoute
@@ -558,10 +621,12 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
+  '/conductor': typeof ConductorRoute
   '/dashboard': typeof DashboardRoute
   '/files': typeof FilesRoute
   '/jobs': typeof JobsRoute
   '/memory': typeof MemoryRoute
+  '/operations': typeof OperationsRoute
   '/profiles': typeof ProfilesRoute
   '/skills': typeof SkillsRoute
   '/tasks': typeof TasksRoute
@@ -569,6 +634,8 @@ export interface FileRoutesByTo {
   '/api/auth': typeof ApiAuthRoute
   '/api/auth-check': typeof ApiAuthCheckRoute
   '/api/chat-events': typeof ApiChatEventsRoute
+  '/api/conductor-spawn': typeof ApiConductorSpawnRoute
+  '/api/conductor-stop': typeof ApiConductorStopRoute
   '/api/connection-status': typeof ApiConnectionStatusRoute
   '/api/context-usage': typeof ApiContextUsageRoute
   '/api/crew-status': typeof ApiCrewStatusRoute
@@ -581,8 +648,11 @@ export interface FileRoutesByTo {
   '/api/models': typeof ApiModelsRoute
   '/api/paths': typeof ApiPathsRoute
   '/api/ping': typeof ApiPingRoute
+  '/api/preview-file': typeof ApiPreviewFileRoute
   '/api/send': typeof ApiSendRoute
   '/api/send-stream': typeof ApiSendStreamRoute
+  '/api/session-history': typeof ApiSessionHistoryRoute
+  '/api/session-send': typeof ApiSessionSendRoute
   '/api/session-status': typeof ApiSessionStatusRoute
   '/api/sessions': typeof ApiSessionsRouteWithChildren
   '/api/skills': typeof ApiSkillsRouteWithChildren
@@ -614,6 +684,7 @@ export interface FileRoutesByTo {
   '/api/memory/read': typeof ApiMemoryReadRoute
   '/api/memory/search': typeof ApiMemorySearchRoute
   '/api/memory/write': typeof ApiMemoryWriteRoute
+  '/api/model/info': typeof ApiModelInfoRoute
   '/api/oauth/device-code': typeof ApiOauthDeviceCodeRoute
   '/api/oauth/poll-token': typeof ApiOauthPollTokenRoute
   '/api/profiles/activate': typeof ApiProfilesActivateRoute
@@ -622,6 +693,7 @@ export interface FileRoutesByTo {
   '/api/profiles/list': typeof ApiProfilesListRoute
   '/api/profiles/read': typeof ApiProfilesReadRoute
   '/api/profiles/rename': typeof ApiProfilesRenameRoute
+  '/api/profiles/update': typeof ApiProfilesUpdateRoute
   '/api/sessions/send': typeof ApiSessionsSendRoute
   '/api/skills/hub-search': typeof ApiSkillsHubSearchRoute
   '/api/skills/install': typeof ApiSkillsInstallRoute
@@ -637,10 +709,12 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
+  '/conductor': typeof ConductorRoute
   '/dashboard': typeof DashboardRoute
   '/files': typeof FilesRoute
   '/jobs': typeof JobsRoute
   '/memory': typeof MemoryRoute
+  '/operations': typeof OperationsRoute
   '/profiles': typeof ProfilesRoute
   '/settings': typeof SettingsRouteWithChildren
   '/skills': typeof SkillsRoute
@@ -649,6 +723,8 @@ export interface FileRoutesById {
   '/api/auth': typeof ApiAuthRoute
   '/api/auth-check': typeof ApiAuthCheckRoute
   '/api/chat-events': typeof ApiChatEventsRoute
+  '/api/conductor-spawn': typeof ApiConductorSpawnRoute
+  '/api/conductor-stop': typeof ApiConductorStopRoute
   '/api/connection-status': typeof ApiConnectionStatusRoute
   '/api/context-usage': typeof ApiContextUsageRoute
   '/api/crew-status': typeof ApiCrewStatusRoute
@@ -661,8 +737,11 @@ export interface FileRoutesById {
   '/api/models': typeof ApiModelsRoute
   '/api/paths': typeof ApiPathsRoute
   '/api/ping': typeof ApiPingRoute
+  '/api/preview-file': typeof ApiPreviewFileRoute
   '/api/send': typeof ApiSendRoute
   '/api/send-stream': typeof ApiSendStreamRoute
+  '/api/session-history': typeof ApiSessionHistoryRoute
+  '/api/session-send': typeof ApiSessionSendRoute
   '/api/session-status': typeof ApiSessionStatusRoute
   '/api/sessions': typeof ApiSessionsRouteWithChildren
   '/api/skills': typeof ApiSkillsRouteWithChildren
@@ -694,6 +773,7 @@ export interface FileRoutesById {
   '/api/memory/read': typeof ApiMemoryReadRoute
   '/api/memory/search': typeof ApiMemorySearchRoute
   '/api/memory/write': typeof ApiMemoryWriteRoute
+  '/api/model/info': typeof ApiModelInfoRoute
   '/api/oauth/device-code': typeof ApiOauthDeviceCodeRoute
   '/api/oauth/poll-token': typeof ApiOauthPollTokenRoute
   '/api/profiles/activate': typeof ApiProfilesActivateRoute
@@ -702,6 +782,7 @@ export interface FileRoutesById {
   '/api/profiles/list': typeof ApiProfilesListRoute
   '/api/profiles/read': typeof ApiProfilesReadRoute
   '/api/profiles/rename': typeof ApiProfilesRenameRoute
+  '/api/profiles/update': typeof ApiProfilesUpdateRoute
   '/api/sessions/send': typeof ApiSessionsSendRoute
   '/api/skills/hub-search': typeof ApiSkillsHubSearchRoute
   '/api/skills/install': typeof ApiSkillsInstallRoute
@@ -718,10 +799,12 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/$'
+    | '/conductor'
     | '/dashboard'
     | '/files'
     | '/jobs'
     | '/memory'
+    | '/operations'
     | '/profiles'
     | '/settings'
     | '/skills'
@@ -730,6 +813,8 @@ export interface FileRouteTypes {
     | '/api/auth'
     | '/api/auth-check'
     | '/api/chat-events'
+    | '/api/conductor-spawn'
+    | '/api/conductor-stop'
     | '/api/connection-status'
     | '/api/context-usage'
     | '/api/crew-status'
@@ -742,8 +827,11 @@ export interface FileRouteTypes {
     | '/api/models'
     | '/api/paths'
     | '/api/ping'
+    | '/api/preview-file'
     | '/api/send'
     | '/api/send-stream'
+    | '/api/session-history'
+    | '/api/session-send'
     | '/api/session-status'
     | '/api/sessions'
     | '/api/skills'
@@ -775,6 +863,7 @@ export interface FileRouteTypes {
     | '/api/memory/read'
     | '/api/memory/search'
     | '/api/memory/write'
+    | '/api/model/info'
     | '/api/oauth/device-code'
     | '/api/oauth/poll-token'
     | '/api/profiles/activate'
@@ -783,6 +872,7 @@ export interface FileRouteTypes {
     | '/api/profiles/list'
     | '/api/profiles/read'
     | '/api/profiles/rename'
+    | '/api/profiles/update'
     | '/api/sessions/send'
     | '/api/skills/hub-search'
     | '/api/skills/install'
@@ -797,10 +887,12 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/$'
+    | '/conductor'
     | '/dashboard'
     | '/files'
     | '/jobs'
     | '/memory'
+    | '/operations'
     | '/profiles'
     | '/skills'
     | '/tasks'
@@ -808,6 +900,8 @@ export interface FileRouteTypes {
     | '/api/auth'
     | '/api/auth-check'
     | '/api/chat-events'
+    | '/api/conductor-spawn'
+    | '/api/conductor-stop'
     | '/api/connection-status'
     | '/api/context-usage'
     | '/api/crew-status'
@@ -820,8 +914,11 @@ export interface FileRouteTypes {
     | '/api/models'
     | '/api/paths'
     | '/api/ping'
+    | '/api/preview-file'
     | '/api/send'
     | '/api/send-stream'
+    | '/api/session-history'
+    | '/api/session-send'
     | '/api/session-status'
     | '/api/sessions'
     | '/api/skills'
@@ -853,6 +950,7 @@ export interface FileRouteTypes {
     | '/api/memory/read'
     | '/api/memory/search'
     | '/api/memory/write'
+    | '/api/model/info'
     | '/api/oauth/device-code'
     | '/api/oauth/poll-token'
     | '/api/profiles/activate'
@@ -861,6 +959,7 @@ export interface FileRouteTypes {
     | '/api/profiles/list'
     | '/api/profiles/read'
     | '/api/profiles/rename'
+    | '/api/profiles/update'
     | '/api/sessions/send'
     | '/api/skills/hub-search'
     | '/api/skills/install'
@@ -875,10 +974,12 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/$'
+    | '/conductor'
     | '/dashboard'
     | '/files'
     | '/jobs'
     | '/memory'
+    | '/operations'
     | '/profiles'
     | '/settings'
     | '/skills'
@@ -887,6 +988,8 @@ export interface FileRouteTypes {
     | '/api/auth'
     | '/api/auth-check'
     | '/api/chat-events'
+    | '/api/conductor-spawn'
+    | '/api/conductor-stop'
     | '/api/connection-status'
     | '/api/context-usage'
     | '/api/crew-status'
@@ -899,8 +1002,11 @@ export interface FileRouteTypes {
     | '/api/models'
     | '/api/paths'
     | '/api/ping'
+    | '/api/preview-file'
     | '/api/send'
     | '/api/send-stream'
+    | '/api/session-history'
+    | '/api/session-send'
     | '/api/session-status'
     | '/api/sessions'
     | '/api/skills'
@@ -932,6 +1038,7 @@ export interface FileRouteTypes {
     | '/api/memory/read'
     | '/api/memory/search'
     | '/api/memory/write'
+    | '/api/model/info'
     | '/api/oauth/device-code'
     | '/api/oauth/poll-token'
     | '/api/profiles/activate'
@@ -940,6 +1047,7 @@ export interface FileRouteTypes {
     | '/api/profiles/list'
     | '/api/profiles/read'
     | '/api/profiles/rename'
+    | '/api/profiles/update'
     | '/api/sessions/send'
     | '/api/skills/hub-search'
     | '/api/skills/install'
@@ -955,10 +1063,12 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SplatRoute: typeof SplatRoute
+  ConductorRoute: typeof ConductorRoute
   DashboardRoute: typeof DashboardRoute
   FilesRoute: typeof FilesRoute
   JobsRoute: typeof JobsRoute
   MemoryRoute: typeof MemoryRoute
+  OperationsRoute: typeof OperationsRoute
   ProfilesRoute: typeof ProfilesRoute
   SettingsRoute: typeof SettingsRouteWithChildren
   SkillsRoute: typeof SkillsRoute
@@ -967,6 +1077,8 @@ export interface RootRouteChildren {
   ApiAuthRoute: typeof ApiAuthRoute
   ApiAuthCheckRoute: typeof ApiAuthCheckRoute
   ApiChatEventsRoute: typeof ApiChatEventsRoute
+  ApiConductorSpawnRoute: typeof ApiConductorSpawnRoute
+  ApiConductorStopRoute: typeof ApiConductorStopRoute
   ApiConnectionStatusRoute: typeof ApiConnectionStatusRoute
   ApiContextUsageRoute: typeof ApiContextUsageRoute
   ApiCrewStatusRoute: typeof ApiCrewStatusRoute
@@ -979,8 +1091,11 @@ export interface RootRouteChildren {
   ApiModelsRoute: typeof ApiModelsRoute
   ApiPathsRoute: typeof ApiPathsRoute
   ApiPingRoute: typeof ApiPingRoute
+  ApiPreviewFileRoute: typeof ApiPreviewFileRoute
   ApiSendRoute: typeof ApiSendRoute
   ApiSendStreamRoute: typeof ApiSendStreamRoute
+  ApiSessionHistoryRoute: typeof ApiSessionHistoryRoute
+  ApiSessionSendRoute: typeof ApiSessionSendRoute
   ApiSessionStatusRoute: typeof ApiSessionStatusRoute
   ApiSessionsRoute: typeof ApiSessionsRouteWithChildren
   ApiSkillsRoute: typeof ApiSkillsRouteWithChildren
@@ -1005,6 +1120,7 @@ export interface RootRouteChildren {
   ApiKnowledgeSyncRoute: typeof ApiKnowledgeSyncRoute
   ApiMcpReloadRoute: typeof ApiMcpReloadRoute
   ApiMcpServersRoute: typeof ApiMcpServersRoute
+  ApiModelInfoRoute: typeof ApiModelInfoRoute
   ApiOauthDeviceCodeRoute: typeof ApiOauthDeviceCodeRoute
   ApiOauthPollTokenRoute: typeof ApiOauthPollTokenRoute
   ApiProfilesActivateRoute: typeof ApiProfilesActivateRoute
@@ -1013,6 +1129,7 @@ export interface RootRouteChildren {
   ApiProfilesListRoute: typeof ApiProfilesListRoute
   ApiProfilesReadRoute: typeof ApiProfilesReadRoute
   ApiProfilesRenameRoute: typeof ApiProfilesRenameRoute
+  ApiProfilesUpdateRoute: typeof ApiProfilesUpdateRoute
   ApiVorbiumProxySplatRoute: typeof ApiVorbiumProxySplatRoute
 }
 
@@ -1053,6 +1170,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfilesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/operations': {
+      id: '/operations'
+      path: '/operations'
+      fullPath: '/operations'
+      preLoaderRoute: typeof OperationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/memory': {
       id: '/memory'
       path: '/memory'
@@ -1079,6 +1203,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/conductor': {
+      id: '/conductor'
+      path: '/conductor'
+      fullPath: '/conductor'
+      preLoaderRoute: typeof ConductorRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/$': {
@@ -1228,6 +1359,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiSessionStatusRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/session-send': {
+      id: '/api/session-send'
+      path: '/api/session-send'
+      fullPath: '/api/session-send'
+      preLoaderRoute: typeof ApiSessionSendRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/session-history': {
+      id: '/api/session-history'
+      path: '/api/session-history'
+      fullPath: '/api/session-history'
+      preLoaderRoute: typeof ApiSessionHistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/send-stream': {
       id: '/api/send-stream'
       path: '/api/send-stream'
@@ -1240,6 +1385,13 @@ declare module '@tanstack/react-router' {
       path: '/api/send'
       fullPath: '/api/send'
       preLoaderRoute: typeof ApiSendRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/preview-file': {
+      id: '/api/preview-file'
+      path: '/api/preview-file'
+      fullPath: '/api/preview-file'
+      preLoaderRoute: typeof ApiPreviewFileRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/ping': {
@@ -1326,6 +1478,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiConnectionStatusRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/conductor-stop': {
+      id: '/api/conductor-stop'
+      path: '/api/conductor-stop'
+      fullPath: '/api/conductor-stop'
+      preLoaderRoute: typeof ApiConductorStopRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/conductor-spawn': {
+      id: '/api/conductor-spawn'
+      path: '/api/conductor-spawn'
+      fullPath: '/api/conductor-spawn'
+      preLoaderRoute: typeof ApiConductorSpawnRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/chat-events': {
       id: '/api/chat-events'
       path: '/api/chat-events'
@@ -1403,6 +1569,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiSessionsSendRouteImport
       parentRoute: typeof ApiSessionsRoute
     }
+    '/api/profiles/update': {
+      id: '/api/profiles/update'
+      path: '/api/profiles/update'
+      fullPath: '/api/profiles/update'
+      preLoaderRoute: typeof ApiProfilesUpdateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/profiles/rename': {
       id: '/api/profiles/rename'
       path: '/api/profiles/rename'
@@ -1457,6 +1630,13 @@ declare module '@tanstack/react-router' {
       path: '/api/oauth/device-code'
       fullPath: '/api/oauth/device-code'
       preLoaderRoute: typeof ApiOauthDeviceCodeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/model/info': {
+      id: '/api/model/info'
+      path: '/api/model/info'
+      fullPath: '/api/model/info'
+      preLoaderRoute: typeof ApiModelInfoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/memory/write': {
@@ -1655,10 +1835,12 @@ const ApiVorbiumTasksRouteWithChildren = ApiVorbiumTasksRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SplatRoute: SplatRoute,
+  ConductorRoute: ConductorRoute,
   DashboardRoute: DashboardRoute,
   FilesRoute: FilesRoute,
   JobsRoute: JobsRoute,
   MemoryRoute: MemoryRoute,
+  OperationsRoute: OperationsRoute,
   ProfilesRoute: ProfilesRoute,
   SettingsRoute: SettingsRouteWithChildren,
   SkillsRoute: SkillsRoute,
@@ -1667,6 +1849,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAuthRoute: ApiAuthRoute,
   ApiAuthCheckRoute: ApiAuthCheckRoute,
   ApiChatEventsRoute: ApiChatEventsRoute,
+  ApiConductorSpawnRoute: ApiConductorSpawnRoute,
+  ApiConductorStopRoute: ApiConductorStopRoute,
   ApiConnectionStatusRoute: ApiConnectionStatusRoute,
   ApiContextUsageRoute: ApiContextUsageRoute,
   ApiCrewStatusRoute: ApiCrewStatusRoute,
@@ -1679,8 +1863,11 @@ const rootRouteChildren: RootRouteChildren = {
   ApiModelsRoute: ApiModelsRoute,
   ApiPathsRoute: ApiPathsRoute,
   ApiPingRoute: ApiPingRoute,
+  ApiPreviewFileRoute: ApiPreviewFileRoute,
   ApiSendRoute: ApiSendRoute,
   ApiSendStreamRoute: ApiSendStreamRoute,
+  ApiSessionHistoryRoute: ApiSessionHistoryRoute,
+  ApiSessionSendRoute: ApiSessionSendRoute,
   ApiSessionStatusRoute: ApiSessionStatusRoute,
   ApiSessionsRoute: ApiSessionsRouteWithChildren,
   ApiSkillsRoute: ApiSkillsRouteWithChildren,
@@ -1705,6 +1892,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiKnowledgeSyncRoute: ApiKnowledgeSyncRoute,
   ApiMcpReloadRoute: ApiMcpReloadRoute,
   ApiMcpServersRoute: ApiMcpServersRoute,
+  ApiModelInfoRoute: ApiModelInfoRoute,
   ApiOauthDeviceCodeRoute: ApiOauthDeviceCodeRoute,
   ApiOauthPollTokenRoute: ApiOauthPollTokenRoute,
   ApiProfilesActivateRoute: ApiProfilesActivateRoute,
@@ -1713,6 +1901,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiProfilesListRoute: ApiProfilesListRoute,
   ApiProfilesReadRoute: ApiProfilesReadRoute,
   ApiProfilesRenameRoute: ApiProfilesRenameRoute,
+  ApiProfilesUpdateRoute: ApiProfilesUpdateRoute,
   ApiVorbiumProxySplatRoute: ApiVorbiumProxySplatRoute,
 }
 export const routeTree = rootRouteImport

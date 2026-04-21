@@ -120,26 +120,19 @@ const THEME_PREVIEWS: Record<
     accent: '#b98a44',
     text: '#eceff4',
   },
-  'vorbium-slate': {
-    bg: '#0d1117',
-    panel: '#1c2128',
-    border: '#30363d',
-    accent: '#7eb8f6',
-    text: '#c9d1d9',
-  },
-  'vorbium-mono': {
-    bg: '#111111',
-    panel: '#222222',
-    border: '#333333',
-    accent: '#aaaaaa',
-    text: '#e6edf3',
-  },
   'vorbium-classic-light': {
     bg: '#F5F2ED',
     panel: '#FFFFFF',
     border: '#D9D0C4',
     accent: '#b98a44',
     text: '#1a1f26',
+  },
+  'vorbium-slate': {
+    bg: '#0d1117',
+    panel: '#1c2128',
+    border: '#30363d',
+    accent: '#7eb8f6',
+    text: '#c9d1d9',
   },
   'vorbium-slate-light': {
     bg: '#F6F8FA',
@@ -148,12 +141,33 @@ const THEME_PREVIEWS: Record<
     accent: '#3b82f6',
     text: '#1F2328',
   },
+  'vorbium-mono': {
+    bg: '#111111',
+    panel: '#222222',
+    border: '#333333',
+    accent: '#aaaaaa',
+    text: '#e6edf3',
+  },
   'vorbium-mono-light': {
     bg: '#FAFAFA',
     panel: '#FFFFFF',
     border: '#D4D4D4',
     accent: '#666666',
     text: '#1a1a1a',
+  },
+  'hermes-nous': {
+    bg: '#031a1a',
+    panel: '#082224',
+    border: 'rgba(255,255,255,0.12)',
+    accent: '#ffac02',
+    text: '#f8f1e3',
+  },
+  'hermes-nous-light': {
+    bg: '#F8FAF8',
+    panel: '#FBFDFB',
+    border: 'rgba(30,74,92,0.18)',
+    accent: '#2557B7',
+    text: '#16315F',
   },
 }
 
@@ -168,7 +182,7 @@ function WorkspaceThemePicker() {
   }
 
   return (
-    <div className="grid w-full gap-2 md:grid-cols-3">
+    <div className="grid w-full grid-cols-2 gap-3 lg:grid-cols-4">
       {THEMES.map((t) => {
         const isActive = current === t.id
         return (
@@ -177,10 +191,10 @@ function WorkspaceThemePicker() {
             type="button"
             onClick={() => applyWorkspaceTheme(t.id)}
             className={cn(
-              'flex flex-col gap-2 rounded-lg border p-3 text-left transition-colors',
+              'flex min-h-[112px] flex-col gap-2.5 rounded-xl border p-3.5 text-left transition-all',
               isActive
-                ? 'border-[var(--theme-accent)] bg-[var(--theme-accent-subtle)] text-[var(--theme-text)]'
-                : 'border-[var(--theme-border)] bg-[var(--theme-card)] text-[var(--theme-text)] hover:bg-[var(--theme-card2)]',
+                ? 'border-[var(--theme-accent)] bg-[var(--theme-accent-subtle)] text-[var(--theme-text)] shadow-sm'
+                : 'border-[var(--theme-border)] bg-[var(--theme-card)] text-[var(--theme-text)] hover:-translate-y-0.5 hover:bg-[var(--theme-card2)]',
             )}
           >
             <PageThemeSwatch colors={THEME_PREVIEWS[t.id]} />
@@ -425,7 +439,7 @@ function SettingsRoute() {
               >
                 <SettingsRow
                   label="Theme"
-                  description="All workspace themes are dark. Pick the palette you want to use."
+                  description="Choose the workspace palette. Light and dark variants are both available."
                 >
                   <div className="w-full">
                     <WorkspaceThemePicker />

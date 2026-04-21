@@ -44,6 +44,11 @@ import { cn } from '@/lib/utils'
 import { useVoiceInput } from '@/hooks/use-voice-input'
 import { useVoiceRecorder } from '@/hooks/use-voice-recorder'
 import { toast } from '@/components/ui/toast'
+import {
+  getZeroForkModelInfoFlags,
+  MODEL_SWITCH_BLOCKED_TOAST,
+  shouldBlockZeroForkModelSwitch,
+} from './chat-composer-model-switch'
 
 type ChatComposerAttachment = {
   id: string
@@ -78,6 +83,9 @@ type ChatComposerProps = {
   /** Called when user changes thinking level */
   onThinkingLevelChange?: (level: ThinkingLevel) => void
   onAbort?: () => void
+  /** Embedded inside another surface (e.g. Operations card), so mobile composer
+   * must stay inline instead of docking fixed to the viewport bottom. */
+  embedded?: boolean
 }
 
 type ChatComposerHelpers = {
@@ -108,6 +116,16 @@ type SessionStatusApiResponse = {
   payload?: unknown
   error?: string
   [key: string]: unknown
+}
+
+type GatewayStatusApiResponse = {
+  mode?: string
+}
+
+type ModelInfoApiResponse = {
+  gatewayMode?: string | null
+  supportsRuntimeSwitching?: boolean | null
+  vanillaAgent?: boolean | null
 }
 
 type ModelSwitchNotice = {
@@ -803,6 +821,23 @@ async function fetchCurrentModelFromStatus(): Promise<string> {
   }
 }
 
+async function fetchGatewayMode(): Promise<string | null> {
+  const response = await fetch('/api/gateway-status')
+  if (!response.ok) {
+    throw new Error(await readResponseError(response))
+  }
+  const payload = (await response.json()) as GatewayStatusApiResponse
+  return typeof payload.mode === 'string' ? payload.mode : null
+}
+
+async function fetchModelInfo(): Promise<ModelInfoApiResponse | null> {
+  const response = await fetch('/api/model/info')
+  if (!response.ok) {
+    throw new Error(await readResponseError(response))
+  }
+  return (await response.json()) as ModelInfoApiResponse
+}
+
 function focusPromptTarget(target: HTMLTextAreaElement | null) {
   if (!target) return
   try {
@@ -826,6 +861,7 @@ function ChatComposerComponent({
   thinkingLevel: externalThinkingLevel,
   onThinkingLevelChange,
   onAbort,
+  embedded = false,
 }: ChatComposerProps) {
   const mobileKeyboardInset = useWorkspaceStore((s) => s.mobileKeyboardInset)
   const mobileComposerFocused = useWorkspaceStore(
@@ -943,6 +979,22 @@ function ChatComposerComponent({
     refetchInterval: 30_000,
     retry: false,
   })
+  const gatewayModeQuery = useQuery({
+    queryKey: ['gateway-status', 'mode'],
+    queryFn: fetchGatewayMode,
+    staleTime: 30_000,
+    retry: false,
+  })
+  const modelInfoQuery = useQuery({
+    queryKey: ['dashboard', 'model-info'],
+    queryFn: fetchModelInfo,
+    staleTime: 30_000,
+    retry: false,
+  })
+  const zeroForkModelInfoFlags = useMemo(
+    () => getZeroForkModelInfoFlags(modelInfoQuery.data),
+    [modelInfoQuery.data],
+  )
 
   // Phase 4.2: (pinned model tracking kept for future use)
   void modelsQuery.data
@@ -999,6 +1051,16 @@ function ChatComposerComponent({
         typeof sessionKey === 'string' && sessionKey.trim().length > 0
           ? sessionKey.trim()
           : undefined
+      if (
+        shouldBlockZeroForkModelSwitch(
+          gatewayModeQuery.data,
+          zeroForkModelInfoFlags,
+        )
+      ) {
+        toast(MODEL_SWITCH_BLOCKED_TOAST)
+        setIsModelMenuOpen(false)
+        return
+      }
       setModelNotice(null)
       setCurrentSelectedModel(getResolvedModelKey(model, provider))
       modelSwitchMutation.mutate({
@@ -1007,7 +1069,12 @@ function ChatComposerComponent({
         sessionKey: normalizedSessionKey,
       })
     },
-    [modelSwitchMutation, sessionKey],
+    [
+      gatewayModeQuery.data,
+      modelSwitchMutation,
+      sessionKey,
+      zeroForkModelInfoFlags,
+    ],
   )
 
   const retryModel = modelNotice?.retryModel ?? ''
@@ -1798,7 +1865,7 @@ function ChatComposerComponent({
   const effectiveScrollHidden = scrollHidden && !keyboardOrFocusActive
 
   const composerWrapperStyle = useMemo(() => {
-    if (!isMobileViewport)
+    if (!isMobileViewport || embedded)
       return { maxWidth: 'min(768px, 100%)' } as CSSProperties
     const safeArea = 'env(safe-area-inset-bottom, 0px)'
     const tabBarH = 'var(--tabbar-h, 0px)'
@@ -1837,30 +1904,36 @@ function ChatComposerComponent({
       WebkitTransform: tf,
       '--mobile-tab-bar-offset': MOBILE_TAB_BAR_OFFSET,
     } as CSSProperties
-  }, [isMobileViewport, keyboardOrFocusActive, effectiveScrollHidden])
+  }, [isMobileViewport, keyboardOrFocusActive, effectiveScrollHidden, embedded])
 
   return (
     <div
       className={cn(
         'no-swipe pointer-events-auto touch-manipulation',
         isMobileViewport
-          ? [
-              'fixed z-[70] transition-all duration-200',
-              chatNavMode === 'dock'
-                ? [
-                    // iMessage-style: edge-to-edge, docked to bottom
-                    'left-0 right-0',
-                    'bg-surface/95 backdrop-blur-xl',
-                    'border-t border-primary-200/60',
-                  ].join(' ')
-                : [
-                    // scroll-hide / integrated: floating pill above tab bar
-                    'left-4 right-4',
-                    'bg-surface/95 backdrop-blur-2xl',
-                    'shadow-[0_8px_32px_rgba(0,0,0,0.15)]',
-                    'rounded-[22px]',
-                  ].join(' '),
-            ].join(' ')
+          ? embedded
+            ? [
+                // Embedded mobile composer: stay inside the card, no fixed bottom.
+                'relative z-40 w-full',
+                'bg-surface border-t border-primary-200/60',
+              ].join(' ')
+            : [
+                'fixed z-[70] transition-all duration-200',
+                chatNavMode === 'dock'
+                  ? [
+                      // iMessage-style: edge-to-edge, docked to bottom
+                      'left-0 right-0',
+                      'bg-surface/95 backdrop-blur-xl',
+                      'border-t border-primary-200/60',
+                    ].join(' ')
+                  : [
+                      // scroll-hide / integrated: floating pill above tab bar
+                      'left-4 right-4',
+                      'bg-surface/95 backdrop-blur-2xl',
+                      'shadow-[0_8px_32px_rgba(0,0,0,0.15)]',
+                      'rounded-[22px]',
+                    ].join(' '),
+              ].join(' ')
           : [
               'relative z-40 shrink-0 w-full mx-auto px-3 pt-2 sm:px-5',
               'bg-surface',

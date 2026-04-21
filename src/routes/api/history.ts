@@ -47,12 +47,39 @@ export const Route = createFileRoute('/api/history')({
               messages: [],
             })
           }
-          // "main" doesn't exist in Vorbium — resolve it to the latest session.
+          // "main" doesn't exist in Vorbium — resolve it to the user's real
+          // main chat session. We prefer (in order):
+          //   1. The most recent session with a real human-set title
+          //      (label !== id, e.g. "hows everything"). This is what users
+          //      actually mean by "main".
+          //   2. The most recent non-internal session with messages.
+          // Cron + Operations per-agent sessions are skipped so the
+          // orchestrator chat doesn't latch onto runtime junk.
           if (sessionKey === 'main') {
             try {
-              const sessions = await listSessions(1, 0)
-              if (sessions.length > 0) {
-                sessionKey = sessions[0].id
+              const sessions = await listSessions(30, 0)
+              const isInternalKey = (id: string) =>
+                id.startsWith('cron_') ||
+                id.startsWith('cron:') ||
+                id.startsWith('agent:main:ops-')
+              const hasRealTitle = (s: { id: string; title?: string | null }) => {
+                const t = (s.title ?? '').trim()
+                return t.length > 0 && t !== s.id
+              }
+              const titled = sessions.find(
+                (s) => !isInternalKey(s.id) && hasRealTitle(s),
+              )
+              const fallback = titled
+                ? null
+                : sessions.find(
+                    (s) =>
+                      !isInternalKey(s.id) &&
+                      typeof s.message_count === 'number' &&
+                      s.message_count > 0,
+                  )
+              const candidate = titled ?? fallback
+              if (candidate) {
+                sessionKey = candidate.id
               } else {
                 return json({
                   sessionKey: 'new',
@@ -64,7 +91,7 @@ export const Route = createFileRoute('/api/history')({
               return json({ sessionKey: 'new', sessionId: 'new', messages: [] })
             }
           }
-          let messages
+          let messages: Awaited<ReturnType<typeof getMessages>> = []
           try {
             messages = await getMessages(sessionKey)
           } catch {

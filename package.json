@@ -1,7 +1,7 @@
 {
   "name": "vorbium-workspace",
-  "version": "1.0.0",
-  "description": "Vorbium Workspace \u2014 web control surface do Vorbium Engine (chat, terminal, memory, skills, inspector)",
+  "version": "2.0.0",
+  "description": "Vorbium Workspace — web control surface do Vorbium Engine (chat, terminal, memory, skills, inspector)",
   "author": "Eric (https://github.com/outsourc-e)",
   "license": "MIT",
   "private": true,
@@ -13,6 +13,7 @@
     "start:dev": "NODE_OPTIONS=\"--max-old-space-size=2048\" vite dev --port 3000",
     "preview": "vite preview",
     "test": "vitest run",
+    "smoke:managed": "node scripts/managed-companion-smoke.mjs",
     "lint": "eslint",
     "format": "prettier",
     "check": "prettier --write . && eslint --fix"

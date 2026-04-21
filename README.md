@@ -6,12 +6,14 @@
 
 **Your AI agent's command center — chat, files, memory, skills, and terminal in one place.**
 
-[![Version](https://img.shields.io/badge/version-1.0.0-6366F1.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-2.0.0-2557b7.svg)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D22.0.0-brightgreen.svg)](https://nodejs.org/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-6366F1.svg)](CONTRIBUTING.md)
 
 > Not a chat wrapper. A complete workspace — orchestrate agents, browse memory, manage skills, and control everything from one interface.
+
+> **v2 — zero-fork. Clone, don't fork.** Runs on vanilla [`NousResearch/hermes-agent`](https://github.com/NousResearch/hermes-agent) installed via Nous's own installer. No patches, no drift.
 
 ![Vorbium Engine Workspace](./docs/screenshots/splash.png)
 
@@ -32,50 +34,101 @@
 
 ## 📸 Screenshots
 
-|                 Chat                 |                 Files                  |
-| :----------------------------------: | :------------------------------------: |
-| ![Chat](./docs/screenshots/chat.png) | ![Files](./docs/screenshots/files.png) |
+|                 Chat                 |                  Conductor                   |
+| :----------------------------------: | :------------------------------------------: |
+| ![Chat](./docs/screenshots/chat.png) | ![Conductor](./docs/screenshots/conductor.png) |
 
-|                   Terminal                   |                  Memory                  |
+|                   Dashboard                  |                  Memory                  |
 | :------------------------------------------: | :--------------------------------------: |
-| ![Terminal](./docs/screenshots/terminal.png) | ![Memory](./docs/screenshots/memory.png) |
+| ![Dashboard](./docs/screenshots/dashboard.png) | ![Memory](./docs/screenshots/memory.png) |
 
-|                  Skills                  |                   Settings                   |
-| :--------------------------------------: | :------------------------------------------: |
-| ![Skills](./docs/screenshots/skills.png) | ![Settings](./docs/screenshots/settings.png) |
+|                   Terminal                   |                   Settings                   |
+| :------------------------------------------: | :------------------------------------------: |
+| ![Terminal](./docs/screenshots/terminal.png) | ![Settings](./docs/screenshots/settings.png) |
+
+|                  Tasks                  |                 Jobs                 |
+| :--------------------------------------: | :----------------------------------: |
+| ![Tasks](./docs/screenshots/tasks.png) | ![Jobs](./docs/screenshots/jobs.png) |
 
 ---
 
 ## 🚀 Quick Start
 
+### One-line install (recommended)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/outsourc-e/hermes-workspace/main/install.sh | bash
+```
+
+This installs `hermes-agent` from PyPI, clones this repo, sets up `.env`, and installs deps. Then:
+
+```bash
+hermes gateway run                        # terminal 1
+cd ~/vorbium-workspace && pnpm dev        # terminal 2
+```
+
+Open http://localhost:3000. That's it.
+
+---
+
+### Already running `hermes-agent`? Attach the workspace to it
+
+If you already have `hermes-agent` installed (via Nous's installer, `pip install`, systemd, Docker, etc.) and it's serving the gateway at `http://<host>:8642`, you don't need to reinstall anything — just point the workspace at it.
+
+```bash
+git clone https://github.com/outsourc-e/hermes-workspace.git vorbium-workspace
+cd vorbium-workspace
+pnpm install
+cp .env.example .env
+
+# Point at your existing gateway. Local, Tailscale, LAN — whatever URL works.
+echo 'HERMES_API_URL=http://127.0.0.1:8642' >> .env
+
+# If your gateway was started with API_SERVER_KEY (auth enabled), set the same value:
+# echo 'HERMES_API_TOKEN=<your-key>' >> .env
+
+pnpm dev                            # http://localhost:3000
+```
+
+Requirements on the agent side:
+
+- Gateway bound to an address the workspace can reach (typically `API_SERVER_HOST=0.0.0.0` + the port exposed).
+- `API_SERVER_ENABLED=true` in `~/.vorbium/.env` (or the agent's env). Enhanced endpoints (`/api/sessions`, `/api/skills`, `/api/config`, `/api/jobs`) come online automatically when the API server is enabled.
+- If `API_SERVER_KEY` is set, the workspace must pass the same value via `HERMES_API_TOKEN` — otherwise leave both unset.
+
+Verify: `curl http://127.0.0.1:8642/health` should return ok. Then start the workspace and complete onboarding — it'll detect the existing gateway and unlock the enhanced panes (sessions, memory, skills, dashboard) automatically.
+
+---
+
+### Manual install
+
 Vorbium Engine Workspace works with any OpenAI-compatible backend. If your backend also exposes Vorbium Engine gateway APIs, enhanced features like sessions, memory, skills, and jobs unlock automatically.
 
-### Prerequisites
+#### Prerequisites
 
 - **Node.js 22+** — [nodejs.org](https://nodejs.org/)
 - **An OpenAI-compatible backend** — local, self-hosted, or remote
 - **Optional:** Python 3.11+ if you want to run a Vorbium Engine gateway locally
 
-### Step 1: Start your backend
+#### Step 1: Start your backend
 
 Point Vorbium Engine Workspace at any backend that supports:
 
 - `POST /v1/chat/completions`
 - `GET /v1/models` recommended
 
-Example Vorbium Engine gateway setup:
+Example Vorbium Engine gateway setup (from scratch):
 
 ```bash
-git clone https://github.com/outsourc-e/hermes-agent.git
-cd hermes-agent
-python -m venv .venv
-source .venv/bin/activate   # Windows: .venv\Scripts\activate
-pip install -e .
+# Install hermes-agent via Nous's official installer
+curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash
+
+# Configure a provider + start the gateway
 hermes setup
-hermes --gateway
+hermes gateway run
 ```
 
-If you're using another OpenAI-compatible server, just note its base URL.
+Our one-liner installer (below) does both steps automatically. If you're using another OpenAI-compatible server, just note its base URL.
 
 ### Step 2: Install & Run Vorbium Engine Workspace
 
@@ -91,14 +144,41 @@ pnpm dev                   # Starts on http://localhost:3000
 
 > **Verify:** Open `http://localhost:3000` and complete the onboarding flow. First connect the backend, then verify chat works. If your gateway exposes Vorbium Engine APIs, advanced features appear automatically.
 
-### Environment Variables
+### Agent W Managed Companion
+
+When Hermes Workspace is running behind Agent W's local HTTPS proxy, the
+managed companion entrypoint is:
+
+```bash
+https://localhost:4445/chat/new
+```
+
+For local validation from the workspace checkout:
+
+```bash
+pnpm exec tsc --noEmit
+pnpm test
+pnpm build
+pnpm smoke:managed
+```
+
+`pnpm smoke:managed` checks the managed `4445` surface and fails if the recent
+PM2 error log still contains the missing-asset/runtime signatures that show up
+when `dist` drifts under a live server process.
+
+#### Environment Variables
 
 ```env
 # OpenAI-compatible backend URL
 HERMES_API_URL=http://127.0.0.1:8642
 
-# Optional provider keys for Hermes gateway-managed config
-ANTHROPIC_API_KEY=your-key-here
+# Optional: provider keys the Hermes gateway can read at runtime.
+# You only need the key(s) for whichever provider(s) you actually use.
+# ANTHROPIC_API_KEY=sk-ant-...         # Claude
+# OPENAI_API_KEY=sk-...                # GPT / o-series
+# OPENROUTER_API_KEY=sk-or-v1-...      # OpenRouter (incl. free models)
+# GOOGLE_API_KEY=AIza...               # Gemini
+# (Ollama / LM Studio / local servers don't need a key)
 
 # Optional: password-protect the web UI
 # HERMES_PASSWORD=your_password
@@ -206,13 +286,19 @@ cd hermes-workspace
 cp .env.example .env
 ```
 
-Edit `.env` and add your API key:
+Edit `.env` and add **at least one** LLM provider key — whichever provider you want hermes-agent to use:
 
 ```env
-ANTHROPIC_API_KEY=your-key-here
+# Pick one (or more). You do NOT need all of these.
+ANTHROPIC_API_KEY=sk-ant-...           # Claude
+# OPENAI_API_KEY=sk-...                # GPT / o-series
+# OPENROUTER_API_KEY=sk-or-v1-...      # OpenRouter (free models available)
+# GOOGLE_API_KEY=AIza...               # Gemini
 ```
 
-> **Important:** The `hermes-agent` container requires `ANTHROPIC_API_KEY` to function. Without it, the gateway will fail to authenticate.
+Using **Ollama, LM Studio, or another local server**? No key needed — just point hermes-agent at your local endpoint via the onboarding flow.
+
+> **Heads up:** `hermes-agent` needs to be able to reach _some_ model. If you don't configure any provider (API key or local server), chat will fail on first message.
 
 ### Step 2: Start the Services
 
@@ -220,16 +306,63 @@ ANTHROPIC_API_KEY=your-key-here
 docker compose up
 ```
 
-This starts two services:
+This pulls two pre-built images and starts them:
 
-- **hermes-agent** — The AI agent gateway (port 8642)
-- **hermes-workspace** — The web UI (port 3000)
+- **hermes-agent** → `nousresearch/hermes-agent:latest` on port **8642**
+- **hermes-workspace** → `ghcr.io/outsourc-e/hermes-workspace:latest` on port **3000**
+
+No local build. First run takes a minute to pull; subsequent starts are instant.
+Agent state (config, sessions, skills, memory, credentials) persists in the
+`hermes-data` named volume, so containers can be recreated without data loss.
 
 ### Step 3: Access the Workspace
 
 Open `http://localhost:3000` and complete the onboarding.
 
 > **Verify:** Check the Docker logs for `[gateway] Connected to Hermes` — this confirms the workspace successfully connected to the agent.
+
+### Building from source
+
+Want to hack on the workspace or the bundled agent Dockerfile? Use the dev overlay:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+```
+
+The base `docker-compose.yml` stays untouched — the overlay adds `build:` blocks
+that take priority over `image:`, so both services compile from local source.
+
+### Using a Pre-Built Image (Coolify / Easypanel / Dokploy / Unraid)
+
+Deploying Project Workspace to a PaaS or home-lab stack? Pull the image
+directly from GitHub Container Registry:
+
+```
+ghcr.io/outsourc-e/hermes-workspace:latest
+```
+
+Available tags:
+
+| Tag | What it is |
+|---|---|
+| `latest` | Latest `main` commit (stable; recommended) |
+| `v2.0.0` | Pinned semver tag |
+| `main-<sha>` | Specific commit |
+
+Minimal Coolify / Easypanel config:
+
+```yaml
+service: hermes-workspace
+image: ghcr.io/outsourc-e/hermes-workspace:latest
+port: 3000
+env:
+  HERMES_API_URL: http://hermes-agent:8642   # point at your gateway
+  HERMES_API_TOKEN: ${API_SERVER_KEY}        # if gateway auth is enabled
+```
+
+The image is built for `linux/amd64` and `linux/arm64`. Pair it with either
+a `nousresearch/hermes-agent:latest` container (what our `docker-compose.yml`
+does by default) or an existing gateway on another host.
 
 ---
 
@@ -387,25 +520,27 @@ The workspace auto-detects your gateway's capabilities on startup. Check your te
 
 ```
 [gateway] http://127.0.0.1:8642 available: health, models; missing: sessions, skills, memory, config, jobs
-[gateway] Missing Hermes APIs detected. Update Hermes: cd hermes-agent && git pull && pip install -e . && hermes --gateway
+[gateway] Missing Hermes APIs detected. Update hermes-agent to the latest version.
 ```
 
-**Fix:** Use our fork which includes extended gateway endpoints:
+**Fix:** Upgrade to the latest stock `hermes-agent`, which ships the extended endpoints:
 
 ```bash
-git clone https://github.com/outsourc-e/hermes-agent.git
-cd hermes-agent && pip install -e . && hermes --gateway
+cd ~/hermes-agent && git pull && uv pip install -e .
+hermes gateway run
 ```
+
+(If you installed via a different path, follow your Nous installer's upgrade instructions.) If you were on the old `outsourc-e/hermes-agent` fork, it's no longer needed as of v2 — uninstall it and use upstream instead.
 
 ### "Connection refused" or workspace hangs on load
 
 Your Vorbium Engine gateway isn't running. Start it:
 
 ```bash
-cd hermes-agent
-source .venv/bin/activate
 hermes gateway run
 ```
+
+First-time run? Do `hermes setup` first to pick a provider and model.
 
 ### Ollama: chat returns empty or model shows "Offline"
 
@@ -423,18 +558,22 @@ Verify: `curl http://localhost:8642/health` should return `{"status": "ok"}`.
 
 ### "Using upstream NousResearch/hermes-agent"
 
-The upstream hermes-agent supports basic chat via `hermes --gateway`, but doesn't include extended endpoints (sessions, memory, skills, config) yet. The workspace will work in **portable mode** with basic chat. For full features, use our fork (`outsourc-e/hermes-agent`).
+v2+ runs on vanilla `hermes-agent` with full feature parity. The upstream ships all extended endpoints (sessions, memory, skills, config). **No fork required, ever.**
+
+If you're pinned to an older `hermes-agent` version and missing endpoints, the workspace will degrade gracefully to **portable mode** with basic chat — upgrade upstream to restore full features.
 
 ### Docker: "Unauthorized" or "Connection refused" to hermes-agent
 
 If using Docker Compose and getting auth errors:
 
-1. **Check your API key is set:**
+1. **Check at least one provider key is set:**
 
    ```bash
-   cat .env | grep ANTHROPIC_API_KEY
-   # Should show: ANTHROPIC_API_KEY=sk-ant-...
+   grep -E '_API_KEY' .env
+   # Should show one of: ANTHROPIC_API_KEY, OPENAI_API_KEY, OPENROUTER_API_KEY, GOOGLE_API_KEY, ...
    ```
+
+   (hermes-agent reads whichever key matches the provider configured in `~/.hermes/config.yaml`.)
 
 2. **View the agent container logs:**
 

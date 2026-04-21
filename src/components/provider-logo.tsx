@@ -6,6 +6,7 @@ const LIGHT_THEMES = new Set([
   'vorbium-classic-light',
   'vorbium-slate-light',
   'vorbium-mono-light',
+  'hermes-nous-light',
 ])
 
 function useIsLightTheme(): boolean {

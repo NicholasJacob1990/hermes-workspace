@@ -5,6 +5,8 @@ import { fetchVorbiumAuthStatus } from '@/lib/vorbium-auth'
 
 const POLL_INTERVAL_MS = 2_000
 const FAILURE_REVEAL_MS = 5_000
+// Fire one silent auto-start attempt this many ms after we still can't connect.
+const AUTO_START_DELAY_MS = 4_000
 
 type Platform = 'macos' | 'windows' | 'linux' | 'unknown'
 
@@ -31,12 +33,13 @@ function getSetupSteps(
     },
     {
       title: 'Optional: run a Vorbium gateway locally',
-      command: 'git clone https://github.com/outsourc-e/vorbium-agent.git',
+      command: `${pip} install hermes-agent`,
       note: 'Vorbium gateway APIs unlock sessions, skills, memory, and other workspace extras automatically',
     },
     {
-      title: 'Install the gateway',
-      command: `cd vorbium-engine && ${python} -m venv .venv && ${platform === 'windows' ? '.venv\\Scripts\\activate' : 'source .venv/bin/activate'} && ${pip} install -e .`,
+      title: 'Set up the gateway',
+      command: 'hermes setup',
+      note: 'Pick your providers once; config is stored under ~/.vorbium',
     },
     {
       title: 'Enable the HTTP API server',
@@ -45,7 +48,7 @@ function getSetupSteps(
     },
     {
       title: 'Start the gateway',
-      command: `cd vorbium-engine && ${platform === 'windows' ? '.venv\\Scripts\\activate' : 'source .venv/bin/activate'} && vorbium-engine dashboard`,
+      command: 'hermes gateway run',
       note: 'Or use Auto-Start below if vorbium-agent is already installed locally',
     },
   ]
@@ -88,11 +91,46 @@ export function ConnectionStartupScreen({ onConnected }: Props) {
   useEffect(() => {
     isDone.current = false
     let pollTimer: ReturnType<typeof setTimeout> | null = null
+    let autoStartTimer: ReturnType<typeof setTimeout> | null = null
+    let autoStartFired = false
+
     const failureTimer = setTimeout(() => {
       if (!isDone.current) {
         setShowFailureState(true)
       }
     }, FAILURE_REVEAL_MS)
+
+    // After a short grace period, fire /api/start-hermes once silently.
+    // If hermes-agent is installed and just not running, this brings it back
+    // up without making the user click anything. The polling loop will see it.
+    const fireSilentAutoStart = async () => {
+      if (autoStartFired || isDone.current) return
+      autoStartFired = true
+      try {
+        const res = await fetch('/api/start-hermes', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+        })
+        const ct = res.headers.get('content-type') || ''
+        if (!ct.includes('application/json')) return
+        const data = (await res.json()) as { ok?: boolean; message?: string }
+        if (res.ok && data.ok) {
+          // surface a one-line note so users see what happened if they're
+          // looking at the failure panel
+          setServerLog([
+            String(
+              data.message ||
+                'Auto-started Hermes gateway — reconnecting…',
+            ),
+          ])
+        }
+      } catch {
+        // silent: manual auto-start button stays available
+      }
+    }
+    autoStartTimer = setTimeout(() => {
+      void fireSilentAutoStart()
+    }, AUTO_START_DELAY_MS)
 
     const tryConnect = async () => {
       try {
@@ -100,6 +138,7 @@ export function ConnectionStartupScreen({ onConnected }: Props) {
         if (isDone.current) return
         isDone.current = true
         clearTimeout(failureTimer)
+        if (autoStartTimer) clearTimeout(autoStartTimer)
         if (pollTimer) clearTimeout(pollTimer)
         onConnectedRef.current(status)
       } catch {
@@ -113,6 +152,7 @@ export function ConnectionStartupScreen({ onConnected }: Props) {
     return () => {
       isDone.current = true
       if (pollTimer) clearTimeout(pollTimer)
+      if (autoStartTimer) clearTimeout(autoStartTimer)
       clearTimeout(failureTimer)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

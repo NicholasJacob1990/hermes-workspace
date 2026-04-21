@@ -43,7 +43,7 @@ export function getFeatureLabel(feature: EnhancedFeature | string): string {
 export function getUnavailableReason(
   feature: EnhancedFeature | string,
 ): string {
-  return `${getFeatureLabel(feature)} requires the enhanced Vorbium gateway (outsourc-e/vorbium-agent). Vanilla vorbium-agent runs in portable mode without ${getFeatureLabel(feature).toLowerCase()}.`
+  return `${getFeatureLabel(feature)} requires the Vorbium gateway. Check that it is installed and running with \`hermes gateway run\`.`
 }
 
 export function createCapabilityUnavailablePayload(

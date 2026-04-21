@@ -1,6 +1,6 @@
 # Vorbium Engine Workspace — Comprehensive Features Inventory
 
-> **Version:** 1.0.0 | **Stack:** React 19 + TanStack Start/Router + Vite 7 + Tailwind CSS 4 + Zustand + xterm.js + Monaco Editor  
+> **Version:** 2.0.0 | **Stack:** React 19 + TanStack Start/Router + Vite 7 + Tailwind CSS 4 + Zustand + xterm.js + Monaco Editor  
 > **Description:** Desktop workspace for Vorbium Engine — chat, orchestration, and multi-agent coding pipelines
 
 ---
@@ -380,7 +380,11 @@
 | `HERMES_AGENT_PATH`    | Path to hermes-agent directory                     |
 | `HERMES_DEFAULT_MODEL` | Default model override                             |
 | `HERMES_ALLOWED_HOSTS` | Allowed hosts (default: `.ts.net`)                 |
-| `ANTHROPIC_API_KEY`    | Anthropic API key passthrough                      |
+| `ANTHROPIC_API_KEY`    | Anthropic API key passthrough (optional)           |
+| `OPENAI_API_KEY`       | OpenAI API key passthrough (optional)              |
+| `OPENROUTER_API_KEY`   | OpenRouter API key passthrough (optional)          |
+| `GOOGLE_API_KEY`       | Google Gemini API key passthrough (optional)       |
+| `HERMES_API_TOKEN`     | Auth token for gateway API_SERVER_KEY              |
 | `BEARER_TOKEN`         | Bearer token for backend auth                      |
 | `PORT`                 | Server port (default: 3002 dev, 3000 prod)         |
 

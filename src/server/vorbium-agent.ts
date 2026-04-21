@@ -89,6 +89,10 @@ export function resolveVorbiumRuntimeDir(
     resolve(workspaceRoot, '..', 'vorbium-engine-runtime'),
     resolve(workspaceRoot, 'vorbium-engine'),
     resolve(workspaceRoot, '..', 'vorbium-engine'),
+    resolve(workspaceRoot, 'hermes-agent'),
+    resolve(workspaceRoot, '..', 'hermes-agent'),
+    resolve(homedir(), '.hermes', 'hermes-agent'),
+    resolve(homedir(), 'hermes-agent'),
   )
 
   for (const candidate of candidates) {
@@ -98,11 +102,26 @@ export function resolveVorbiumRuntimeDir(
   return null
 }
 
+/** Find the `hermes` CLI binary installed by Nous's installer (or on PATH). */
+export function resolveHermesBinary(): string | null {
+  const candidates = [
+    resolve(homedir(), '.hermes', 'bin', 'hermes'),
+    resolve(homedir(), '.local', 'bin', 'hermes'),
+  ]
+  for (const c of candidates) {
+    if (existsSync(c)) return c
+  }
+  return null
+}
+
 export function resolveVorbiumPython(runtimeDir: string): string {
   const venvPython = resolve(runtimeDir, '.venv', 'bin', 'python')
   if (existsSync(venvPython)) return venvPython
   const uvVenv = resolve(runtimeDir, 'venv', 'bin', 'python')
   if (existsSync(uvVenv)) return uvVenv
+  // Nous installer ships its own uv-managed python alongside the binary
+  const nousPython = resolve(homedir(), '.hermes', 'venv', 'bin', 'python')
+  if (existsSync(nousPython)) return nousPython
   return 'python3'
 }
 
@@ -130,22 +149,25 @@ export async function startVorbiumRuntime(): Promise<StartVorbiumEngineResult> {
 
   startPromise = (async () => {
     try {
-      const runtimeDir = resolveVorbiumRuntimeDir()
-      if (!runtimeDir) {
-        return {
-          ok: false,
-          error:
-            'vorbium-engine-runtime not found. Clone it as a sibling directory or set VORBIUM_ENGINE_PATH in .env',
-        }
-      }
-
-      const python = resolveVorbiumPython(runtimeDir)
       const vorbiumEnv = readVorbiumEnv()
+      const hermesBin = resolveHermesBinary()
+      const runtimeDir = resolveVorbiumRuntimeDir()
       const { host, port } = getRuntimeHostAndPort()
 
-      const child = spawn(
-        python,
-        [
+      // Prefer the `hermes gateway run` binary path (the Nous installer's
+      // canonical entrypoint). Fall back to launching uvicorn against the
+      // source tree if we only have a directory.
+      let command: string
+      let commandArgs: Array<string>
+      let cwd: string | undefined
+
+      if (hermesBin) {
+        command = hermesBin
+        commandArgs = ['gateway', 'run']
+        cwd = runtimeDir ?? undefined
+      } else if (runtimeDir) {
+        command = resolveVorbiumPython(runtimeDir)
+        commandArgs = [
           '-m',
           'uvicorn',
           'webapi.app:app',
@@ -153,17 +175,35 @@ export async function startVorbiumRuntime(): Promise<StartVorbiumEngineResult> {
           host,
           '--port',
           String(port),
-        ],
+        ]
+        cwd = runtimeDir
+      } else {
+        return {
+          ok: false,
+          error:
+            'vorbium-engine-runtime not found. Clone it as a sibling directory or set VORBIUM_ENGINE_PATH in .env',
+        }
+      }
+
+      const child = spawn(
+        command,
+        commandArgs,
         {
-          cwd: runtimeDir,
+          cwd,
           detached: true,
           stdio: 'ignore',
           env: {
             ...process.env,
             ...vorbiumEnv,
             HERMES_HOME: vorbiumEnv.HERMES_HOME || process.env.HERMES_HOME || VORBIUM_HOME,
-            PYTHONPATH: [runtimeDir, process.env.PYTHONPATH].filter(Boolean).join(':'),
-            PATH: `${resolve(runtimeDir, '.venv', 'bin')}:${resolve(runtimeDir, 'venv', 'bin')}:${process.env.PATH || ''}`,
+            PYTHONPATH: runtimeDir ? [runtimeDir, process.env.PYTHONPATH].filter(Boolean).join(':') : process.env.PYTHONPATH,
+            PATH: [
+              resolve(homedir(), '.hermes', 'bin'),
+              resolve(homedir(), '.local', 'bin'),
+              runtimeDir ? resolve(runtimeDir, '.venv', 'bin') : '',
+              runtimeDir ? resolve(runtimeDir, 'venv', 'bin') : '',
+              process.env.PATH || '',
+            ].filter(Boolean).join(':'),
           },
         },
       )

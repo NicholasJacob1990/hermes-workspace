@@ -7,6 +7,8 @@ export type ThemeId =
   | 'vorbium-slate-light'
   | 'vorbium-mono'
   | 'vorbium-mono-light'
+  | 'hermes-nous'
+  | 'hermes-nous-light'
 
 export const THEMES: Array<{
   id: ThemeId
@@ -14,6 +16,18 @@ export const THEMES: Array<{
   description: string
   icon: string
 }> = [
+  {
+    id: 'hermes-nous' as ThemeId,
+    label: 'Hermes Nous',
+    description: 'Deep teal background, cream accent — matches Nous Research chrome',
+    icon: '◱',
+  },
+  {
+    id: 'hermes-nous-light' as ThemeId,
+    label: 'Hermes Nous Light',
+    description: 'Cold paper white with restrained cobalt framing',
+    icon: '◲',
+  },
   {
     id: 'vorbium-official',
     label: 'Vorbium Official',
@@ -75,6 +89,7 @@ const LIGHT_THEME_MAP: Record<
   'vorbium-classic': 'vorbium-classic-light',
   'vorbium-slate': 'vorbium-slate-light',
   'vorbium-mono': 'vorbium-mono-light',
+  'hermes-nous': 'hermes-nous-light',
 }
 const DARK_THEME_MAP: Record<
   Extract<ThemeId, `${string}-light`>,
@@ -84,6 +99,7 @@ const DARK_THEME_MAP: Record<
   'vorbium-classic-light': 'vorbium-classic',
   'vorbium-slate-light': 'vorbium-slate',
   'vorbium-mono-light': 'vorbium-mono',
+  'hermes-nous-light': 'hermes-nous',
 }
 
 const LIGHT_THEMES = new Set<ThemeId>([
@@ -91,6 +107,7 @@ const LIGHT_THEMES = new Set<ThemeId>([
   'vorbium-classic-light',
   'vorbium-slate-light',
   'vorbium-mono-light',
+  'hermes-nous-light',
 ])
 
 export function isValidTheme(

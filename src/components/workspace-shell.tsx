@@ -12,7 +12,7 @@
  * Non-chat routes show the sub-page content.
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Outlet, useNavigate, useRouterState } from '@tanstack/react-router'
+import { useNavigate, useRouterState } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { Suspense, lazy } from 'react'
 import type { SessionMeta } from '@/screens/chat/types'
@@ -61,7 +61,11 @@ async function fetchSessions(): Promise<SessionsListResponse> {
       : []
 }
 
-export function WorkspaceShell() {
+type WorkspaceShellProps = {
+  children?: React.ReactNode
+}
+
+export function WorkspaceShell({ children }: WorkspaceShellProps) {
   const navigate = useNavigate()
   const pathname = useRouterState({
     select: (state) => state.location.pathname,
@@ -99,10 +103,12 @@ export function WorkspaceShell() {
     if (path.startsWith('/files')) return 2
     if (path.startsWith('/terminal')) return 3
     if (path.startsWith('/jobs')) return 4
-    if (path.startsWith('/memory')) return 5
-    if (path.startsWith('/skills')) return 6
-    if (path.startsWith('/profiles')) return 7
-    if (path.startsWith('/settings')) return 8
+    if (path.startsWith('/conductor')) return 5
+    if (path.startsWith('/operations')) return 6
+    if (path.startsWith('/memory')) return 7
+    if (path.startsWith('/skills')) return 8
+    if (path.startsWith('/profiles')) return 9
+    if (path.startsWith('/settings')) return 10
     return -1
   }, [])
 
@@ -128,6 +134,8 @@ export function WorkspaceShell() {
     if (pathname.startsWith('/terminal')) return 'Terminal'
     if (pathname.startsWith('/files')) return 'Files'
     if (pathname.startsWith('/jobs')) return 'Jobs'
+    if (pathname.startsWith('/conductor')) return 'Conductor'
+    if (pathname.startsWith('/operations')) return 'Operations'
     if (pathname.startsWith('/memory')) return 'Memory'
     if (pathname.startsWith('/skills')) return 'Skills'
     if (pathname.startsWith('/profiles')) return 'Profiles'
@@ -355,8 +363,10 @@ export function WorkspaceShell() {
                   />
                 </Suspense>
               </div>
-              {/* Mobile input bar — sibling to terminal, NOT a child, so SSE re-renders don't freeze it */}
-              {isMobile && <MobileTerminalInput />}
+              {/* Mobile input bar — only mount on the terminal route.
+                  It uses fixed bottom positioning, so if it stays mounted while
+                  hidden it leaks onto other mobile pages like Operations. */}
+              {isMobile && isOnTerminalRoute && <MobileTerminalInput />}
             </div>
 
             <div
@@ -372,13 +382,7 @@ export function WorkspaceShell() {
                 !isOnChatRoute &&
                 !isOnTerminalRoute &&
                 mobilePageTitle && <MobilePageHeader title={mobilePageTitle} />}
-              <ErrorBoundary
-                className="h-full min-h-0 flex-1"
-                title="Something went wrong"
-                description="This page failed to render. Reload to try again."
-              >
-                <Outlet />
-              </ErrorBoundary>
+              {children}
             </div>
           </main>
 

@@ -9,10 +9,18 @@ import {
   BEARER_TOKEN,
   HERMES_API,
   SESSIONS_API_UNAVAILABLE_MESSAGE,
+  dashboardFetch,
   ensureGatewayProbed,
   getCapabilities,
   probeGateway,
 } from './gateway-capabilities'
+import {
+  deleteSession as deleteDashboardSession,
+  getSession as getDashboardSession,
+  getSessionMessages as getDashboardSessionMessages,
+  listSessions as listDashboardSessions,
+  searchSessions as searchDashboardSessions,
+} from './hermes-dashboard-api'
 
 const _authHeaders = (): Record<string, string> =>
   BEARER_TOKEN ? { Authorization: `Bearer ${BEARER_TOKEN}` } : {}
@@ -117,6 +125,10 @@ export async function listSessions(
   limit = 50,
   offset = 0,
 ): Promise<Array<VorbiumSession>> {
+  if (getCapabilities().dashboard.available) {
+    const resp = await listDashboardSessions(limit, offset)
+    return resp.sessions as Array<VorbiumSession>
+  }
   // Backend vorbium v0.10.x retorna {sessions: [...]}, versões antigas usam {items, total}.
   const resp = await vorbiumGet<{
     items?: Array<VorbiumSession>
@@ -126,6 +138,9 @@ export async function listSessions(
 }
 
 export async function getSession(sessionId: string): Promise<VorbiumSession> {
+  if (getCapabilities().dashboard.available) {
+    return getDashboardSession(sessionId) as Promise<VorbiumSession>
+  }
   const resp = await vorbiumGet<{ session: VorbiumSession }>(
     `/api/sessions/${sessionId}`,
   )
@@ -156,12 +171,20 @@ export async function updateSession(
 }
 
 export async function deleteSession(sessionId: string): Promise<void> {
+  if (getCapabilities().dashboard.available) {
+    await deleteDashboardSession(sessionId)
+    return
+  }
   return vorbiumDeleteReq(`/api/sessions/${sessionId}`)
 }
 
 export async function getMessages(
   sessionId: string,
 ): Promise<Array<VorbiumMessage>> {
+  if (getCapabilities().dashboard.available) {
+    const resp = await getDashboardSessionMessages(sessionId)
+    return resp.messages as Array<VorbiumMessage>
+  }
   const resp = await vorbiumGet<{ items: Array<VorbiumMessage>; total: number }>(
     `/api/sessions/${sessionId}/messages`,
   )
@@ -171,7 +194,10 @@ export async function getMessages(
 export async function searchSessions(
   query: string,
   limit = 20,
-): Promise<{ query: string; count: number; results: Array<unknown> }> {
+): Promise<{ query?: string; count?: number; results: Array<unknown> }> {
+  if (getCapabilities().dashboard.available) {
+    return searchDashboardSessions(query)
+  }
   return vorbiumGet(
     `/api/sessions/search?q=${encodeURIComponent(query)}&limit=${limit}`,
   )
